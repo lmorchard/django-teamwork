@@ -103,4 +103,4 @@ class TeamTests(TestCase):
         for p in perms:
             logging.debug("PERMISSION %s" % p)
 
-        ok_(False, "Still playing...")
+        #ok_(False, "Still playing...")
