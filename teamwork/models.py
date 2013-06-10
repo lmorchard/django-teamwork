@@ -17,8 +17,7 @@ class TeamManager(models.Manager):
     """
     def get_teams_for_user(self, user):
         member_teams = (Membership.objects.filter(user=user)
-                                          .values('role__team')
-                                          .distinct())
+                        .values('role__team').distinct())
         teams = self.filter(id__in=member_teams)
         return teams
 
@@ -27,8 +26,6 @@ class Team(models.Model):
     """
     Organizational unit for a set of users with assigned roles
     """
-    objects = TeamManager()
-
     title = models.CharField(_("title"),
                              max_length=128, editable=True, db_index=True)
     description = models.TextField(_("Description of intended use"),
@@ -38,25 +35,43 @@ class Team(models.Model):
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
 
+    objects = TeamManager()
+
+    class Meta:
+        permissions = (
+            ('view_team', 'Can view team'),
+            ('can_add_role', 'Can add role'),
+            ('can_change_role', 'Can change role'),
+            ('can_delete_role', 'Can delete role'),
+            ('can_add_member', 'Can add member'),
+            ('can_change_member', 'Can change member'),
+            ('can_delete_member', 'Can delete member'),
+        )
+
     def __unicode__(self):
         return u'[Team %s]' % (self.title)
 
-    def has_member(self, user):
+    def has_member(self, user, role):
         """Determine whether the given user is a member of this team"""
+        # TODO: founder is not considered a member without an associated role
         hits = Membership.objects.filter(role__team=self, user=user).count()
         return hits > 0
 
-    @property
-    def users(self):
+    def get_members(self):
+        """Convenience property with a QuerySet of user/role membership"""
+        return Membership.objects.filter(role__team=self)
+
+    def has_user(self, user):
+        """Determine whether the given user is a member of this team"""
+        # TODO: founder is not considered a member without an associated role
+        hits = Membership.objects.filter(role__team=self, user=user).count()
+        return hits > 0
+
+    def get_users(self):
         """Convenience property with a QuerySet of unique users"""
         members = (Membership.objects.filter(role__team=self)
                                      .values('user').distinct())
         return User.objects.filter(id__in=members)
-
-    @property
-    def members(self):
-        """Convenience property with a QuerySet of Membership models"""
-        return Membership.objects.filter(role__team=self)
 
 
 class Role(models.Model):
@@ -69,7 +84,8 @@ class Role(models.Model):
                                    blank=False)
 
     permissions = models.ManyToManyField(
-        Permission, verbose_name=_('role permissions'), blank=True,
+        Permission, through='RolePermission', blank=True,
+        verbose_name=_('role permissions'),
         help_text='Specific permissions for this role.')
 
     users = models.ManyToManyField(
@@ -79,6 +95,26 @@ class Role(models.Model):
 
     def __unicode__(self):
         return u'[Role %s for %s]' % (self.name, self.team)
+
+    def assign(self, user):
+        """Add user as a team member with the given role"""
+        member, created = Membership.objects.get_or_create(user=user,
+                                                           role=self)
+        return member
+
+    def add_permission(self, permission):
+        rperm, created = RolePermission.objects.get_or_create(
+                permission=permission, role=self)
+        return rperm
+
+
+class RolePermission(models.Model):
+    """
+    Permission associated with a role
+    """
+    role = models.ForeignKey(Role)
+    permission = models.ForeignKey(Permission)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
 
 
 class Membership(models.Model):
