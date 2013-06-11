@@ -104,7 +104,7 @@ class Role(models.Model):
 
     def add_permission(self, permission):
         rperm, created = RolePermission.objects.get_or_create(
-                permission=permission, role=self)
+            permission=permission, role=self)
         return rperm
 
 

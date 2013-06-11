@@ -19,31 +19,35 @@ class TeamTests(TestCaseBase):
 
     def test_has_member(self):
         """Users with roles on a team should be counted as members"""
-        team = self.teams[0]
+        # Not an exhaustive list, but should be decent.
+        cases = (
+            (True, 'alpha', 'tester1'),
+            (True, 'alpha', 'tester2'),
+            (True, 'beta',  'tester3'),
+            (True, 'beta',  'tester4'),
+            (True, 'gamma', 'tester4'),
+            (True, 'gamma', 'tester5'),
+            (True, 'gamma', 'tester6'),
 
-        # TODO: The founder is not considered a member, lacking a Role
-        # ok_(team.has_user(self.users[0]))
-        ok_(team.has_user(self.users[1]))
-        ok_(team.has_user(self.users[2]))
-        ok_(team.has_user(self.users[3]))
-        ok_(not team.has_user(self.users[4]))
+            (False, 'beta',  'tester0'),
+            (False, 'gamma', 'tester0'),
+            (False, 'beta',  'tester2'),
+            (False, 'alpha', 'tester3'),
+            (False, 'alpha', 'tester4'),
+
+            # TODO: The founder is not considered a member, lacking a Role
+            (False, 'alpha', 'founder0'),
+            (False, 'beta',  'founder1'),
+            (False, 'gamma', 'founder2'),
+        )
+        for expected, team_name, user_name in cases:
+            team = self.teams[team_name]
+            user = self.users[user_name]
+            eq_(expected, team.has_user(user))
 
     def test_teams_for_user(self):
-        """User with roles should be considered member of associated teams"""
+        """List of teams for user should correspond to roles"""
         for member in self.members:
             member.role.team.has_user(member.user)
             user_teams = Team.objects.get_teams_for_user(member.user)
             ok_(member.role.team in user_teams)
-
-    """
-    def test_play(self):
-
-        for t in self.teams:
-            logging.debug("TEAM %s" % t)
-            for r in t.role_set.all():
-                logging.debug("\tROLE %s" % r)
-                for p in r.permissions.all():
-                    logging.debug("\t\tPERM %s" % p)
-
-        ok_(False, "Still playing...")
-    """

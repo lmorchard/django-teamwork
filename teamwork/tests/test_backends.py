@@ -25,159 +25,45 @@ class TeamBackendTests(TestCaseBase):
 
         self.backend = TeamworkBackend()
 
-    def test_play(self):
-
-        perms = ('can_review', 'can_move', 'can_frob', 'can_xyzzy', 'can_hello')
-        for user in self.users:
-            for doc in self.docs:
-                for p in perms:
-                    print '%s,' % str((self.backend.has_perm(user, 'teamwork_example.%s' % p, doc),
-                              user.username, doc.title, p))
-
-                #for p in self.backend.get_all_permissions(user, doc):
-                #    print str((user.username, doc.title, p))
-
-        #ok_(False, "Still playing...")
-
-    def test_has_perm(self):
+    def test_permissions(self):
+        """Ensure users with roles get appropriate permissions for objects
+        associated with teams"""
         cases = (
-            (False, 'tester0', 'Alpha doc 1', 'can_review'),
-            (False, 'tester0', 'Alpha doc 1', 'can_move'),
-            (False, 'tester0', 'Alpha doc 1', 'can_frob'),
-            (False, 'tester0', 'Alpha doc 1', 'can_xyzzy'),
-            (False, 'tester0', 'Alpha doc 1', 'can_hello'),
-            (False, 'tester0', 'Beta doc 1', 'can_review'),
-            (False, 'tester0', 'Beta doc 1', 'can_move'),
-            (False, 'tester0', 'Beta doc 1', 'can_frob'),
-            (False, 'tester0', 'Beta doc 1', 'can_xyzzy'),
-            (False, 'tester0', 'Beta doc 1', 'can_hello'),
-            (False, 'tester0', 'Gamma doc 1', 'can_review'),
-            (False, 'tester0', 'Gamma doc 1', 'can_move'),
-            (False, 'tester0', 'Gamma doc 1', 'can_frob'),
-            (False, 'tester0', 'Gamma doc 1', 'can_xyzzy'),
-            (False, 'tester0', 'Gamma doc 1', 'can_hello'),
-            (False, 'tester1', 'Alpha doc 1', 'can_review'),
-            (False, 'tester1', 'Alpha doc 1', 'can_move'),
-            (False, 'tester1', 'Alpha doc 1', 'can_frob'),
-            (False, 'tester1', 'Alpha doc 1', 'can_xyzzy'),
-            (False, 'tester1', 'Alpha doc 1', 'can_hello'),
-            (False, 'tester1', 'Beta doc 1', 'can_review'),
-            (False, 'tester1', 'Beta doc 1', 'can_move'),
-            (False, 'tester1', 'Beta doc 1', 'can_frob'),
-            (False, 'tester1', 'Beta doc 1', 'can_xyzzy'),
-            (False, 'tester1', 'Beta doc 1', 'can_hello'),
-            (False, 'tester1', 'Gamma doc 1', 'can_review'),
-            (False, 'tester1', 'Gamma doc 1', 'can_move'),
-            (False, 'tester1', 'Gamma doc 1', 'can_frob'),
-            (False, 'tester1', 'Gamma doc 1', 'can_xyzzy'),
-            (False, 'tester1', 'Gamma doc 1', 'can_hello'),
-            (True, 'tester2', 'Alpha doc 1', 'can_review'),
-            (False, 'tester2', 'Alpha doc 1', 'can_move'),
-            (False, 'tester2', 'Alpha doc 1', 'can_frob'),
-            (False, 'tester2', 'Alpha doc 1', 'can_xyzzy'),
-            (False, 'tester2', 'Alpha doc 1', 'can_hello'),
-            (False, 'tester2', 'Beta doc 1', 'can_review'),
-            (False, 'tester2', 'Beta doc 1', 'can_move'),
-            (False, 'tester2', 'Beta doc 1', 'can_frob'),
-            (False, 'tester2', 'Beta doc 1', 'can_xyzzy'),
-            (False, 'tester2', 'Beta doc 1', 'can_hello'),
-            (False, 'tester2', 'Gamma doc 1', 'can_review'),
-            (False, 'tester2', 'Gamma doc 1', 'can_move'),
-            (False, 'tester2', 'Gamma doc 1', 'can_frob'),
-            (False, 'tester2', 'Gamma doc 1', 'can_xyzzy'),
-            (False, 'tester2', 'Gamma doc 1', 'can_hello'),
-            (True, 'tester3', 'Alpha doc 1', 'can_review'),
-            (True, 'tester3', 'Alpha doc 1', 'can_move'),
-            (False, 'tester3', 'Alpha doc 1', 'can_frob'),
-            (False, 'tester3', 'Alpha doc 1', 'can_xyzzy'),
-            (False, 'tester3', 'Alpha doc 1', 'can_hello'),
-            (False, 'tester3', 'Beta doc 1', 'can_review'),
-            (False, 'tester3', 'Beta doc 1', 'can_move'),
-            (False, 'tester3', 'Beta doc 1', 'can_frob'),
-            (False, 'tester3', 'Beta doc 1', 'can_xyzzy'),
-            (False, 'tester3', 'Beta doc 1', 'can_hello'),
-            (False, 'tester3', 'Gamma doc 1', 'can_review'),
-            (False, 'tester3', 'Gamma doc 1', 'can_move'),
-            (False, 'tester3', 'Gamma doc 1', 'can_frob'),
-            (False, 'tester3', 'Gamma doc 1', 'can_xyzzy'),
-            (False, 'tester3', 'Gamma doc 1', 'can_hello'),
-            (False, 'tester4', 'Alpha doc 1', 'can_review'),
-            (False, 'tester4', 'Alpha doc 1', 'can_move'),
-            (False, 'tester4', 'Alpha doc 1', 'can_frob'),
-            (False, 'tester4', 'Alpha doc 1', 'can_xyzzy'),
-            (False, 'tester4', 'Alpha doc 1', 'can_hello'),
-            (True, 'tester4', 'Beta doc 1', 'can_review'),
-            (True, 'tester4', 'Beta doc 1', 'can_move'),
-            (False, 'tester4', 'Beta doc 1', 'can_frob'),
-            (False, 'tester4', 'Beta doc 1', 'can_xyzzy'),
-            (False, 'tester4', 'Beta doc 1', 'can_hello'),
-            (False, 'tester4', 'Gamma doc 1', 'can_review'),
-            (False, 'tester4', 'Gamma doc 1', 'can_move'),
-            (False, 'tester4', 'Gamma doc 1', 'can_frob'),
-            (False, 'tester4', 'Gamma doc 1', 'can_xyzzy'),
-            (False, 'tester4', 'Gamma doc 1', 'can_hello'),
-            (False, 'tester5', 'Alpha doc 1', 'can_review'),
-            (False, 'tester5', 'Alpha doc 1', 'can_move'),
-            (False, 'tester5', 'Alpha doc 1', 'can_frob'),
-            (False, 'tester5', 'Alpha doc 1', 'can_xyzzy'),
-            (False, 'tester5', 'Alpha doc 1', 'can_hello'),
-            (True, 'tester5', 'Beta doc 1', 'can_review'),
-            (True, 'tester5', 'Beta doc 1', 'can_move'),
-            (False, 'tester5', 'Beta doc 1', 'can_frob'),
-            (False, 'tester5', 'Beta doc 1', 'can_xyzzy'),
-            (False, 'tester5', 'Beta doc 1', 'can_hello'),
-            (False, 'tester5', 'Gamma doc 1', 'can_review'),
-            (False, 'tester5', 'Gamma doc 1', 'can_move'),
-            (False, 'tester5', 'Gamma doc 1', 'can_frob'),
-            (False, 'tester5', 'Gamma doc 1', 'can_xyzzy'),
-            (False, 'tester5', 'Gamma doc 1', 'can_hello'),
-            (False, 'tester6', 'Alpha doc 1', 'can_review'),
-            (False, 'tester6', 'Alpha doc 1', 'can_move'),
-            (False, 'tester6', 'Alpha doc 1', 'can_frob'),
-            (False, 'tester6', 'Alpha doc 1', 'can_xyzzy'),
-            (False, 'tester6', 'Alpha doc 1', 'can_hello'),
-            (True, 'tester6', 'Beta doc 1', 'can_review'),
-            (True, 'tester6', 'Beta doc 1', 'can_move'),
-            (True, 'tester6', 'Beta doc 1', 'can_frob'),
-            (False, 'tester6', 'Beta doc 1', 'can_xyzzy'),
-            (False, 'tester6', 'Beta doc 1', 'can_hello'),
-            (False, 'tester6', 'Gamma doc 1', 'can_review'),
-            (False, 'tester6', 'Gamma doc 1', 'can_move'),
-            (False, 'tester6', 'Gamma doc 1', 'can_frob'),
-            (False, 'tester6', 'Gamma doc 1', 'can_xyzzy'),
-            (False, 'tester6', 'Gamma doc 1', 'can_hello'),
-            (False, 'tester7', 'Alpha doc 1', 'can_review'),
-            (False, 'tester7', 'Alpha doc 1', 'can_move'),
-            (False, 'tester7', 'Alpha doc 1', 'can_frob'),
-            (False, 'tester7', 'Alpha doc 1', 'can_xyzzy'),
-            (False, 'tester7', 'Alpha doc 1', 'can_hello'),
-            (True, 'tester7', 'Beta doc 1', 'can_review'),
-            (True, 'tester7', 'Beta doc 1', 'can_move'),
-            (True, 'tester7', 'Beta doc 1', 'can_frob'),
-            (False, 'tester7', 'Beta doc 1', 'can_xyzzy'),
-            (False, 'tester7', 'Beta doc 1', 'can_hello'),
-            (False, 'tester7', 'Gamma doc 1', 'can_review'),
-            (False, 'tester7', 'Gamma doc 1', 'can_move'),
-            (False, 'tester7', 'Gamma doc 1', 'can_frob'),
-            (True, 'tester7', 'Gamma doc 1', 'can_xyzzy'),
-            (True, 'tester7', 'Gamma doc 1', 'can_hello'),
-            (False, 'tester8', 'Alpha doc 1', 'can_review'),
-            (False, 'tester8', 'Alpha doc 1', 'can_move'),
-            (False, 'tester8', 'Alpha doc 1', 'can_frob'),
-            (False, 'tester8', 'Alpha doc 1', 'can_xyzzy'),
-            (False, 'tester8', 'Alpha doc 1', 'can_hello'),
-            (False, 'tester8', 'Beta doc 1', 'can_review'),
-            (False, 'tester8', 'Beta doc 1', 'can_move'),
-            (False, 'tester8', 'Beta doc 1', 'can_frob'),
-            (False, 'tester8', 'Beta doc 1', 'can_xyzzy'),
-            (False, 'tester8', 'Beta doc 1', 'can_hello'),
-            (False, 'tester8', 'Gamma doc 1', 'can_review'),
-            (False, 'tester8', 'Gamma doc 1', 'can_move'),
-            (False, 'tester8', 'Gamma doc 1', 'can_frob'),
-            (True, 'tester8', 'Gamma doc 1', 'can_xyzzy'),
-            (True, 'tester8', 'Gamma doc 1', 'can_hello'),
+            ('tester0', 'doc1', []),
+            ('tester0', 'doc2', []),
+            ('tester0', 'doc3', []),
+            ('tester1', 'doc1', []),
+            ('tester1', 'doc2', []),
+            ('tester1', 'doc3', []),
+            ('tester2', 'doc1', ['can_frob']),
+            ('tester2', 'doc2', []),
+            ('tester2', 'doc3', []),
+            ('tester3', 'doc1', []),
+            ('tester3', 'doc2', ['can_hello', 'can_xyzzy']),
+            ('tester3', 'doc3', []),
+            ('tester4', 'doc1', []),
+            ('tester4', 'doc2', ['can_hello']),
+            ('tester4', 'doc3', ['can_frob', 'can_xyzzy']),
+            ('tester5', 'doc1', []),
+            ('tester5', 'doc2', []),
+            ('tester5', 'doc3', ['can_hello', 'can_frob', 'can_xyzzy']),
+            ('tester6', 'doc1', []),
+            ('tester6', 'doc2', []),
+            ('tester6', 'doc3', ['can_hello', 'can_frob', 'can_xyzzy']),
         )
-        for expected, username, doc_title, perm_name in cases:
-            user = User.objects.get(username=username)
-            doc = Document.objects.get(title=doc_title)
-            eq_(expected, self.backend.has_perm(user, 'teamwork_example.%s' % perm_name, doc))
+        # TODO: Harvest this from Document's Meta class
+        all_perms = ['teamwork_example.%s' % p[0] for p in (
+            'can_frob', 'can_xyzzy', 'can_hello'
+        )]
+        for user_name, doc_name, perm_names in cases:
+            user = self.users[user_name]
+            doc = self.docs[doc_name]
+
+            expected = set('teamwork_example.%s' % p for p in perm_names)
+            result = self.backend.get_all_permissions(user, doc)
+            eq_(expected, result)
+
+            for perm in all_perms:
+                hp_expected = perm in expected
+                hp_result = self.backend.has_perm(user, perm, doc)
+                eq_(hp_expected, hp_result)
