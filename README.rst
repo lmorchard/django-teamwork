@@ -14,4 +14,3 @@ for more background.
            :target: http://travis-ci.org/lmorchard/django-teamwork
 
 .. vim:set tw=78 ai fo+=n fo-=l ft=rst:
-
