@@ -60,10 +60,17 @@ class TeamBackendTests(TestCaseBase):
             doc = self.docs[doc_name]
 
             expected = set('teamwork_example.%s' % p for p in perm_names)
+
+            # Try the backend directly, then try it through the user
             result = self.backend.get_all_permissions(user, doc)
+            eq_(expected, result)
+            result = user.get_all_permissions(doc)
             eq_(expected, result)
 
             for perm in all_perms:
                 hp_expected = perm in expected
+                # Try the backend directly, then try it through the user
                 hp_result = self.backend.has_perm(user, perm, doc)
+                eq_(hp_expected, hp_result)
+                hp_result = user.has_perm(perm, doc)
                 eq_(hp_expected, hp_result)

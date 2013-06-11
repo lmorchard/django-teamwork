@@ -104,6 +104,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'teamwork.backends.TeamworkBackend',
+)
+
 ROOT_URLCONF = 'teamwork_example.urls'
 
 TEMPLATE_DIRS = (

@@ -27,7 +27,6 @@ class TestCaseBase(TestCase):
             for idx in range(0, 3)
         ]))
 
-
         teams_fields = ('founder', 'title', 'description')
         teams_data = (dict(zip(teams_fields, row)) for row in (
             (self.users['founder0'], "alpha", "Cool people"),
