@@ -2,13 +2,13 @@ import logging
 import time
 
 from django.conf import settings
-from django.contrib.auth.models import User, Permission, Group
+from django.contrib.auth.models import AnonymousUser, User, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 
 from nose.tools import assert_equal, with_setup, assert_false, eq_, ok_
 from nose.plugins.attrib import attr
 
-from ..models import Team, Role, Membership, TeamOwnership
+from ..models import Team, Role, RoleUser, TeamOwnership
 
 from teamwork_example.models import Document
 
@@ -16,6 +16,44 @@ from . import TestCaseBase
 
 
 class TeamTests(TestCaseBase):
+
+    def test_general_permissions(self):
+        """Appropriate permissions for anonymous, authenticated, and members"""
+        team = Team.objects.create(name='general_permissive_team',
+                                   founder=self.users['founder0'])
+
+        anon_user = AnonymousUser()
+        auth_user = self.users['tester0']
+        role_user = self.users['tester1']
+
+        expected_anon_perms = set((u'can_frob', u'can_xyzzy'))
+        expected_auth_perms = set((u'can_xyzzy', u'can_hello'))
+        expected_role_perms = set((u'can_frob', u'can_hello'))
+
+        perms = self.names_to_doc_permissions(expected_anon_perms)
+        team.anonymous_permissions.add(*perms)
+
+        perms = self.names_to_doc_permissions(expected_auth_perms)
+        team.authenticated_permissions.add(*perms)
+
+        role1 = Role.objects.create(name='role1', team=team)
+        role1.assign_to(role_user)
+
+        perms = self.names_to_doc_permissions(expected_role_perms)
+        for perm in perms:
+            role1.add_permission(perm)
+
+        result_anon_perms = set(p.codename for p in
+                                team.get_all_permissions(anon_user))
+        eq_(expected_anon_perms, result_anon_perms)
+
+        result_auth_perms = set(p.codename for p in
+                                team.get_all_permissions(auth_user))
+        eq_(expected_auth_perms, result_auth_perms)
+
+        result_role_perms = set(p.codename for p in
+                                team.get_all_permissions(role_user))
+        eq_(expected_role_perms, result_role_perms)
 
     def test_has_member(self):
         """Users with roles on a team should be counted as members"""

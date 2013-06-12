@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 
-from .models import Team, Role, RolePermission, Membership, TeamOwnership
+from . import DEFAULT_ANONYMOUS_USER_PK
+from .models import Team, Role, RolePermission, RoleUser, TeamOwnership
 
 
 class TeamworkBackend(object):
@@ -11,34 +12,26 @@ class TeamworkBackend(object):
 
     def get_all_permissions(self, user, obj=None):
 
-        if (user.is_anonymous() or (obj is None) or
-                (not hasattr(obj, 'team')) or (not obj.team)):
+        if obj is None:
             return set()
 
         # TODO: Consider multiple-team ownership of a content object
-        team = obj.team
+        team = getattr(obj, 'team', None)
+        if not team:
+            return set()
+
+        if user.is_anonymous():
+            user_pk = DEFAULT_ANONYMOUS_USER_PK
+        else:
+            user_pk = user.pk
 
         if not hasattr(obj, '_teamwork_perms_cache'):
             obj._teamwork_perms_cache = dict()
 
-        # FIXME: Primary key is not always .id
-        user_pk = user.id
         if not user_pk in obj._teamwork_perms_cache:
-            # TODO: Keep thinking about how to simplify these queries
-            role_ids = (Membership.objects
-                                  .filter(user=user, role__team=team)
-                                  .values('role'))
-            if 0 == len(role_ids):
-                perms = set()
-            else:
-                ct = ContentType.objects.get_for_model(obj)
-                rps = (RolePermission.objects
-                                     .filter(role__in=role_ids)
-                                     .select_related())
-                perms = set([u"%s.%s" % (ct.app_label,
-                                         rp.permission.codename)
-                            for rp in rps])
-
+            ct = ContentType.objects.get_for_model(obj)
+            perms = set([u"%s.%s" % (ct.app_label, p.codename)
+                        for p in team.get_all_permissions(user)])
             obj._teamwork_perms_cache[user_pk] = perms
 
         return obj._teamwork_perms_cache[user_pk]

@@ -16,7 +16,7 @@ class TeamManager(models.Manager):
     Manager and utilities for Teams
     """
     def get_teams_for_user(self, user):
-        member_teams = (Membership.objects.filter(user=user)
+        member_teams = (RoleUser.objects.filter(user=user)
                         .values('role__team').distinct())
         teams = self.filter(id__in=member_teams)
         return teams
@@ -26,14 +26,27 @@ class Team(models.Model):
     """
     Organizational unit for a set of users with assigned roles
     """
-    title = models.CharField(_("title"),
-                             max_length=128, editable=True, db_index=True)
+    name = models.CharField(_("name"),
+                            max_length=128, editable=True, db_index=True)
     description = models.TextField(_("Description of intended use"),
                                    blank=False)
     founder = models.ForeignKey(User, editable=False, db_index=True,
                                 blank=False, null=False)
+
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
+
+    anonymous_permissions = models.ManyToManyField(
+        Permission, blank=True,
+        related_name='anonymous_permissions',
+        verbose_name=_('anonymous permissions'),
+        help_text='Permissions offered to anonymous users')
+
+    authenticated_permissions = models.ManyToManyField(
+        Permission, blank=True,
+        related_name='authenticated_permissions',
+        verbose_name=_('authenticated permissions'),
+        help_text='Permissions offered to authenticated non-members')
 
     objects = TeamManager()
 
@@ -49,34 +62,52 @@ class Team(models.Model):
         )
 
     def __unicode__(self):
-        return u'[Team %s]' % (self.title)
+        return u'[Team %s]' % (self.name)
 
     def has_member(self, user, role):
         """Determine whether the given user is a member of this team"""
         # TODO: founder is not considered a member without an associated role
-        hits = Membership.objects.filter(role__team=self, user=user).count()
+        hits = RoleUser.objects.filter(role__team=self, user=user).count()
         return hits > 0
 
     def get_members(self):
-        """Convenience property with a QuerySet of user/role membership"""
-        return Membership.objects.filter(role__team=self)
+        """Convenience property with a QuerySet of user/role RoleUser"""
+        return RoleUser.objects.filter(role__team=self)
 
     def has_user(self, user):
         """Determine whether the given user is a member of this team"""
         # TODO: founder is not considered a member without an associated role
-        hits = Membership.objects.filter(role__team=self, user=user).count()
+        hits = RoleUser.objects.filter(role__team=self, user=user).count()
         return hits > 0
 
     def get_users(self):
         """Convenience property with a QuerySet of unique users"""
-        members = (Membership.objects.filter(role__team=self)
-                                     .values('user').distinct())
+        members = (RoleUser.objects.filter(role__team=self)
+                           .values('user').distinct())
         return User.objects.filter(id__in=members)
+
+    def get_all_permissions(self, user):
+        """Get all Permissions applied to this User based on assigned Roles"""
+        # TODO: Keep thinking about how to simplify these queries
+        if user.is_anonymous():
+            return self.anonymous_permissions.all()
+
+        role_ids = (RoleUser.objects.filter(user=user, role__team=self)
+                            .values('role'))
+        if 0 == len(role_ids):
+            return self.authenticated_permissions.all()
+
+        return (p.permission for p in
+                RolePermission.objects.filter(role__in=role_ids)
+                              .select_related())
 
 
 class Role(models.Model):
     """
     Role within a Team for a user.
+
+    This works somewhat like a Group, but its Permissions only apply when a
+    User acts upon an object belonging to the Role's parent Team.
     """
     team = models.ForeignKey(Team, db_index=True, blank=False, null=False)
     name = models.CharField(_("name"), max_length=128, db_index=False)
@@ -89,17 +120,17 @@ class Role(models.Model):
         help_text='Specific permissions for this role.')
 
     users = models.ManyToManyField(
-        User, through='Membership', blank=True,
+        User, through='RoleUser', blank=True,
         verbose_name=_('role users'),
         help_text='Users granted this role')
 
     def __unicode__(self):
         return u'[Role %s for %s]' % (self.name, self.team)
 
-    def assign(self, user):
+    def assign_to(self, user):
         """Add user as a team member with the given role"""
-        member, created = Membership.objects.get_or_create(user=user,
-                                                           role=self)
+        member, created = RoleUser.objects.get_or_create(user=user,
+                                                         role=self)
         return member
 
     def add_permission(self, permission):
@@ -117,9 +148,9 @@ class RolePermission(models.Model):
     created = models.DateTimeField(auto_now_add=True, db_index=True)
 
 
-class Membership(models.Model):
+class RoleUser(models.Model):
     """
-    Team membership by role for a user
+    Team RoleUser by role for a user
     """
     user = models.ForeignKey(User)
     role = models.ForeignKey(Role)

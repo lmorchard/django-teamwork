@@ -2,7 +2,7 @@ import logging
 import time
 
 from django.conf import settings
-from django.contrib.auth.models import User, Permission, Group
+from django.contrib.auth.models import AnonymousUser, User, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 
 from django.test import TestCase
@@ -10,7 +10,7 @@ from django.test import TestCase
 from nose.tools import assert_equal, with_setup, assert_false, eq_, ok_
 from nose.plugins.attrib import attr
 
-from ..models import Team, Role, Membership, TeamOwnership
+from ..models import Team, Role, RoleUser, TeamOwnership
 from ..backends import TeamworkBackend
 
 from teamwork_example.models import Document

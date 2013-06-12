@@ -3,7 +3,8 @@ from teamwork.models import Team
 
 class Document(models.Model):
     name = models.CharField(max_length=80)
-    team = models.ForeignKey(Team)
+    team = models.ForeignKey(Team, null=True)
+    parent = models.ForeignKey('self', null=True)
 
     class Meta:
         permissions = (

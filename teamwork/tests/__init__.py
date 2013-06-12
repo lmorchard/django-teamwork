@@ -1,7 +1,8 @@
 from django.test import TestCase
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User, Permission, Group
 
-from ..models import Team, Role, Membership, TeamOwnership
+from ..models import Team, Role, RoleUser, TeamOwnership
 
 from teamwork_example.models import Document
 
@@ -11,6 +12,10 @@ class TestCaseBase(TestCase):
 
     def setUp(self):
         super(TestCaseBase, self).setUp()
+
+        self.doc_ct = (ContentType.objects
+                                  .get_by_natural_key('teamwork_example',
+                                                      'document'))
 
         self.users = dict([
             ('tester%s' % idx,
@@ -27,13 +32,13 @@ class TestCaseBase(TestCase):
             for idx in range(0, 3)
         ]))
 
-        teams_fields = ('founder', 'title', 'description')
+        teams_fields = ('founder', 'name', 'description')
         teams_data = (dict(zip(teams_fields, row)) for row in (
             (self.users['founder0'], "alpha", "Cool people"),
             (self.users['founder1'], "beta", "A team of folks"),
             (self.users['founder2'], "gamma", "Assemblage of users"),
         ))
-        self.teams = dict([(d['title'], Team.objects.create(**d))
+        self.teams = dict([(d['name'], Team.objects.create(**d))
                            for d in teams_data])
 
         roles_fields = ('team', 'name')
@@ -74,7 +79,7 @@ class TestCaseBase(TestCase):
                                                          model)
             role.add_permission(perm)
 
-        self.members = [self.roles[r].assign(self.users[u]) for r, u in (
+        self.members = [self.roles[r].assign_to(self.users[u]) for r, u in (
             ('trainee', 'tester1'),
             ('normal', 'tester2'),
             ('foo', 'tester3'),
@@ -97,3 +102,9 @@ class TestCaseBase(TestCase):
 
     def tearDown(self):
         super(TestCaseBase, self).tearDown()
+
+    def names_to_doc_permissions(self, names):
+        return [Permission.objects.get_by_natural_key(name,
+                                                      'teamwork_example',
+                                                      'document')
+                for name in names]
