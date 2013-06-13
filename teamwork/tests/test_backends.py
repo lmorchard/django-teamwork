@@ -13,7 +13,7 @@ from nose.plugins.attrib import attr
 from ..models import Team, Role, RoleUser, TeamOwnership
 from ..backends import TeamworkBackend
 
-from teamwork_example.models import Document
+from teamwork_example.wiki.models import Document
 
 from . import TestCaseBase
 
@@ -52,14 +52,14 @@ class TeamBackendTests(TestCaseBase):
             ('tester6', 'doc3', ['can_hello', 'can_frob', 'can_xyzzy']),
         )
         # TODO: Harvest this from Document's Meta class
-        all_perms = ['teamwork_example.%s' % p[0] for p in (
+        all_perms = ['wiki.%s' % p[0] for p in (
             'can_frob', 'can_xyzzy', 'can_hello'
         )]
         for user_name, doc_name, perm_names in cases:
             user = self.users[user_name]
             doc = self.docs[doc_name]
 
-            expected = set('teamwork_example.%s' % p for p in perm_names)
+            expected = set('wiki.%s' % p for p in perm_names)
 
             # Try the backend directly, then try it through the user
             result = self.backend.get_all_permissions(user, doc)

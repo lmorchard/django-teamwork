@@ -1,10 +1,12 @@
+import logging
+
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User, Permission, Group
 
 from ..models import Team, Role, RoleUser, TeamOwnership
 
-from teamwork_example.models import Document
+from teamwork_example.wiki.models import Document
 
 
 class TestCaseBase(TestCase):
@@ -14,8 +16,7 @@ class TestCaseBase(TestCase):
         super(TestCaseBase, self).setUp()
 
         self.doc_ct = (ContentType.objects
-                                  .get_by_natural_key('teamwork_example',
-                                                      'document'))
+                                  .get_by_natural_key('wiki', 'document'))
 
         self.users = dict([
             ('tester%s' % idx,
@@ -55,7 +56,7 @@ class TestCaseBase(TestCase):
         self.roles = dict([(d['name'], Role.objects.create(**d))
                            for d in roles_data])
 
-        app_label, model = 'teamwork_example', 'document'
+        app_label, model = 'wiki', 'document'
         perms_data = (
             # trainee has no perms
 
@@ -77,7 +78,7 @@ class TestCaseBase(TestCase):
             perm = Permission.objects.get_by_natural_key(perm_name,
                                                          app_label,
                                                          model)
-            role.add_permission(perm)
+            role.add_permissions(perm)
 
         self.members = [self.roles[r].assign_to(self.users[u]) for r, u in (
             ('trainee', 'tester1'),
@@ -104,7 +105,5 @@ class TestCaseBase(TestCase):
         super(TestCaseBase, self).tearDown()
 
     def names_to_doc_permissions(self, names):
-        return [Permission.objects.get_by_natural_key(name,
-                                                      'teamwork_example',
-                                                      'document')
+        return [Permission.objects.get_by_natural_key(name, 'wiki', 'document')
                 for name in names]

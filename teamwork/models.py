@@ -115,6 +115,7 @@ class Role(models.Model):
                                    blank=False)
 
     permissions = models.ManyToManyField(
+        # TODO: Do I really need this through model? Want to do queries on it
         Permission, through='RolePermission', blank=True,
         verbose_name=_('role permissions'),
         help_text='Specific permissions for this role.')
@@ -133,10 +134,11 @@ class Role(models.Model):
                                                          role=self)
         return member
 
-    def add_permission(self, permission):
-        rperm, created = RolePermission.objects.get_or_create(
-            permission=permission, role=self)
-        return rperm
+    def add_permissions(self, *permissions):
+        out = [RolePermission.objects.get_or_create(permission=p,
+                                                    role=self)[0]
+               for p in permissions]
+        return (len(permissions) == 1) and out[0] or out
 
 
 class RolePermission(models.Model):

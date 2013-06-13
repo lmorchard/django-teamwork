@@ -128,7 +128,7 @@ INSTALLED_APPS = [
     'django_nose',
     'south',
     'teamwork',
-    'teamwork_example',
+    'teamwork_example.wiki',
 ]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'

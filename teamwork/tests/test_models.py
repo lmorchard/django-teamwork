@@ -10,7 +10,7 @@ from nose.plugins.attrib import attr
 
 from ..models import Team, Role, RoleUser, TeamOwnership
 
-from teamwork_example.models import Document
+from teamwork_example.wiki.models import Document
 
 from . import TestCaseBase
 
@@ -40,8 +40,7 @@ class TeamTests(TestCaseBase):
         role1.assign_to(role_user)
 
         perms = self.names_to_doc_permissions(expected_role_perms)
-        for perm in perms:
-            role1.add_permission(perm)
+        role1.add_permissions(*perms)
 
         result_anon_perms = set(p.codename for p in
                                 team.get_all_permissions(anon_user))
