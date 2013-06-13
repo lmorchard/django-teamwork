@@ -10,22 +10,57 @@ for more background.
 - `Latest documentation on Read The Docs <https://django-teamwork.readthedocs.org/en/latest/>`_
   (`source <https://github.com/lmorchard/django-teamwork/tree/master/docs>`_)
 
+Use Cases / Specs
+-----------------
+
+This is a thinking-aloud section where I try to keep track of what I'm trying
+to accomplish here:
+
+* As a creator of a content Object
+  I want to create a Team
+  In order to delegate Permissions granted by a content Object
+
+* As a creator of a content Object
+  I want to assign ownership of my Object to a Team
+  In order to share ownership of a content Object
+
+* As a manager of a Team
+  I want to create a Team Role that encompasses a subset of my Permissions
+  In order to delegate some, but not all, Permissions granted by an Object
+
+* As a manager of a Team
+  I want to assign a Role on my Team to another User
+  In order to delegate Permissions granted by Team-owned Objects
+
+* As the manager of a Role,
+  I want to be given a list of my Permissions that are available to delegate,
+  So that I can easily build a Role
+
+  - How to assemble this list? Can't be as permissive as superuser access, can
+    only consist of Permissions available to Team creator
+
+* As a manager of a content Object,
+  I want to be able to create a Policy that encompasses a set of Permissions,
+  In order to delegate Permissions to Users who are not Team members
+
+* As a creator of content Objects in a hierarchical tree,
+  I want Team ownership to apply recursively down through the tree,
+  In order to avoid assigning Team ownership to each child Object individually
+
+* As a creator of content Objects in a hierarchical tree,
+  I want a Policy to apply recursively down through the tree,
+  In order to avoid assigning a Policy to each child Object individually
+
 TODO
 ----
 
-* Role inheritance 
+* Implement all the use cases
 
-  - All permissions applied to parent role apply to child
+* Popup-friendly views? 
 
-* Default roles for unauthenticated and non-team-member users
+  - to apply / adjust Policy on a content Object
   
-  - Useful for things like (dis)allowing view by default
-
-* Recursive team ownership
-
-  - If a content object claims another as a parent (ie. with a
-    conventionally-named API), it can be considered as owned by the parent's
-    team if any.
+  - to assign a user to one of your Teams
 
 
 .. |build-status| image:: https://secure.travis-ci.org/lmorchard/django-teamwork.png?branch=master
