@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ document.name }} | view{% endblock %}
+{% block content %}
+
+<h1>{{ document.name }}</h1>
+<section id="content">
+    {{ document.content }}
+</section>
+
+{% endblock %}

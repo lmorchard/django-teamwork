@@ -10,10 +10,10 @@ from django.test import TestCase
 from nose.tools import assert_equal, with_setup, assert_false, eq_, ok_
 from nose.plugins.attrib import attr
 
-from ..models import Team, Role, RoleUser, TeamOwnership
-from ..backends import TeamworkBackend
-
 from teamwork_example.wiki.models import Document
+
+from ..models import Team, Role
+from ..backends import TeamworkBackend
 
 from . import TestCaseBase
 

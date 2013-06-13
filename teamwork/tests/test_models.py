@@ -8,9 +8,9 @@ from django.contrib.contenttypes.models import ContentType
 from nose.tools import assert_equal, with_setup, assert_false, eq_, ok_
 from nose.plugins.attrib import attr
 
-from ..models import Team, Role, RoleUser, TeamOwnership
-
 from teamwork_example.wiki.models import Document
+
+from ..models import Team, Role
 
 from . import TestCaseBase
 
@@ -37,10 +37,10 @@ class TeamTests(TestCaseBase):
         team.authenticated_permissions.add(*perms)
 
         role1 = Role.objects.create(name='role1', team=team)
-        role1.assign_to(role_user)
+        role1.users.add(role_user)
 
         perms = self.names_to_doc_permissions(expected_role_perms)
-        role1.add_permissions(*perms)
+        role1.permissions.add(*perms)
 
         result_anon_perms = set(p.codename for p in
                                 team.get_all_permissions(anon_user))
@@ -84,7 +84,7 @@ class TeamTests(TestCaseBase):
 
     def test_teams_for_user(self):
         """List of teams for user should correspond to roles"""
-        for member in self.members:
-            member.role.team.has_user(member.user)
-            user_teams = Team.objects.get_teams_for_user(member.user)
-            ok_(member.role.team in user_teams)
+        for role_user in Role.users.through.objects.all():
+            role_user.role.team.has_user(role_user.user)
+            user_teams = Team.objects.get_teams_for_user(role_user.user)
+            ok_(role_user.role.team in user_teams)

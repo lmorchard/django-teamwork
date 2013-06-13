@@ -1,7 +1,7 @@
 # Django settings for example project.
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+SERVE_MEDIA = TEMPLATE_DEBUG = DEBUG
 
 SITE_ID = 1
 
@@ -19,6 +19,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
     }
 }
+
+FIXTURE_DIRS = (
+    'teamwork_example',
+)
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -102,6 +106,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'teamwork_example.base.middleware.UserListMiddleware',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -128,6 +133,7 @@ INSTALLED_APPS = [
     'django_nose',
     'south',
     'teamwork',
+    'teamwork_example.base',
     'teamwork_example.wiki',
 ]
 

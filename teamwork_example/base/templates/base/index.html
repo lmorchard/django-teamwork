@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<h1>Home</h1>
+<p>This is the example application for django-teamwork.</p>
+
+<section>
+    <h2>Documents</h2>
+    <ul>
+        {% for document in documents %}
+        <li><a href="{% url wiki.views.view name=document.name %}">{{ document.name }}</a></li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section>
+    <h2>Teams</h2>
+    <ul>
+        {% for team in teams %}
+            <li>
+                <a href="">{{ team.name }}</a>
+                <ul>
+                    {% for role in team.role_set.all %}
+                        <li>
+                            <a href="">{{ role.name }}</a>
+                            <ul>
+                                {% for permission in role.permissions.all %}
+                                    <li><a href="">{{ permission }}</a></li>
+                                {% endfor %}
+                            </ul>
+                            <ul>
+                                {% for user in role.users.all %}
+                                    <li><a href="">{{ user.username }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section>
+    <h2>Users</h2>
+    <ul>
+        {% for user in users %}
+            <li><a href="">{{ user.username }}</a></li>
+        {% endfor %}
+    </ul>
+</section>
+
+{% endblock %}

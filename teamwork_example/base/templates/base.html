@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}...{% endblock %} | teamwork_example</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url base.views.index %}">Home</a> | 
+            {% if not request.user.is_authenticated %}
+                Log in as:
+                <form style="display: inline" action="{% url profiles.views.login %}" method="POST">
+                    {% csrf_token %}
+                    <select name="username">
+                        {% for user in request.user_list %}
+                            <option value="{{ user.username }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="submit" value="Log in">
+                </form>
+            {% else %}
+                Logged in as: {{ request.user }} (<a href="{% url profiles.views.logout %}">logout</a>)
+            {% endif %}
+        </header>
+        <section id="main">{% block content %}{% endblock %}</section>
+    </body>
+</html>

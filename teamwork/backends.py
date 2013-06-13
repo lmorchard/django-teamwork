@@ -2,7 +2,7 @@ from django.contrib.auth.models import User, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 
 from . import DEFAULT_ANONYMOUS_USER_PK
-from .models import Team, Role, RolePermission, RoleUser, TeamOwnership
+from .models import Team, Role
 
 
 class TeamworkBackend(object):

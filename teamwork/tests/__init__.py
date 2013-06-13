@@ -4,9 +4,9 @@ from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User, Permission, Group
 
-from ..models import Team, Role, RoleUser, TeamOwnership
-
 from teamwork_example.wiki.models import Document
+
+from ..models import Team, Role
 
 
 class TestCaseBase(TestCase):
@@ -78,9 +78,9 @@ class TestCaseBase(TestCase):
             perm = Permission.objects.get_by_natural_key(perm_name,
                                                          app_label,
                                                          model)
-            role.add_permissions(perm)
+            role.permissions.add(perm)
 
-        self.members = [self.roles[r].assign_to(self.users[u]) for r, u in (
+        roles_data = (
             ('trainee', 'tester1'),
             ('normal', 'tester2'),
             ('foo', 'tester3'),
@@ -90,7 +90,11 @@ class TestCaseBase(TestCase):
             ('baz', 'tester5'),
             ('quux', 'tester5'),
             ('quux', 'tester6'),
-        )]
+        )
+        for role_name, user_name in roles_data:
+            role = self.roles[role_name]
+            user = self.users[user_name]
+            role.users.add(user)
 
         docs_fields = ('team', 'name')
         docs_data = (dict(zip(docs_fields, row)) for row in (

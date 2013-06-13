@@ -15,9 +15,13 @@ class TeamManager(models.Manager):
     """
     Manager and utilities for Teams
     """
+    def get_by_natural_key(self, name):
+        return self.get(name=name)
+
     def get_teams_for_user(self, user):
-        member_teams = (RoleUser.objects.filter(user=user)
-                        .values('role__team').distinct())
+        member_teams = (Role.users.through.objects
+                            .filter(user=user)
+                            .values('role__team').distinct())
         teams = self.filter(id__in=member_teams)
         return teams
 
@@ -26,12 +30,13 @@ class Team(models.Model):
     """
     Organizational unit for a set of users with assigned roles
     """
-    name = models.CharField(_("name"),
-                            max_length=128, editable=True, db_index=True)
-    description = models.TextField(_("Description of intended use"),
-                                   blank=False)
-    founder = models.ForeignKey(User, editable=False, db_index=True,
-                                blank=False, null=False)
+    name = models.CharField(
+        _("name"), max_length=128, editable=True, unique=True,
+        db_index=True)
+    description = models.TextField(
+        _("Description of intended use"), blank=False)
+    founder = models.ForeignKey(
+        User, db_index=True, blank=False, null=False)
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
@@ -62,12 +67,16 @@ class Team(models.Model):
         )
 
     def __unicode__(self):
-        return u'[Team %s]' % (self.name)
+        return self.name
+
+    def natural_key(self):
+        return (self.name,)
 
     def has_member(self, user, role):
         """Determine whether the given user is a member of this team"""
         # TODO: founder is not considered a member without an associated role
-        hits = RoleUser.objects.filter(role__team=self, user=user).count()
+        hits = (Role.users.through.objects
+                    .filter(role__team=self, user=user).count())
         return hits > 0
 
     def get_members(self):
@@ -77,13 +86,15 @@ class Team(models.Model):
     def has_user(self, user):
         """Determine whether the given user is a member of this team"""
         # TODO: founder is not considered a member without an associated role
-        hits = RoleUser.objects.filter(role__team=self, user=user).count()
+        hits = (Role.users.through.objects
+                    .filter(role__team=self, user=user)).count()
         return hits > 0
 
     def get_users(self):
         """Convenience property with a QuerySet of unique users"""
-        members = (RoleUser.objects.filter(role__team=self)
-                           .values('user').distinct())
+        members = (Role.user.through.objects
+                       .filter(role__team=self)
+                       .values('user').distinct())
         return User.objects.filter(id__in=members)
 
     def get_all_permissions(self, user):
@@ -92,14 +103,25 @@ class Team(models.Model):
         if user.is_anonymous():
             return self.anonymous_permissions.all()
 
-        role_ids = (RoleUser.objects.filter(user=user, role__team=self)
-                            .values('role'))
+        role_ids = (Role.users.through.objects
+                        .filter(user=user, role__team=self)
+                        .values('role'))
         if 0 == len(role_ids):
             return self.authenticated_permissions.all()
 
         return (p.permission for p in
-                RolePermission.objects.filter(role__in=role_ids)
-                              .select_related())
+                Role.permissions.through.objects
+                    .filter(role__in=role_ids)
+                    .select_related())
+
+
+class RoleManager(models.Manager):
+
+    def get_by_natural_key(self, name, team_name):
+        return self.get(
+            name=name,
+            team=Team.objects.get_by_natural_key(team_name)
+        )
 
 
 class Role(models.Model):
@@ -115,56 +137,21 @@ class Role(models.Model):
                                    blank=False)
 
     permissions = models.ManyToManyField(
-        # TODO: Do I really need this through model? Want to do queries on it
-        Permission, through='RolePermission', blank=True,
-        verbose_name=_('role permissions'),
+        Permission, blank=True,
         help_text='Specific permissions for this role.')
 
     users = models.ManyToManyField(
-        User, through='RoleUser', blank=True,
-        verbose_name=_('role users'),
+        User, blank=True,
         help_text='Users granted this role')
 
-    def __unicode__(self):
-        return u'[Role %s for %s]' % (self.name, self.team)
+    objects = RoleManager()
 
-    def assign_to(self, user):
-        """Add user as a team member with the given role"""
-        member, created = RoleUser.objects.get_or_create(user=user,
-                                                         role=self)
-        return member
-
-    def add_permissions(self, *permissions):
-        out = [RolePermission.objects.get_or_create(permission=p,
-                                                    role=self)[0]
-               for p in permissions]
-        return (len(permissions) == 1) and out[0] or out
-
-
-class RolePermission(models.Model):
-    """
-    Permission associated with a role
-    """
-    role = models.ForeignKey(Role)
-    permission = models.ForeignKey(Permission)
-    created = models.DateTimeField(auto_now_add=True, db_index=True)
-
-
-class RoleUser(models.Model):
-    """
-    Team RoleUser by role for a user
-    """
-    user = models.ForeignKey(User)
-    role = models.ForeignKey(Role)
-    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    class Meta:
+        unique_together = (('name', 'team'),)
 
     def __unicode__(self):
-        return u'[%s <- %s]' % (self.user, self.role)
+        return self.name
 
-
-class TeamOwnership(models.Model):
-    """Claim of ownership by a team over a content object"""
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
-    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    def natural_key(self):
+        return (self.name,) + self.team.natural_key()
+    natural_key.dependencies = ['teamwork.team']
