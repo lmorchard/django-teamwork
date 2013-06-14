@@ -1,5 +1,6 @@
 from django.db import models, transaction
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User, Permission
 
 from teamwork.models import Team, Role
 
@@ -9,9 +10,11 @@ class DocumentManager(models.Manager):
 
 class Document(models.Model):
     name = models.CharField(max_length=80, unique=True)
-    team = models.ForeignKey(Team, null=True)
-    parent = models.ForeignKey('self', null=True)
     content = models.TextField(blank=True, null=True)
+
+    team = models.ForeignKey(Team, blank=True, null=True)
+    parent = models.ForeignKey('self', blank=True, null=True)
+    creator = models.ForeignKey(User, blank=True, null=True)
 
     objects = DocumentManager()
 

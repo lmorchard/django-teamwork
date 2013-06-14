@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 
-from .models import Team, Role
+from .models import Team, Role, Policy
 
 
 def related_roles_link(self):
@@ -28,7 +28,7 @@ team_link.short_description = 'Team'
 
 
 class RoleAdmin(admin.ModelAdmin):
-    raw_id_fields = ('team',) #'users',)
+    raw_id_fields = ('team',)
     list_select_related = True
     list_display = ('name', team_link,)
     search_fields = ('name', 'team__name',)
@@ -37,7 +37,7 @@ class RoleAdmin(admin.ModelAdmin):
 
 class RoleInline(admin.TabularInline):
     model = Role
-    fields = ('name','permissions','users',)
+    fields = ('name', 'permissions', 'users',)
     filter_horizontal = ('users', 'permissions',)
     raw_id_fields = ('users',)
     extra = 0
@@ -46,17 +46,27 @@ class RoleInline(admin.TabularInline):
 class TeamAdmin(admin.ModelAdmin):
     fields = (
         'name', 'description', 'founder',
-        'anonymous_permissions', 'authenticated_permissions',
     )
     raw_id_fields = ('founder',)
     list_select_related = True
     list_display = ('name', related_roles_link,)
-    filter_horizontal = (
-        'anonymous_permissions', 'authenticated_permissions',
-    )
     search_fields = ('name',)
     inlines = (RoleInline,)
 
 
+class PolicyAdmin(admin.ModelAdmin):
+    fields = (
+        'content_type', 'object_id',
+        'team', 'creator',
+        'anonymous_permissions', 'authenticated_permissions',
+    )
+    raw_id_fields = ('creator',)
+    list_select_related = True
+    filter_horizontal = (
+        'anonymous_permissions', 'authenticated_permissions',
+    )
+
+
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Role, RoleAdmin)
+admin.site.register(Policy, PolicyAdmin)

@@ -9,7 +9,7 @@
         }
     }, 
     {
-        "pk": 11, 
+        "pk": 12, 
         "model": "contenttypes.contenttype", 
         "fields": {
             "model": "document", 
@@ -51,6 +51,15 @@
             "model": "permission", 
             "name": "permission", 
             "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "policy", 
+            "name": "policy", 
+            "app_label": "teamwork"
         }
     }, 
     {
@@ -96,14 +105,6 @@
             "model": "user", 
             "name": "user", 
             "app_label": "auth"
-        }
-    }, 
-    {
-        "pk": "0f438b7f0473a5b1707f29c3a69db0d7", 
-        "model": "sessions.session", 
-        "fields": {
-            "expire_date": "2013-06-27T15:17:21.445", 
-            "session_data": "OWVkYTRjYmU4Mzg2MTI4Y2YzZTRiNThiMjE2MDVmOGNmZGZlZWFlNjqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQRLAHUu\n"
         }
     }, 
     {
@@ -331,6 +332,33 @@
         }
     }, 
     {
+        "pk": 38, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_policy", 
+            "name": "Can add policy", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_policy", 
+            "name": "Can change policy", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_policy", 
+            "name": "Can delete policy", 
+            "content_type": 11
+        }
+    }, 
+    {
         "pk": 35, 
         "model": "auth.permission", 
         "fields": {
@@ -448,57 +476,57 @@
         }
     }, 
     {
-        "pk": 38, 
+        "pk": 41, 
         "model": "auth.permission", 
         "fields": {
             "codename": "add_document", 
             "name": "Can add document", 
-            "content_type": 11
+            "content_type": 12
         }
     }, 
     {
-        "pk": 41, 
+        "pk": 44, 
         "model": "auth.permission", 
         "fields": {
             "codename": "can_frob", 
             "name": "Can frobulate pages", 
-            "content_type": 11
+            "content_type": 12
         }
     }, 
     {
-        "pk": 43, 
+        "pk": 46, 
         "model": "auth.permission", 
         "fields": {
             "codename": "can_hello", 
             "name": "Can hello pages", 
-            "content_type": 11
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "can_xyzzy", 
+            "name": "Can xyzzy pages", 
+            "content_type": 12
         }
     }, 
     {
         "pk": 42, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "can_xyzzy", 
-            "name": "Can xyzzy pages", 
-            "content_type": 11
-        }
-    }, 
-    {
-        "pk": 39, 
-        "model": "auth.permission", 
-        "fields": {
             "codename": "change_document", 
             "name": "Can change document", 
-            "content_type": 11
+            "content_type": 12
         }
     }, 
     {
-        "pk": 40, 
+        "pk": 43, 
         "model": "auth.permission", 
         "fields": {
             "codename": "delete_document", 
             "name": "Can delete document", 
-            "content_type": 11
+            "content_type": 12
         }
     }, 
     {
@@ -511,12 +539,12 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2013-06-13T15:17:21.443", 
+            "last_login": "2013-06-14T15:18:42.190", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$rydcTnfinCh3$qkqfkvHVYNb6Zj7VwQIxI26L6gLujF660b2iAxi/L/A=", 
-            "email": "admin0@example.com", 
-            "date_joined": "2013-06-13T13:51:43.985"
+            "password": "pbkdf2_sha256$10000$3Zsl1HKPiuoa$zQy3kXFknRWo98kTEtxvJGS0WYsSDGMroeUusf2nGag=", 
+            "email": "admin@example.com", 
+            "date_joined": "2013-06-14T15:18:42.190"
         }
     }, 
     {
@@ -529,12 +557,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:43.985", 
+            "last_login": "2013-06-14T15:18:42.190", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$O1t0L88y6Dmy$BCpTQ/KuqrO/q4d03v5OcqxBs7J+zNU6/OBTpfr/tV4=", 
+            "password": "pbkdf2_sha256$10000$3Zsl1HKPiuoa$zQy3kXFknRWo98kTEtxvJGS0WYsSDGMroeUusf2nGag=", 
             "email": "tester0@example.com", 
-            "date_joined": "2013-06-13T13:51:43.985"
+            "date_joined": "2013-06-14T15:18:42.190"
         }
     }, 
     {
@@ -547,12 +575,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:44.098", 
+            "last_login": "2013-06-14T15:18:42.299", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$xlV7JjtXAuqS$AS8wY0dT/xO8Z6ieikpvSmVfQMJWFzVGPcHwx80KRrc=", 
+            "password": "pbkdf2_sha256$10000$Dv9DHPwIw6du$vwM1uQnRcVkqizdPuuJ9SK1tnJjaqvvDHvftH9UhrJ8=", 
             "email": "tester1@example.com", 
-            "date_joined": "2013-06-13T13:51:44.098"
+            "date_joined": "2013-06-14T15:18:42.299"
         }
     }, 
     {
@@ -565,12 +593,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:44.212", 
+            "last_login": "2013-06-14T15:18:42.406", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$GxGpl57uwcaa$j6SidDe8whhMstar7T3J4KhOn8z8430jiwe3T0/6SHk=", 
+            "password": "pbkdf2_sha256$10000$E9JxdAiM31gM$BnCDX5oJ7ruC1I97rYOTKV5PsJD9ALAUxDHeB4AxlFo=", 
             "email": "tester2@example.com", 
-            "date_joined": "2013-06-13T13:51:44.212"
+            "date_joined": "2013-06-14T15:18:42.406"
         }
     }, 
     {
@@ -583,12 +611,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:44.330", 
+            "last_login": "2013-06-14T15:18:42.514", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$Pd8uVsx4Eq8h$XpB9LAJxTbjvIa4DjBJRXHTcs2DPJXQVCWNM28/Yy78=", 
+            "password": "pbkdf2_sha256$10000$PDF4xs1UubgL$Y9Y+Gkq7Kk2s0GfIl4cJqSL+ixfMauH4J/ULERBGfME=", 
             "email": "tester3@example.com", 
-            "date_joined": "2013-06-13T13:51:44.330"
+            "date_joined": "2013-06-14T15:18:42.514"
         }
     }, 
     {
@@ -601,12 +629,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:44.442", 
+            "last_login": "2013-06-14T15:18:42.623", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$gKDppbbdXcQh$mruux/5TJoTNO3ab3cRTgY385FQLcB/L0/ExmdooV28=", 
+            "password": "pbkdf2_sha256$10000$Q8K35PWpUFsK$kqUJOFMZVurCWKRtALefggFHjE4eb3yuhG3qkHKUq5s=", 
             "email": "tester4@example.com", 
-            "date_joined": "2013-06-13T13:51:44.442"
+            "date_joined": "2013-06-14T15:18:42.623"
         }
     }, 
     {
@@ -619,12 +647,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:44.563", 
+            "last_login": "2013-06-14T15:18:42.731", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$yjUGDj8xNlWF$ZdqGHN7NgrTRXDexqRG5lW+Tx0YdwTd5BUxPoVdKB0k=", 
+            "password": "pbkdf2_sha256$10000$87AaecIwAo23$cJZM+exz/8jOJMRu9utWPnIz9MPIfBQc7lKaNW2VQVY=", 
             "email": "tester5@example.com", 
-            "date_joined": "2013-06-13T13:51:44.563"
+            "date_joined": "2013-06-14T15:18:42.731"
         }
     }, 
     {
@@ -637,12 +665,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:44.684", 
+            "last_login": "2013-06-14T15:18:42.840", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$Gp62JvvrBvB7$uDjDrYav7/21XC6Xuafh0xtM4ekDesOmk/KmX1/ycN4=", 
+            "password": "pbkdf2_sha256$10000$nT2kcXqtyu16$2KuDe5CffBAChxw7KJoo7i3pgpjml21EoySuOFjOpOM=", 
             "email": "tester6@example.com", 
-            "date_joined": "2013-06-13T13:51:44.684"
+            "date_joined": "2013-06-14T15:18:42.840"
         }
     }, 
     {
@@ -655,12 +683,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:44.796", 
+            "last_login": "2013-06-14T15:18:42.948", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$x7u2nYPG84rE$9Eln6ErCpLsWcl5nsmmJ91WxHZcubwEQvIW2wA4TOgk=", 
+            "password": "pbkdf2_sha256$10000$ooAM1oh9UmXX$kS+AhfLz1wZTP9qe+02vcAgBhJDqspMU3m5Gmk+jVX8=", 
             "email": "tester7@example.com", 
-            "date_joined": "2013-06-13T13:51:44.796"
+            "date_joined": "2013-06-14T15:18:42.948"
         }
     }, 
     {
@@ -673,12 +701,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:44.908", 
+            "last_login": "2013-06-14T15:18:43.056", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$2sPBv0t2ENTw$Tz4xhmJkiO9L0F3+0FzH+YR31L0+KfPX95WSYYQy8L0=", 
+            "password": "pbkdf2_sha256$10000$oIxV1DyFNsTf$xfpqhXOIsCrH4HaRjwHj/1Xh/Um+iJxBQGIn0l9H0lY=", 
             "email": "tester8@example.com", 
-            "date_joined": "2013-06-13T13:51:44.908"
+            "date_joined": "2013-06-14T15:18:43.056"
         }
     }, 
     {
@@ -691,12 +719,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:45.019", 
+            "last_login": "2013-06-14T15:18:43.165", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$qnnphgCrr7FE$5I3/7utKx3hxp01MKs79a0fisJe60fcMvwCKPnADc1s=", 
+            "password": "pbkdf2_sha256$10000$FoLhSS1OsVL6$b3ZMggxEX+XPTxPsXPtQU/AOzOszsVIilNDoQKy/Rfg=", 
             "email": "tester9@example.com", 
-            "date_joined": "2013-06-13T13:51:45.019"
+            "date_joined": "2013-06-14T15:18:43.165"
         }
     }, 
     {
@@ -709,12 +737,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:45.130", 
+            "last_login": "2013-06-14T15:18:43.273", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$i2KTqWtJWYnj$rch9qFLOBW8RHPuyaUxJF1J9NzerhXxyC1xBcFGheIQ=", 
+            "password": "pbkdf2_sha256$10000$yuaSYQqkfqXQ$dydVDbWgjccMil6SiNW6PHW4ucyteXVa4FLSwv7tZ68=", 
             "email": "founder0@example.com", 
-            "date_joined": "2013-06-13T13:51:45.130"
+            "date_joined": "2013-06-14T15:18:43.273"
         }
     }, 
     {
@@ -727,12 +755,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:45.242", 
+            "last_login": "2013-06-14T15:18:43.382", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$wBcwa1uEeE2r$LRHJzmGyzqiAnIyH4MSK4eglDMhl8QdpvzgmGW/qxzI=", 
+            "password": "pbkdf2_sha256$10000$jku0Anx0fdw7$CheXsSn5XdiZnoR+pMoehb8s6CeStTbwYt2c30W8ct0=", 
             "email": "founder1@example.com", 
-            "date_joined": "2013-06-13T13:51:45.242"
+            "date_joined": "2013-06-14T15:18:43.382"
         }
     }, 
     {
@@ -745,24 +773,22 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-13T13:51:45.354", 
+            "last_login": "2013-06-14T15:18:43.492", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$8MMQN7sBnTQt$BaTLMbHIKPf6cpoqdggBQErzHg7SriB2XV4drxKS27s=", 
+            "password": "pbkdf2_sha256$10000$oRFfqJcJp0nQ$xejFClnUcxtmDFWDZO/HQKOLT+4CwQKvOmgbfBqwlD4=", 
             "email": "founder2@example.com", 
-            "date_joined": "2013-06-13T13:51:45.354"
+            "date_joined": "2013-06-14T15:18:43.492"
         }
     }, 
     {
         "pk": 1, 
         "model": "teamwork.team", 
         "fields": {
+            "modified": "2013-06-14T15:18:43.600", 
+            "created": "2013-06-14T15:18:43.600", 
             "name": "alpha", 
             "founder": 11, 
-            "created": "2013-06-13T13:51:45.467", 
-            "modified": "2013-06-13T13:51:45.467", 
-            "anonymous_permissions": [], 
-            "authenticated_permissions": [], 
             "description": "Cool people"
         }
     }, 
@@ -770,12 +796,10 @@
         "pk": 2, 
         "model": "teamwork.team", 
         "fields": {
+            "modified": "2013-06-14T15:18:43.601", 
+            "created": "2013-06-14T15:18:43.601", 
             "name": "beta", 
             "founder": 12, 
-            "created": "2013-06-13T13:51:45.467", 
-            "modified": "2013-06-13T13:51:45.467", 
-            "anonymous_permissions": [], 
-            "authenticated_permissions": [], 
             "description": "A team of folks"
         }
     }, 
@@ -783,12 +807,10 @@
         "pk": 3, 
         "model": "teamwork.team", 
         "fields": {
+            "modified": "2013-06-14T15:18:43.601", 
+            "created": "2013-06-14T15:18:43.601", 
             "name": "gamma", 
             "founder": 13, 
-            "created": "2013-06-13T13:51:45.467", 
-            "modified": "2013-06-13T13:51:45.467", 
-            "anonymous_permissions": [], 
-            "authenticated_permissions": [], 
             "description": "Assemblage of users"
         }
     }, 
@@ -814,7 +836,7 @@
             ], 
             "description": "", 
             "permissions": [
-                41
+                44
             ], 
             "name": "normal", 
             "team": 1
@@ -829,7 +851,7 @@
             ], 
             "description": "", 
             "permissions": [
-                42
+                45
             ], 
             "name": "foo", 
             "team": 2
@@ -845,7 +867,7 @@
             ], 
             "description": "", 
             "permissions": [
-                43
+                46
             ], 
             "name": "bar", 
             "team": 2
@@ -861,8 +883,8 @@
             ], 
             "description": "", 
             "permissions": [
-                41, 
-                42
+                44, 
+                45
             ], 
             "name": "baz", 
             "team": 3
@@ -878,9 +900,9 @@
             ], 
             "description": "", 
             "permissions": [
-                41, 
-                43, 
-                42
+                44, 
+                46, 
+                45
             ], 
             "name": "quux", 
             "team": 3
@@ -890,7 +912,8 @@
         "pk": 1, 
         "model": "wiki.document", 
         "fields": {
-            "content": "This is the content for doc1", 
+            "content": null, 
+            "creator": null, 
             "name": "doc1", 
             "parent": null, 
             "team": 1
@@ -900,7 +923,8 @@
         "pk": 2, 
         "model": "wiki.document", 
         "fields": {
-            "content": "Content for doc2 goes here", 
+            "content": null, 
+            "creator": null, 
             "name": "doc2", 
             "parent": null, 
             "team": 2
@@ -910,7 +934,8 @@
         "pk": 3, 
         "model": "wiki.document", 
         "fields": {
-            "content": "Doc3 has content here", 
+            "content": null, 
+            "creator": null, 
             "name": "doc3", 
             "parent": null, 
             "team": 3

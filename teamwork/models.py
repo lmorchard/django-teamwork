@@ -1,4 +1,5 @@
 import logging
+from itertools import chain
 
 from django.conf import settings
 from django.contrib.auth.models import User, Permission
@@ -40,18 +41,6 @@ class Team(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
-
-    anonymous_permissions = models.ManyToManyField(
-        Permission, blank=True,
-        related_name='anonymous_permissions',
-        verbose_name=_('anonymous permissions'),
-        help_text='Permissions offered to anonymous users')
-
-    authenticated_permissions = models.ManyToManyField(
-        Permission, blank=True,
-        related_name='authenticated_permissions',
-        verbose_name=_('authenticated permissions'),
-        help_text='Permissions offered to authenticated non-members')
 
     objects = TeamManager()
 
@@ -101,13 +90,14 @@ class Team(models.Model):
         """Get all Permissions applied to this User based on assigned Roles"""
         # TODO: Keep thinking about how to simplify these queries
         if user.is_anonymous():
-            return self.anonymous_permissions.all()
+            return []
 
         role_ids = (Role.users.through.objects
                         .filter(user=user, role__team=self)
                         .values('role'))
+
         if 0 == len(role_ids):
-            return self.authenticated_permissions.all()
+            return []
 
         return (p.permission for p in
                 Role.permissions.through.objects
@@ -155,3 +145,54 @@ class Role(models.Model):
     def natural_key(self):
         return (self.name,) + self.team.natural_key()
     natural_key.dependencies = ['teamwork.team']
+
+
+class PolicyManager(models.Manager):
+
+    def get_all_permissions(self, user, obj):
+        ct = ContentType.objects.get_for_model(obj)
+        policies = self.filter(content_type__pk=ct.id, object_id=obj.id)
+        if 0 == policies.count():
+            return []
+        if user.is_anonymous():
+            fld = 'anonymous_permissions'
+        else:
+            fld = 'authenticated_permissions'
+        return chain(*(getattr(policy, fld).all()
+                       for policy in policies))
+
+
+class Policy(models.Model):
+    """
+    Per-object assembly of permissions granted by a content object to anonymous
+    and authenticated users.
+    """
+    team = models.ForeignKey(
+        Team, db_index=True, null=True,
+        help_text='Team responsible for managing this policy')
+    creator = models.ForeignKey(User, null=True)
+
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+    anonymous_permissions = models.ManyToManyField(
+        Permission, blank=True,
+        related_name='anonymous_permissions',
+        verbose_name=_('anonymous permissions'),
+        help_text='Permissions offered to anonymous users')
+
+    authenticated_permissions = models.ManyToManyField(
+        Permission, blank=True,
+        related_name='authenticated_permissions',
+        verbose_name=_('authenticated permissions'),
+        help_text='Permissions offered to authenticated non-members')
+
+    objects = PolicyManager()
+
+    class Meta:
+        verbose_name_plural = _('Policies')
+
+    def __unicode__(self):
+        return u'Policy(%s)' % self.content_object
