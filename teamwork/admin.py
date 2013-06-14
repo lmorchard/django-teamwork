@@ -33,6 +33,8 @@ team_link.short_description = 'Team'
 
 
 class PolicyInline(generic.GenericTabularInline):
+    """Policy inline editor for content objects that constrains Permission
+    choices to the content type"""
     model = Policy
     fields = ('team', 'authenticated_permissions', 'anonymous_permissions')
     filter_horizontal = ('anonymous_permissions', 'authenticated_permissions')
@@ -45,9 +47,8 @@ class PolicyInline(generic.GenericTabularInline):
             ct = ContentType.objects.get_for_model(self.parent_model)
             kwargs["queryset"] = (Permission.objects
                                             .filter(content_type__pk=ct.id))
-        return super(PolicyInline, self).formfield_for_manytomany(db_field,
-                                                                  request,
-                                                                  **kwargs)
+        return super(PolicyInline, self).formfield_for_manytomany(
+            db_field, request, **kwargs)
 
 
 class RoleAdmin(admin.ModelAdmin):
