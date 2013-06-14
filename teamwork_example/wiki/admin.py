@@ -1,8 +1,14 @@
+import logging
+
 from django.contrib import admin
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
 
 from teamwork.models import Team, Role, Policy
+from teamwork.admin import PolicyInline
+
 from teamwork_example.wiki.models import Document
 
 
@@ -13,14 +19,6 @@ def view_link(self):
 
 view_link.allow_tags = True
 view_link.short_description = "Public"
-
-
-class PolicyInline(generic.GenericTabularInline):
-    model = Policy
-    fields = ('team', 'authenticated_permissions', 'anonymous_permissions')
-    filter_horizontal = ('anonymous_permissions', 'authenticated_permissions')
-    raw_id_fields = ('creator',)
-    extra = 0
 
 
 class DocumentAdmin(admin.ModelAdmin):

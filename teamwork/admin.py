@@ -1,6 +1,11 @@
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 
+from django.contrib.auth.models import User, Permission
+
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+
 from .models import Team, Role, Policy
 
 
@@ -25,6 +30,24 @@ def team_link(self):
 
 team_link.allow_tags = True
 team_link.short_description = 'Team'
+
+
+class PolicyInline(generic.GenericTabularInline):
+    model = Policy
+    fields = ('team', 'authenticated_permissions', 'anonymous_permissions')
+    filter_horizontal = ('anonymous_permissions', 'authenticated_permissions')
+    raw_id_fields = ('creator',)
+    extra = 0
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name in ("authenticated_permissions",
+                             "anonymous_permissions"):
+            ct = ContentType.objects.get_for_model(self.parent_model)
+            kwargs["queryset"] = (Permission.objects
+                                            .filter(content_type__pk=ct.id))
+        return super(PolicyInline, self).formfield_for_manytomany(db_field,
+                                                                  request,
+                                                                  **kwargs)
 
 
 class RoleAdmin(admin.ModelAdmin):

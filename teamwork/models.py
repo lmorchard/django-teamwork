@@ -168,7 +168,7 @@ class Policy(models.Model):
     and authenticated users.
     """
     team = models.ForeignKey(
-        Team, db_index=True, null=True,
+        Team, db_index=True, blank=True, null=True,
         help_text='Team responsible for managing this policy')
     creator = models.ForeignKey(User, null=True)
 
