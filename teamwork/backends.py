@@ -13,6 +13,27 @@ class TeamworkBackend(object):
     supports_anonymous_user = True
     supports_inactive_user = True
 
+    def _lookup_perms(self, user, team, obj):
+        """Look up permissions for a single user / team / object"""
+        ct = ContentType.objects.get_for_model(obj)
+
+        if user.is_anonymous() or not team or not team.has_user(user):
+            # Policies apply to anonymous users and non-team members
+            perms = Policy.objects.get_all_permissions(user, obj)
+        else:
+            # Team permissions apply to team members
+            perms = team.get_all_permissions(user)
+
+        # Map the permissions down to a set of app.codename strings
+        named_perms = set([u"%s.%s" % (ct.app_label, p.codename)
+                           for p in perms])
+
+        if hasattr(obj, 'get_all_permissions'):
+            # Allow the object to filter the permissions
+            named_perms = obj.get_all_permissions(user, named_perms)
+
+        return named_perms
+
     def get_all_permissions(self, user, obj=None):
 
         if obj is None:
@@ -30,23 +51,19 @@ class TeamworkBackend(object):
             obj._teamwork_perms_cache = dict()
 
         if not user_pk in obj._teamwork_perms_cache:
-            ct = ContentType.objects.get_for_model(obj)
-            if user.is_anonymous() or not team or not team.has_user(user):
-                # Policies apply to anonymous users and non-team members
-                perms = Policy.objects.get_all_permissions(user, obj)
-            else:
-                # Team permissions apply to team members
-                perms = team.get_all_permissions(user)
+            # Try getting perms for the current object
+            perms = self._lookup_perms(user, team, obj)
 
-            # Map the permissions down to a set of app.codename strings
-            named_perms = set([u"%s.%s" % (ct.app_label, p.codename)
-                               for p in perms])
+            # If the object yielded no perms, try traversing the parent chain
+            if not perms and hasattr(obj, 'get_permission_parents'):
+                parents = obj.get_permission_parents()
+                for parent in parents:
+                    perms = self._lookup_perms(user, team, parent)
+                    if perms:
+                        break
 
-            if hasattr(obj, 'get_all_permissions'):
-                # Allow the object to filter the permissions
-                named_perms = obj.get_all_permissions(user, named_perms)
-
-            obj._teamwork_perms_cache[user_pk] = named_perms
+            # Cache all this work...
+            obj._teamwork_perms_cache[user_pk] = perms
 
         return obj._teamwork_perms_cache[user_pk]
 
