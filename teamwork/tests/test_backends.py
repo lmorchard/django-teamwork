@@ -40,6 +40,61 @@ class TeamBackendTests(TestCaseBase):
         perms = self.backend.get_all_permissions(u_randomguy1, doc)
         ok_('wiki.can_quux' not in perms)
 
+    def test_parent_permissions(self):
+        docs = []
+        for idx in range(0, 7):
+            docs.append(Document.objects.create(name=('tree%s' % idx)))
+
+        # Set up document tree:
+        #  /- 1 - 4
+        # 0 - 2 - 5
+        #  \- 3 - 6
+        for idx in range(1, 4):
+            d = docs[idx]
+            d.parent = docs[0]
+            d.save()
+            d = docs[idx + 3]
+            d.parent = docs[idx]
+            d.save()
+
+        policy_on_0 = Policy.objects.create(content_object=docs[0],
+                                            authenticated=True)
+        perms = self.names_to_doc_permissions(('can_frob',))
+        policy_on_0.permissions.add(*perms)
+
+        policy_on_1 = Policy.objects.create(content_object=docs[1],
+                                            authenticated=True)
+        perms = self.names_to_doc_permissions(('can_xyzzy',))
+        policy_on_1.permissions.add(*perms)
+
+        policy_on_2 = Policy.objects.create(content_object=docs[2],
+                                            authenticated=True)
+        perms = self.names_to_doc_permissions(('can_hello',))
+        policy_on_2.permissions.add(*perms)
+
+        policy_on_5 = Policy.objects.create(content_object=docs[5],
+                                            authenticated=True)
+        perms = self.names_to_doc_permissions(('can_quux',))
+        policy_on_5.permissions.add(*perms)
+
+        cases = (
+            (u'wiki.can_frob',),   # 0 has own policy
+            (u'wiki.can_xyzzy',),  # 1 has own policy
+            (u'wiki.can_hello',),  # 2 has own policy
+            (u'wiki.can_frob',),   # 3 inherits from 0
+            (u'wiki.can_xyzzy',),  # 4 inherits from 1
+            (u'wiki.can_quux',),   # 5 has own policy
+            (u'wiki.can_frob',),   # 6 inherits from 0
+        )
+        user = User.objects.create_user('noob1', 'noob1@example.com', 'noob1')
+        for idx in range(0, len(cases)):
+            doc = docs[idx]
+            case = cases[idx]
+            perms = self.backend.get_all_permissions(user, doc)
+            eq_(set(case), perms,
+                'Permissions for doc #%s should be %s, were instead %s' %
+                (idx, case, perms))
+
     def test_policy_permissions(self):
         """Policies can grant permissions by object to users and groups"""
         anon_user = AnonymousUser()

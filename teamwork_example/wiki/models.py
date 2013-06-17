@@ -39,3 +39,11 @@ class Document(models.Model):
         if ('quux' in user.username):
             permissions.add('wiki.can_quux')
         return permissions
+
+    def get_permission_parents(self):
+        """Build a list of parents from self to root"""
+        curr, parents = self, []
+        while curr.parent:
+            curr = curr.parent
+            parents.append(curr)
+        return parents
