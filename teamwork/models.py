@@ -47,12 +47,6 @@ class Team(models.Model):
     class Meta:
         permissions = (
             ('view_team', 'Can view team'),
-            ('can_add_role', 'Can add role'),
-            ('can_change_role', 'Can change role'),
-            ('can_delete_role', 'Can delete role'),
-            ('can_add_member', 'Can add member'),
-            ('can_change_member', 'Can change member'),
-            ('can_delete_member', 'Can delete member'),
         )
 
     def __unicode__(self):
@@ -106,7 +100,9 @@ class Team(models.Model):
 
 
 class RoleManager(models.Manager):
-
+    """
+    Manager and utilities for Roles
+    """
     def get_by_natural_key(self, name, team_name):
         return self.get(
             name=name,
@@ -138,6 +134,11 @@ class Role(models.Model):
 
     class Meta:
         unique_together = (('name', 'team'),)
+        permissions = (
+            ('view_role', 'Can view role'),
+            ('manage_permissions', 'Can manage role permissions'),
+            ('manage_users', 'Can manage role users'),
+        )
 
     def __unicode__(self):
         return self.name
@@ -148,23 +149,21 @@ class Role(models.Model):
 
 
 class PolicyManager(models.Manager):
-
+    """
+    Manager and utilities for Policies
+    """
     def get_all_permissions(self, user, obj):
         ct = ContentType.objects.get_for_model(obj)
         policies = []
         base_qs = self.filter(content_type__pk=ct.id, object_id=obj.id)
-
         if user.is_anonymous():
             policies.extend(base_qs.filter(anonymous=True).all())
-
         if user.is_authenticated():
             policies.extend(base_qs.filter(authenticated=True).all())
-
         if not user.is_anonymous():
             policies.extend(base_qs.filter(users__pk=user.pk).all())
             groups = user.groups.all().values('id')
             policies.extend(base_qs.filter(groups__in=groups).all())
-
         return chain(*(policy.permissions.all() for policy in policies))
 
 
@@ -204,6 +203,12 @@ class Policy(models.Model):
 
     class Meta:
         verbose_name_plural = _('Policies')
+        permissions = (
+            ('view_policy', 'Can view policy'),
+            ('manage_permissions', 'Can manage role permissions'),
+            ('manage_users', 'Can manage role users'),
+            ('manage_groups', 'Can manage role groups'),
+        )
 
     def __unicode__(self):
         return u'Policy(%s)' % self.content_object

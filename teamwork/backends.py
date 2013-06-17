@@ -39,9 +39,14 @@ class TeamworkBackend(object):
                 perms = team.get_all_permissions(user)
 
             # Map the permissions down to a set of app.codename strings
-            obj._teamwork_perms_cache[user_pk] = set([
-                u"%s.%s" % (ct.app_label, p.codename)
-                for p in perms])
+            named_perms = set([u"%s.%s" % (ct.app_label, p.codename)
+                               for p in perms])
+
+            if hasattr(obj, 'get_all_permissions'):
+                # Allow the object to filter the permissions
+                named_perms = obj.get_all_permissions(user, named_perms)
+
+            obj._teamwork_perms_cache[user_pk] = named_perms
 
         return obj._teamwork_perms_cache[user_pk]
 

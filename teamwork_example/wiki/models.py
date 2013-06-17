@@ -20,9 +20,11 @@ class Document(models.Model):
 
     class Meta:
         permissions = (
-            ('can_frob', 'Can frobulate pages'),
-            ('can_xyzzy', 'Can xyzzy pages'),
-            ('can_hello', 'Can hello pages'),
+            ('add_document_child', 'Can add child document'),
+            ('can_frob', 'Can frobulate documents'),
+            ('can_xyzzy', 'Can xyzzy documents'),
+            ('can_hello', 'Can hello documents'),
+            ('can_quux', 'Can quuxify documents'),
         )
 
     def __unicode__(self):
@@ -31,3 +33,9 @@ class Document(models.Model):
     def get_absolute_url(self):
         """Build the absolute URL to this document from its full path"""
         return reverse('wiki.views.view', args=[self.name])
+
+    def get_all_permissions(self, user, permissions):
+        """Filter permissions with custom logic"""
+        if ('quux' in user.username):
+            permissions.add('wiki.can_quux')
+        return permissions

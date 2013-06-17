@@ -25,8 +25,23 @@ class TeamBackendTests(TestCaseBase):
 
         self.backend = TeamworkBackend()
 
-    def test_general_permissions(self):
-        """Appropriate permissions for anonymous, authenticated, and members"""
+    def test_object_logic_permissions(self):
+        """Objects can apply custom logic to permissions"""
+        u_quux1 = User.objects.create_user(
+            'quux1', 'quux1@example.com', 'quux1')
+        u_randomguy1 = User.objects.create_user(
+            'randomguy1', 'randomguy1@example.com', 'randomguy1')
+
+        doc = Document.objects.create(name='Quuxy')
+
+        perms = self.backend.get_all_permissions(u_quux1, doc)
+        ok_('wiki.can_quux' in perms)
+
+        perms = self.backend.get_all_permissions(u_randomguy1, doc)
+        ok_('wiki.can_quux' not in perms)
+
+    def test_policy_permissions(self):
+        """Policies can grant permissions by object to users and groups"""
         anon_user = AnonymousUser()
         auth_user = self.users['tester0']
         role_user = self.users['tester1']

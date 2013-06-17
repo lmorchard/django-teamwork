@@ -19,6 +19,10 @@ class TestCaseBase(TestCase):
         self.doc_ct = (ContentType.objects
                                   .get_by_natural_key('wiki', 'document'))
 
+        self.admin = User.objects.create_superuser('admin',
+                                                   'admin@example.com',
+                                                   'admin')
+
         self.users = dict([
             ('tester%s' % idx,
              User.objects.create_user(*('tester%s' % idx,

@@ -32,13 +32,31 @@ team_link.allow_tags = True
 team_link.short_description = 'Team'
 
 
+class PolicyAdmin(admin.ModelAdmin):
+    fields = (
+        'content_type', 'object_id',
+        'team', 'creator',
+        'permissions',
+        'anonymous', 'authenticated',
+        'users', 'groups',
+    )
+    raw_id_fields = ('users', 'creator',)
+    list_select_related = True
+    filter_horizontal = ('permissions', 'groups', 'users',)
+
+
 class PolicyInline(generic.GenericTabularInline):
     """Policy inline editor for content objects that constrains Permission
     choices to the content type"""
     model = Policy
-    fields = ('team', 'authenticated_permissions', 'anonymous_permissions')
-    filter_horizontal = ('anonymous_permissions', 'authenticated_permissions')
-    raw_id_fields = ('creator',)
+    fields = (
+        'team', 'creator',
+        'permissions',
+        'anonymous', 'authenticated',
+        'users', 'groups',
+    )
+    filter_horizontal = ('permissions', 'groups', 'users',)
+    raw_id_fields = ('users', 'creator',)
     extra = 0
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
@@ -76,19 +94,6 @@ class TeamAdmin(admin.ModelAdmin):
     list_display = ('name', related_roles_link,)
     search_fields = ('name',)
     inlines = (RoleInline,)
-
-
-class PolicyAdmin(admin.ModelAdmin):
-    fields = (
-        'content_type', 'object_id',
-        'team', 'creator',
-        'anonymous_permissions', 'authenticated_permissions',
-    )
-    raw_id_fields = ('creator',)
-    list_select_related = True
-    filter_horizontal = (
-        'anonymous_permissions', 'authenticated_permissions',
-    )
 
 
 admin.site.register(Team, TeamAdmin)
