@@ -2,7 +2,7 @@ import logging
 from itertools import chain
 
 from django.conf import settings
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Group, Permission
 from django.db import models, transaction
 from django.db.models import Q
 
@@ -151,43 +151,54 @@ class PolicyManager(models.Manager):
 
     def get_all_permissions(self, user, obj):
         ct = ContentType.objects.get_for_model(obj)
-        policies = self.filter(content_type__pk=ct.id, object_id=obj.id)
-        if 0 == policies.count():
-            return []
+        policies = []
+        base_qs = self.filter(content_type__pk=ct.id, object_id=obj.id)
+
         if user.is_anonymous():
-            fld = 'anonymous_permissions'
-        else:
-            fld = 'authenticated_permissions'
-        return chain(*(getattr(policy, fld).all()
-                       for policy in policies))
+            policies.extend(base_qs.filter(anonymous=True).all())
+
+        if user.is_authenticated():
+            policies.extend(base_qs.filter(authenticated=True).all())
+
+        if not user.is_anonymous():
+            policies.extend(base_qs.filter(users__pk=user.pk).all())
+            groups = user.groups.all().values('id')
+            policies.extend(base_qs.filter(groups__in=groups).all())
+
+        return chain(*(policy.permissions.all() for policy in policies))
 
 
 class Policy(models.Model):
     """
-    Per-object assembly of permissions granted by a content object to anonymous
-    and authenticated users.
+    Permissions granted by an object to users matching various criteria
     """
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+    creator = models.ForeignKey(User, null=True)
     team = models.ForeignKey(
         Team, db_index=True, blank=True, null=True,
         help_text='Team responsible for managing this policy')
-    creator = models.ForeignKey(User, null=True)
 
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
+    anonymous = models.BooleanField(default=False, help_text=(
+        'Apply this policy to anonymous users?'))
+    authenticated = models.BooleanField(default=False, help_text=(
+        'Apply this policy to authenticated users?'))
+    users = models.ManyToManyField(
+        User, blank=True, related_name='users',
+        help_text=('Apply this policy for these users.'))
+    groups = models.ManyToManyField(Group, blank=True, help_text=(
+        'Apply this policy for these user groups.'))
 
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
-
-    anonymous_permissions = models.ManyToManyField(
+    permissions = models.ManyToManyField(
         Permission, blank=True,
-        related_name='anonymous_permissions',
-        verbose_name=_('anonymous permissions'),
-        help_text='Permissions offered to anonymous users')
+        related_name='permissions',
+        verbose_name=_('permissions'),
+        help_text='Permissions granted by this policy')
 
-    authenticated_permissions = models.ManyToManyField(
-        Permission, blank=True,
-        related_name='authenticated_permissions',
-        verbose_name=_('authenticated permissions'),
-        help_text='Permissions offered to authenticated non-members')
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
 
     objects = PolicyManager()
 
