@@ -54,6 +54,8 @@ to accomplish here:
 TODO
 ----
 
+* Support ForeignKey for Policy from content objects
+
 * Implement all the use cases
 
 * Popup-friendly views? 
