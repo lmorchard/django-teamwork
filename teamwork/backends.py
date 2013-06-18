@@ -13,13 +13,16 @@ class TeamworkBackend(object):
     supports_anonymous_user = True
     supports_inactive_user = True
 
-    def _lookup_perms(self, user, team, obj):
+    def _lookup_perms(self, user, obj):
         """Look up permissions for a single user / team / object"""
         ct = ContentType.objects.get_for_model(obj)
 
+        # TODO: Consider multiple-team ownership of a content object
+        team = getattr(obj, 'team', None)
+
         if user.is_superuser:
             # Superuser is super, gets all object permissions
-            perms = Permission.objects.filter(content_type=ct)
+            perms = Permission.objects.filter(content_type=ct).all()
         elif user.is_anonymous() or not team or not team.has_user(user):
             # Policies apply to anonymous users and non-team members
             perms = Policy.objects.get_all_permissions(user, obj)
@@ -42,9 +45,6 @@ class TeamworkBackend(object):
         if obj is None:
             return set()
 
-        # TODO: Consider multiple-team ownership of a content object
-        team = getattr(obj, 'team', None)
-
         if user.is_anonymous():
             user_pk = DEFAULT_ANONYMOUS_USER_PK
         else:
@@ -56,13 +56,13 @@ class TeamworkBackend(object):
         if not user_pk in obj._teamwork_perms_cache:
 
             # Try getting perms for the current object
-            perms = self._lookup_perms(user, team, obj)
+            perms = self._lookup_perms(user, obj)
 
             # If the object yielded no perms, try traversing the parent chain
             if not perms and hasattr(obj, 'get_permission_parents'):
                 parents = obj.get_permission_parents()
                 for parent in parents:
-                    perms = self._lookup_perms(user, team, parent)
+                    perms = self._lookup_perms(user, parent)
                     if perms:
                         break
 

@@ -35,7 +35,7 @@ class Team(models.Model):
         _("name"), max_length=128, editable=True, unique=True,
         db_index=True)
     description = models.TextField(
-        _("Description of intended use"), blank=False)
+        _("Description of intended use"), null=True, blank=True)
     founder = models.ForeignKey(
         User, db_index=True, blank=False, null=False)
 
@@ -176,11 +176,14 @@ class Policy(models.Model):
     """
     Permissions granted by an object to users matching various criteria
     """
+    #description = models.TextField(_("Description of policy"),
+    #                               blank=False)
+
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    creator = models.ForeignKey(User, null=True)
+    creator = models.ForeignKey(User, null=True, blank=True)
     team = models.ForeignKey(
         Team, db_index=True, blank=True, null=True,
         help_text='Team responsible for managing this policy')
