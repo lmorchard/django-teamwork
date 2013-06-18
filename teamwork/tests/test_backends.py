@@ -25,76 +25,6 @@ class TeamBackendTests(TestCaseBase):
 
         self.backend = TeamworkBackend()
 
-    def test_object_logic_permissions(self):
-        """Objects can apply custom logic to permissions"""
-        u_quux1 = User.objects.create_user(
-            'quux1', 'quux1@example.com', 'quux1')
-        u_randomguy1 = User.objects.create_user(
-            'randomguy1', 'randomguy1@example.com', 'randomguy1')
-
-        doc = Document.objects.create(name='Quuxy')
-
-        perms = self.backend.get_all_permissions(u_quux1, doc)
-        ok_('wiki.can_quux' in perms)
-
-        perms = self.backend.get_all_permissions(u_randomguy1, doc)
-        ok_('wiki.can_quux' not in perms)
-
-    def test_parent_permissions(self):
-        docs = []
-        for idx in range(0, 7):
-            docs.append(Document.objects.create(name=('tree%s' % idx)))
-
-        # Set up document tree:
-        #  /- 1 - 4
-        # 0 - 2 - 5
-        #  \- 3 - 6
-        for idx in range(1, 4):
-            d = docs[idx]
-            d.parent = docs[0]
-            d.save()
-            d = docs[idx + 3]
-            d.parent = docs[idx]
-            d.save()
-
-        policy_on_0 = Policy.objects.create(content_object=docs[0],
-                                            authenticated=True)
-        perms = self.names_to_doc_permissions(('can_frob',))
-        policy_on_0.permissions.add(*perms)
-
-        policy_on_1 = Policy.objects.create(content_object=docs[1],
-                                            authenticated=True)
-        perms = self.names_to_doc_permissions(('can_xyzzy',))
-        policy_on_1.permissions.add(*perms)
-
-        policy_on_2 = Policy.objects.create(content_object=docs[2],
-                                            authenticated=True)
-        perms = self.names_to_doc_permissions(('can_hello',))
-        policy_on_2.permissions.add(*perms)
-
-        policy_on_5 = Policy.objects.create(content_object=docs[5],
-                                            authenticated=True)
-        perms = self.names_to_doc_permissions(('can_quux',))
-        policy_on_5.permissions.add(*perms)
-
-        cases = (
-            (u'wiki.can_frob',),   # 0 has own policy
-            (u'wiki.can_xyzzy',),  # 1 has own policy
-            (u'wiki.can_hello',),  # 2 has own policy
-            (u'wiki.can_frob',),   # 3 inherits from 0
-            (u'wiki.can_xyzzy',),  # 4 inherits from 1
-            (u'wiki.can_quux',),   # 5 has own policy
-            (u'wiki.can_frob',),   # 6 inherits from 0
-        )
-        user = User.objects.create_user('noob1', 'noob1@example.com', 'noob1')
-        for idx in range(0, len(cases)):
-            doc = docs[idx]
-            case = cases[idx]
-            perms = self.backend.get_all_permissions(user, doc)
-            eq_(set(case), perms,
-                'Permissions for doc #%s should be %s, were instead %s' %
-                (idx, case, perms))
-
     def test_policy_permissions(self):
         """Policies can grant permissions by object to users and groups"""
         anon_user = AnonymousUser()
@@ -148,7 +78,7 @@ class TeamBackendTests(TestCaseBase):
         def assert_perms(expected_perms, user):
             eq_(expected_perms, set(
                 n.split('.')[1] for n in
-                self.backend.get_all_permissions(user, doc)))
+                user.get_all_permissions(doc)))
 
         assert_perms(expected_anon_perms, anon_user)
         assert_perms(expected_auth_perms, auth_user)
@@ -159,8 +89,9 @@ class TeamBackendTests(TestCaseBase):
             assert_perms(expected_group_perms, user)
 
     def test_permissions(self):
-        """Ensure users with roles get appropriate permissions for objects
-        associated with teams"""
+        """Teams grant permissions to users by role"""
+        # FIXME: This test kind of sucks, depends on fixtures set up in another
+        # file, and is very hard to follow.
         cases = (
             ('tester0', 'doc1', []),
             ('tester0', 'doc2', []),
@@ -207,3 +138,69 @@ class TeamBackendTests(TestCaseBase):
                 eq_(hp_expected, hp_result)
                 hp_result = user.has_perm(perm, doc)
                 eq_(hp_expected, hp_result)
+
+    def test_object_logic_permissions(self):
+        """Objects can apply custom logic to permissions"""
+        u_quux1 = User.objects.create_user(
+            'quux1', 'quux1@example.com', 'quux1')
+        u_randomguy1 = User.objects.create_user(
+            'randomguy1', 'randomguy1@example.com', 'randomguy1')
+        doc = Document.objects.create(name='Quuxy')
+        ok_(u_quux1.has_perm('wiki.can_quux', doc))
+        ok_(not u_randomguy1.has_perm('wiki.can_quux', doc))
+
+    def test_parent_permissions(self):
+        """Content objects can supply a list of parents for inheritance"""
+        docs = []
+        for idx in range(0, 7):
+            docs.append(Document.objects.create(name=('tree%s' % idx)))
+
+        # Set up document tree:
+        #  /- 1 - 4
+        # 0 - 2 - 5
+        #  \- 3 - 6
+        for idx in range(1, 4):
+            d = docs[idx]
+            d.parent = docs[0]
+            d.save()
+            d = docs[idx + 3]
+            d.parent = docs[idx]
+            d.save()
+
+        policy_on_0 = Policy.objects.create(content_object=docs[0],
+                                            authenticated=True)
+        perms = self.names_to_doc_permissions(('can_frob',))
+        policy_on_0.permissions.add(*perms)
+
+        policy_on_1 = Policy.objects.create(content_object=docs[1],
+                                            authenticated=True)
+        perms = self.names_to_doc_permissions(('can_xyzzy',))
+        policy_on_1.permissions.add(*perms)
+
+        policy_on_2 = Policy.objects.create(content_object=docs[2],
+                                            authenticated=True)
+        perms = self.names_to_doc_permissions(('can_hello',))
+        policy_on_2.permissions.add(*perms)
+
+        policy_on_5 = Policy.objects.create(content_object=docs[5],
+                                            authenticated=True)
+        perms = self.names_to_doc_permissions(('can_quux',))
+        policy_on_5.permissions.add(*perms)
+
+        cases = (
+            (u'wiki.can_frob',),   # 0 has own policy
+            (u'wiki.can_xyzzy',),  # 1 has own policy
+            (u'wiki.can_hello',),  # 2 has own policy
+            (u'wiki.can_frob',),   # 3 inherits from 0
+            (u'wiki.can_xyzzy',),  # 4 inherits from 1
+            (u'wiki.can_quux',),   # 5 has own policy
+            (u'wiki.can_frob',),   # 6 inherits from 0
+        )
+        user = User.objects.create_user('noob1', 'noob1@example.com', 'noob1')
+        for idx in range(0, len(cases)):
+            doc = docs[idx]
+            case = cases[idx]
+            perms = user.get_all_permissions(doc)
+            eq_(set(case), perms,
+                'Permissions for doc #%s should be %s, were instead %s' %
+                (idx, case, perms))

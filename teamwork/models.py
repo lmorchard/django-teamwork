@@ -153,7 +153,6 @@ class PolicyManager(models.Manager):
     Manager and utilities for Policies
     """
     def get_all_permissions(self, user, obj):
-        ct = ContentType.objects.get_for_model(obj)
         if user.is_anonymous():
             user_filter = Q(anonymous=True)
         elif user.is_authenticated():
@@ -163,6 +162,7 @@ class PolicyManager(models.Manager):
                            Q(groups__in=groups))
         else:
             return []
+        ct = ContentType.objects.get_for_model(obj)
         policies = self.filter(user_filter,
                                content_type__pk=ct.id,
                                object_id=obj.id).all()
