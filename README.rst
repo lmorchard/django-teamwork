@@ -54,9 +54,12 @@ to accomplish here:
 TODO
 ----
 
-* Support ForeignKey for Policy from content objects
+* API ergonomics
+    * shortcut to convert from codename + content object to Permission
 
-* Implement all the use cases
+* Support ForeignKey for Policy directly from content objects?
+
+* Support many-to-many for Policies and content objects?
 
 * Popup-friendly views? 
 
