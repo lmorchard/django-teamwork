@@ -154,16 +154,18 @@ class PolicyManager(models.Manager):
     """
     def get_all_permissions(self, user, obj):
         ct = ContentType.objects.get_for_model(obj)
-        policies = []
-        base_qs = self.filter(content_type__pk=ct.id, object_id=obj.id)
         if user.is_anonymous():
-            policies.extend(base_qs.filter(anonymous=True).all())
-        if user.is_authenticated():
-            policies.extend(base_qs.filter(authenticated=True).all())
-        if not user.is_anonymous():
-            policies.extend(base_qs.filter(users__pk=user.pk).all())
+            user_filter = Q(anonymous=True)
+        elif user.is_authenticated():
             groups = user.groups.all().values('id')
-            policies.extend(base_qs.filter(groups__in=groups).all())
+            user_filter = (Q(authenticated=True) |
+                           Q(users__pk=user.pk) |
+                           Q(groups__in=groups))
+        else:
+            return []
+        policies = self.filter(user_filter,
+                               content_type__pk=ct.id,
+                               object_id=obj.id).all()
         return chain(*(policy.permissions.all() for policy in policies))
 
 
