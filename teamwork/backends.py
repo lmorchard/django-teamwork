@@ -17,7 +17,10 @@ class TeamworkBackend(object):
         """Look up permissions for a single user / team / object"""
         ct = ContentType.objects.get_for_model(obj)
 
-        if user.is_anonymous() or not team or not team.has_user(user):
+        if user.is_superuser:
+            # Superuser is super, gets all object permissions
+            perms = Permission.objects.filter(content_type=ct)
+        elif user.is_anonymous() or not team or not team.has_user(user):
             # Policies apply to anonymous users and non-team members
             perms = Policy.objects.get_all_permissions(user, obj)
         else:
@@ -51,6 +54,7 @@ class TeamworkBackend(object):
             obj._teamwork_perms_cache = dict()
 
         if not user_pk in obj._teamwork_perms_cache:
+
             # Try getting perms for the current object
             perms = self._lookup_perms(user, team, obj)
 

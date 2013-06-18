@@ -22,7 +22,7 @@ class TestCaseBase(TestCase):
         self.admin = User.objects.create_superuser(
             'admin', 'admin@example.com', 'admin')
 
-        self.users = dict()
+        self.users = dict(admin=self.admin)
         for pre, amt in (('tester', 10), ('founder', 3)):
             self.users.update(dict(
                 ('%s%s' % (pre, idx),

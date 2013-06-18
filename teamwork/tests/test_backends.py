@@ -25,6 +25,16 @@ class TeamBackendTests(TestCaseBase):
 
         self.backend = TeamworkBackend()
 
+    def test_superuser_is_super(self):
+        """A superuser should be granted all object permissions"""
+        doc = Document.objects.create(name='random_doc_1',
+                                      creator=self.users['tester0'])
+        obj_perms = Permission.objects.filter(content_type=self.doc_ct).all()
+        expected_perms = set([u"%s.%s" % (self.doc_ct.app_label, p.codename)
+                              for p in obj_perms])
+        result_perms = self.users['admin'].get_all_permissions(doc)
+        eq_(expected_perms, result_perms)
+
     def test_mixed_permissions(self):
         """Policies & teams grant permissions by object to users & groups"""
         anon_user = AnonymousUser()

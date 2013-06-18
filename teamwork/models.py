@@ -185,12 +185,12 @@ class Policy(models.Model):
         Team, db_index=True, blank=True, null=True,
         help_text='Team responsible for managing this policy')
 
-    apply_to_owners = models.BooleanField(default=False, help_text=(
-        'Apply this policy to owners of content objects?'))
     anonymous = models.BooleanField(default=False, help_text=(
         'Apply this policy to anonymous users?'))
     authenticated = models.BooleanField(default=False, help_text=(
         'Apply this policy to authenticated users?'))
+    apply_to_owners = models.BooleanField(default=False, help_text=(
+        'Apply this policy to owners of content objects?'))
     users = models.ManyToManyField(
         User, blank=True, related_name='users',
         help_text=('Apply this policy for these users.'))
