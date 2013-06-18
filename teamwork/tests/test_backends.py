@@ -34,17 +34,20 @@ class TeamBackendTests(TestCaseBase):
                        ('tester2', 'tester3'))
         group_users = (self.users[u] for u in
                        ('tester4', 'tester5', 'tester6'))
+        owner_user = self.users['tester7']
 
         expected_anon_perms = set((u'frob', u'xyzzy'))
         expected_auth_perms = set((u'xyzzy', u'hello'))
         expected_role_perms = set((u'frob', u'hello'))
         expected_users_perms = set((u'frob',))
         expected_group_perms = set((u'hello',))
+        expected_owner_perms = set((u'add_document_child',))
 
         team = Team.objects.create(name='general_permissive_team',
                                    founder=self.users['founder0'])
 
         doc = Document.objects.create(name='general_doc_1',
+                                      creator=owner_user,
                                       team=team)
 
         role1 = Role.objects.create(name='role1', team=team)
@@ -75,6 +78,11 @@ class TeamBackendTests(TestCaseBase):
         perms = self.names_to_doc_permissions(expected_group_perms)
         group_policy.permissions.add(*perms)
 
+        owner_policy = Policy.objects.create(content_object=doc,
+                                             apply_to_owners=True)
+        perms = self.names_to_doc_permissions(expected_owner_perms)
+        owner_policy.permissions.add(*perms)
+
         def assert_perms(expected_perms, user):
             eq_(expected_perms, set(
                 n.split('.')[1] for n in
@@ -85,6 +93,8 @@ class TeamBackendTests(TestCaseBase):
         assert_perms(expected_anon_perms, anon_user)
         assert_perms(expected_auth_perms, auth_user)
         assert_perms(expected_role_perms, role_user)
+        assert_perms(expected_auth_perms.union(expected_owner_perms),
+                     owner_user)
         for user in users_users:
             assert_perms(expected_users_perms, user)
         for user in group_users:

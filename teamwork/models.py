@@ -160,6 +160,9 @@ class PolicyManager(models.Manager):
             user_filter = (Q(authenticated=True) |
                            Q(users__pk=user.pk) |
                            Q(groups__in=groups))
+            if (hasattr(obj, 'get_owner_user') and
+                    user == obj.get_owner_user()):
+                user_filter |= Q(apply_to_owners=True)
         else:
             return []
         ct = ContentType.objects.get_for_model(obj)
@@ -182,6 +185,8 @@ class Policy(models.Model):
         Team, db_index=True, blank=True, null=True,
         help_text='Team responsible for managing this policy')
 
+    apply_to_owners = models.BooleanField(default=False, help_text=(
+        'Apply this policy to owners of content objects?'))
     anonymous = models.BooleanField(default=False, help_text=(
         'Apply this policy to anonymous users?'))
     authenticated = models.BooleanField(default=False, help_text=(
