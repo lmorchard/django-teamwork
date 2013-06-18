@@ -16,27 +16,20 @@ class TestCaseBase(TestCase):
     def setUp(self):
         super(TestCaseBase, self).setUp()
 
-        self.doc_ct = (ContentType.objects
-                                  .get_by_natural_key('wiki', 'document'))
+        self.doc_ct = (ContentType.objects.get_by_natural_key('wiki',
+                                                              'document'))
 
-        self.admin = User.objects.create_superuser('admin',
-                                                   'admin@example.com',
-                                                   'admin')
+        self.admin = User.objects.create_superuser(
+            'admin', 'admin@example.com', 'admin')
 
-        self.users = dict([
-            ('tester%s' % idx,
-             User.objects.create_user(*('tester%s' % idx,
-                                        'tester%s@example.com' % idx,
-                                        'trustno%s' % idx)))
-            for idx in range(0, 10)
-        ])
-        self.users.update(dict([
-            ('founder%s' % idx,
-             User.objects.create_user(*('founder%s' % idx,
-                                        'founder%s@example.com' % idx,
-                                        'trustno%s' % idx)))
-            for idx in range(0, 3)
-        ]))
+        self.users = dict()
+        for pre, amt in (('tester', 10), ('founder', 3)):
+            self.users.update(dict(
+                ('%s%s' % (pre, idx),
+                 User.objects.create_user('%s%s' % (pre, idx),
+                                          '%s%s@example.com' % (pre, idx),
+                                          '%s%s' % (pre, idx)))
+                for idx in range(0, amt)))
 
         teams_fields = ('founder', 'name', 'description')
         teams_data = (dict(zip(teams_fields, row)) for row in (
@@ -65,18 +58,18 @@ class TestCaseBase(TestCase):
         perms_data = (
             # trainee has no perms
 
-            ('normal', 'can_frob'),
+            ('normal', 'frob'),
 
-            ('foo', 'can_xyzzy'),
+            ('foo', 'xyzzy'),
 
-            ('bar', 'can_hello'),
+            ('bar', 'hello'),
 
-            ('baz', 'can_frob'),
-            ('baz', 'can_xyzzy'),
+            ('baz', 'frob'),
+            ('baz', 'xyzzy'),
 
-            ('quux', 'can_frob'),
-            ('quux', 'can_xyzzy'),
-            ('quux', 'can_hello'),
+            ('quux', 'frob'),
+            ('quux', 'xyzzy'),
+            ('quux', 'hello'),
         )
         for role_name, perm_name in perms_data:
             role = self.roles[role_name]

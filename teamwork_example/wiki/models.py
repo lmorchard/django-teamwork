@@ -21,10 +21,10 @@ class Document(models.Model):
     class Meta:
         permissions = (
             ('add_document_child', 'Can add child document'),
-            ('can_frob', 'Can frobulate documents'),
-            ('can_xyzzy', 'Can xyzzy documents'),
-            ('can_hello', 'Can hello documents'),
-            ('can_quux', 'Can quuxify documents'),
+            ('frob', 'Can frobulate documents'),
+            ('xyzzy', 'Can xyzzy documents'),
+            ('hello', 'Can hello documents'),
+            ('quux', 'Can quuxify documents'),
         )
 
     def __unicode__(self):
@@ -37,7 +37,7 @@ class Document(models.Model):
     def get_all_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
         if ('quux' in user.username):
-            permissions.add('wiki.can_quux')
+            permissions.add('wiki.quux')
         return permissions
 
     def get_permission_parents(self):
