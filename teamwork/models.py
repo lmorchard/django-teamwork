@@ -37,7 +37,7 @@ class Team(models.Model):
     description = models.TextField(
         _("Description of intended use"), null=True, blank=True)
     founder = models.ForeignKey(
-        User, db_index=True, blank=False, null=False)
+        User, db_index=True, blank=True, null=True)
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)

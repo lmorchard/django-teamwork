@@ -122,21 +122,24 @@ class TeamBackendTests(TestCaseBase):
 
     def test_parent_permissions(self):
         """Content objects can supply a list of parents for inheritance"""
-        docs = []
-        for idx in range(0, 7):
-            docs.append(Document.objects.create(name=('tree%s' % idx)))
+        user = User.objects.create_user('noob1', 'noob1@example.com', 'noob1')
 
         # Set up document tree:
         #  /- 1 - 4
         # 0 - 2 - 5
         #  \- 3 - 6
-        for idx in range(1, 4):
-            d = docs[idx]
-            d.parent = docs[0]
-            d.save()
-            d = docs[idx + 3]
-            d.parent = docs[idx]
-            d.save()
+        #  \- 7 - 8
+        docs = []
+        for idx in range(0, 9):
+            docs.append(Document.objects.create(name=('tree%s' % idx)))
+        links = ((0, 1), (1, 4),
+                 (0, 2), (2, 5),
+                 (0, 3), (3, 6),
+                 (0, 7), (7, 8))
+        for (parent_idx, child_idx) in links:
+            child = docs[child_idx]
+            child.parent = docs[parent_idx]
+            child.save()
 
         policy_on_0 = Policy.objects.create(content_object=docs[0],
                                             authenticated=True)
@@ -158,6 +161,20 @@ class TeamBackendTests(TestCaseBase):
         perms = self.names_to_doc_permissions(('quux',))
         policy_on_5.permissions.add(*perms)
 
+        # Set up a team & role to exercise team inheritance
+        team_for_7 = Team.objects.create(name="Team for 7")
+        docs[7].team = team_for_7
+        docs[7].save()
+
+        role1 = Role.objects.create(name='role1_for_7', team=team_for_7)
+        role1.users.add(user)
+        perms = self.names_to_doc_permissions(('add_document_child',))
+        role1.permissions.add(*perms)
+
+        # Check the team inheritance as a special case
+        perms = user.get_all_permissions(docs[8])
+        eq_(set(('wiki.add_document_child',)), perms)
+
         cases = (
             (u'wiki.frob',),   # 0 has own policy
             (u'wiki.xyzzy',),  # 1 has own policy
@@ -167,7 +184,6 @@ class TeamBackendTests(TestCaseBase):
             (u'wiki.quux',),   # 5 has own policy
             (u'wiki.frob',),   # 6 inherits from 0
         )
-        user = User.objects.create_user('noob1', 'noob1@example.com', 'noob1')
         for idx in range(0, len(cases)):
             doc = docs[idx]
             case = cases[idx]
