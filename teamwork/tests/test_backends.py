@@ -25,8 +25,8 @@ class TeamBackendTests(TestCaseBase):
 
         self.backend = TeamworkBackend()
 
-    def test_policy_permissions(self):
-        """Policies can grant permissions by object to users and groups"""
+    def test_mixed_permissions(self):
+        """Policies & teams grant permissions by object to users & groups"""
         anon_user = AnonymousUser()
         auth_user = self.users['tester0']
         role_user = self.users['tester1']
@@ -79,6 +79,8 @@ class TeamBackendTests(TestCaseBase):
             eq_(expected_perms, set(
                 n.split('.')[1] for n in
                 user.get_all_permissions(doc)))
+            for perm in expected_perms:
+                user.has_perm(perm, doc)
 
         assert_perms(expected_anon_perms, anon_user)
         assert_perms(expected_auth_perms, auth_user)
