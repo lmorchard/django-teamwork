@@ -108,11 +108,27 @@
         }
     }, 
     {
+        "pk": "8ff0cebb65496598a97718dfe2fbb869", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2013-07-02T15:19:45.790", 
+            "session_data": "YThjM2E1ZDM5ODhmODM4MTFlMmYxMzczOWFhYjc4YzA4ODFhNDM5ODqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQRLAXUu\n"
+        }
+    }, 
+    {
+        "pk": "1376311481b45a8a215fcc72850a0159", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2013-07-02T17:36:50.251", 
+            "session_data": "YWFhNDUxMmRiZTBiMzgxMjkwNThlNjhlMjdkMTM1MWQxMGM2NDU3NjqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQRLBXUu\n"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "sites.site", 
         "fields": {
-            "domain": "example.com", 
-            "name": "example.com"
+            "domain": "localhost", 
+            "name": "Teamwork Example"
         }
     }, 
     {
@@ -548,6 +564,15 @@
         }
     }, 
     {
+        "pk": 50, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "view_document", 
+            "name": "Can view document", 
+            "content_type": 12
+        }
+    }, 
+    {
         "pk": 47, 
         "model": "auth.permission", 
         "fields": {
@@ -566,7 +591,7 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2013-06-18T11:52:03.332", 
+            "last_login": "2013-06-18T15:19:45.787", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$2bKfqkwwypVS$9qZpWT1gbm6ygPjuuCO+C5qyNhPi9QB8B/kNziKKUpk=", 
@@ -578,267 +603,731 @@
         "pk": 2, 
         "model": "auth.user", 
         "fields": {
-            "username": "tester0", 
+            "username": "section1_leader", 
             "first_name": "", 
             "last_name": "", 
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T11:52:03.443", 
+            "last_login": "2013-06-18T15:39:33.157", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$XDbHMSYzkM6H$KgVdQKGhIrqoQLQgtSAGxS/A0XLPcrtATBJnNDNTKkE=", 
-            "email": "tester0@example.com", 
-            "date_joined": "2013-06-18T11:52:03.443"
+            "password": "pbkdf2_sha256$10000$ahJbzPPcgoIp$5voVIE9hfra39+lYfzi4tzhrIj06Djhx32yWWRG0qBA=", 
+            "email": "", 
+            "date_joined": "2013-06-18T15:11:42"
         }
     }, 
     {
         "pk": 3, 
         "model": "auth.user", 
         "fields": {
-            "username": "tester1", 
+            "username": "section2_leader", 
             "first_name": "", 
             "last_name": "", 
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T11:52:03.551", 
+            "last_login": "2013-06-18T15:19:37", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$3Rwtr3RhkyV5$ayV7gwoWbubLj2nqbud2dTKTxXVb/O49jQnQ+iqdCug=", 
-            "email": "tester1@example.com", 
-            "date_joined": "2013-06-18T11:52:03.551"
+            "password": "pbkdf2_sha256$10000$72khnxbD9kut$mh+mU8KBD+dz958VPyOwrluG47SRplvBuyFHTromOaI=", 
+            "email": "", 
+            "date_joined": "2013-06-18T15:14:38"
         }
     }, 
     {
         "pk": 4, 
         "model": "auth.user", 
         "fields": {
-            "username": "tester2", 
+            "username": "section3_leader", 
             "first_name": "", 
             "last_name": "", 
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T11:52:03.659", 
+            "last_login": "2013-06-18T15:35:10", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$e2jXxvbqMVxb$eH4AnK/+AeJEu1V54/XI/TrhUL41RGp2B8fe2CBUWaA=", 
-            "email": "tester2@example.com", 
-            "date_joined": "2013-06-18T11:52:03.659"
+            "password": "pbkdf2_sha256$10000$ZilWbAjz5aZn$wrEZAZ8Dxn7Mfhqx1vIilsB3EztY+k60amx+VdExiWo=", 
+            "email": "", 
+            "date_joined": "2013-06-18T15:14:55"
         }
     }, 
     {
         "pk": 5, 
         "model": "auth.user", 
         "fields": {
-            "username": "tester3", 
+            "username": "randomguy1", 
             "first_name": "", 
             "last_name": "", 
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T11:52:03.768", 
+            "last_login": "2013-06-18T17:36:50.249", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$ops8GyQarVBK$5BZHBvDG5VnuGyvoIbyj88gWnPwksMi2ZXp6Dz5nOh4=", 
-            "email": "tester3@example.com", 
-            "date_joined": "2013-06-18T11:52:03.768"
+            "password": "pbkdf2_sha256$10000$ssuaCpGwY86Y$dFE1Dsnb6BdBus2fM7RyGWRZMFh0+K5okHICvheZOZU=", 
+            "email": "", 
+            "date_joined": "2013-06-18T15:15:13.602"
         }
     }, 
     {
         "pk": 6, 
         "model": "auth.user", 
         "fields": {
-            "username": "tester4", 
+            "username": "section1_editor", 
             "first_name": "", 
             "last_name": "", 
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T11:52:03.881", 
+            "last_login": "2013-06-18T15:38:26.149", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$UolWCe9DUbDG$s5KaUjHOJwf7jhp+LGPxwKl2SrlbsVvv/8hNVQbFFWs=", 
-            "email": "tester4@example.com", 
-            "date_joined": "2013-06-18T11:52:03.881"
+            "password": "pbkdf2_sha256$10000$LgK5pCbxHe0E$Vu5bXf837WRGNtQ+BRxgYxAUxQin7ctPi5q0MlR7fsE=", 
+            "email": "", 
+            "date_joined": "2013-06-18T15:35:57.674"
         }
     }, 
     {
         "pk": 7, 
         "model": "auth.user", 
         "fields": {
-            "username": "tester5", 
+            "username": "section2_editor", 
             "first_name": "", 
             "last_name": "", 
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T11:52:03.989", 
+            "last_login": "2013-06-18T17:36:32.737", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$s3A3TXO2tE2p$oWmon8bUpt10rhql95hVcve5+xYYqJua7DSYUQDJC+Y=", 
-            "email": "tester5@example.com", 
-            "date_joined": "2013-06-18T11:52:03.989"
+            "password": "pbkdf2_sha256$10000$zSnfPN7oNcDQ$ICT9Jh7vw+I2J1gebdWvZUc7Ibz0JiTFUQTwOlOMQuE=", 
+            "email": "", 
+            "date_joined": "2013-06-18T15:36:06.424"
         }
     }, 
     {
         "pk": 8, 
         "model": "auth.user", 
         "fields": {
-            "username": "tester6", 
+            "username": "section3_editor", 
             "first_name": "", 
             "last_name": "", 
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T11:52:04.098", 
+            "last_login": "2013-06-18T15:36:17.222", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$R7vIkjhTi72y$oW+AiL314Ft4OQOfIjFO52bzpf+2lA5cYkz/ydASY/o=", 
-            "email": "tester6@example.com", 
-            "date_joined": "2013-06-18T11:52:04.098"
+            "password": "pbkdf2_sha256$10000$e6uD2AZkvt4H$BcMnv1gTY6cXSzoEot1eW8FHEbctFPRC5vCIeddIpTs=", 
+            "email": "", 
+            "date_joined": "2013-06-18T15:36:17.222"
         }
     }, 
     {
-        "pk": 9, 
-        "model": "auth.user", 
+        "pk": 44, 
+        "model": "admin.logentry", 
         "fields": {
-            "username": "tester7", 
-            "first_name": "", 
-            "last_name": "", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2013-06-18T11:52:04.207", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$KmFbcCOIG9Tb$aw+cU/IZd/8RJue2a4kcFKKzD1sATKXv74LO62UA8Ss=", 
-            "email": "tester7@example.com", 
-            "date_joined": "2013-06-18T11:52:04.207"
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:37:01.105", 
+            "object_repr": "Section 3 Team", 
+            "object_id": "3", 
+            "change_message": "Changed users for role \"editor\".", 
+            "user": 1, 
+            "content_type": 9
         }
     }, 
     {
-        "pk": 10, 
-        "model": "auth.user", 
+        "pk": 43, 
+        "model": "admin.logentry", 
         "fields": {
-            "username": "tester8", 
-            "first_name": "", 
-            "last_name": "", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2013-06-18T11:52:04.315", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$seVOJr8VGWqM$fxTAAcGAHLtxTvIJLqP/+Ao70dbrX1nANjDzxSOWw7w=", 
-            "email": "tester8@example.com", 
-            "date_joined": "2013-06-18T11:52:04.315"
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:36:45.719", 
+            "object_repr": "Section 2 Team", 
+            "object_id": "2", 
+            "change_message": "Changed users for role \"editor\".", 
+            "user": 1, 
+            "content_type": 9
         }
     }, 
     {
-        "pk": 11, 
-        "model": "auth.user", 
+        "pk": 42, 
+        "model": "admin.logentry", 
         "fields": {
-            "username": "tester9", 
-            "first_name": "", 
-            "last_name": "", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2013-06-18T11:52:04.425", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$UaRZof4xXEQe$EWg4/aOoeEB7xkn0Mf2yoFTtA+uQAQwdRBWxGuBCVhc=", 
-            "email": "tester9@example.com", 
-            "date_joined": "2013-06-18T11:52:04.425"
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:36:34.412", 
+            "object_repr": "Section 1 Team", 
+            "object_id": "1", 
+            "change_message": "Changed users for role \"editor\".", 
+            "user": 1, 
+            "content_type": 9
         }
     }, 
     {
-        "pk": 12, 
-        "model": "auth.user", 
+        "pk": 41, 
+        "model": "admin.logentry", 
         "fields": {
-            "username": "founder0", 
-            "first_name": "", 
-            "last_name": "", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2013-06-18T11:52:04.533", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$ZG3CUQj6D3BH$vrRm3o53WC6usD5OJg05OhyfSS8oFDSF6bcHe/zL6Vg=", 
-            "email": "founder0@example.com", 
-            "date_joined": "2013-06-18T11:52:04.533"
+            "action_flag": 1, 
+            "action_time": "2013-06-18T15:36:17.352", 
+            "object_repr": "section3_editor", 
+            "object_id": "8", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
         }
     }, 
     {
-        "pk": 13, 
-        "model": "auth.user", 
+        "pk": 40, 
+        "model": "admin.logentry", 
         "fields": {
-            "username": "founder1", 
-            "first_name": "", 
-            "last_name": "", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2013-06-18T11:52:04.640", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$7a1aK98j2dXa$qIcikaNYx4LUNFwB8HIbvJ1qfVXIxAu3KRHlgcTOmNM=", 
-            "email": "founder1@example.com", 
-            "date_joined": "2013-06-18T11:52:04.640"
+            "action_flag": 1, 
+            "action_time": "2013-06-18T15:36:06.564", 
+            "object_repr": "section2_editor", 
+            "object_id": "7", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-06-18T15:35:57.804", 
+            "object_repr": "section1_editor", 
+            "object_id": "6", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:35:42.324", 
+            "object_repr": "section3_leader", 
+            "object_id": "4", 
+            "change_message": "Changed username and password.", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:35:36.575", 
+            "object_repr": "section2_leader", 
+            "object_id": "3", 
+            "change_message": "Changed username and password.", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:35:31.837", 
+            "object_repr": "section1_leader", 
+            "object_id": "2", 
+            "change_message": "Changed username and password.", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:34:06.758", 
+            "object_repr": "Section 2", 
+            "object_id": "2", 
+            "change_message": "Changed authenticated for policy \"Policy(Section 2)\".", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:33:33.326", 
+            "object_repr": "Section 2", 
+            "object_id": "2", 
+            "change_message": "Added policy \"Policy(Section 2)\".", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:23:43.412", 
+            "object_repr": "Public section", 
+            "object_id": "4", 
+            "change_message": "Added policy \"Policy(Public section)\".", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:22:39.062", 
+            "object_repr": "Public section", 
+            "object_id": "4", 
+            "change_message": "Changed permissions for policy \"Policy(Public section)\".", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:22:12.422", 
+            "object_repr": "Public section", 
+            "object_id": "4", 
+            "change_message": "Added policy \"Policy(Public section)\".", 
+            "user": 1, 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:18:29.357", 
+            "object_repr": "Section 2 Team", 
+            "object_id": "2", 
+            "change_message": "Changed permissions for role \"editor\".", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:18:18.890", 
+            "object_repr": "Section 1 Team", 
+            "object_id": "1", 
+            "change_message": "Changed permissions for role \"editor\".", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:18:09.376", 
+            "object_repr": "Section 3 Team", 
+            "object_id": "3", 
+            "change_message": "Added role \"editor\".", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:17:43.057", 
+            "object_repr": "Section 2 Team", 
+            "object_id": "2", 
+            "change_message": "Added role \"editor\".", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:17:20.535", 
+            "object_repr": "Section 1 Team", 
+            "object_id": "1", 
+            "change_message": "Added role \"editor\".", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-06-18T15:16:48.006", 
+            "object_repr": "Section 3 Team", 
+            "object_id": "3", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:16:19.287", 
+            "object_repr": "Section 1 Team", 
+            "object_id": "1", 
+            "change_message": "Changed name for role \"leader\".", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-06-18T15:16:11.607", 
+            "object_repr": "Section 2 Team", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-06-18T15:15:13.718", 
+            "object_repr": "randomguy1", 
+            "object_id": "5", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-06-18T15:14:55.538", 
+            "object_repr": "section3_user1", 
+            "object_id": "4", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-06-18T15:14:38.684", 
+            "object_repr": "section2_user1", 
+            "object_id": "3", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-06-18T15:13:31.463", 
+            "object_repr": "Section 1 Team", 
+            "object_id": "1", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2013-06-18T15:11:42.570", 
+            "object_repr": "section1_user1", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.961", 
+            "object_repr": "tester9", 
+            "object_id": "11", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.960", 
+            "object_repr": "tester8", 
+            "object_id": "10", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.959", 
+            "object_repr": "tester7", 
+            "object_id": "9", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
         }
     }, 
     {
         "pk": 14, 
-        "model": "auth.user", 
+        "model": "admin.logentry", 
         "fields": {
-            "username": "founder2", 
-            "first_name": "", 
-            "last_name": "", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2013-06-18T11:52:04.752", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$g0sEaBZDF38z$gYO2qQIpQjUmqG7+oEKm207alBSyxNmeeUwvBZQ+5Ww=", 
-            "email": "founder2@example.com", 
-            "date_joined": "2013-06-18T11:52:04.752"
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.958", 
+            "object_repr": "tester6", 
+            "object_id": "8", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.957", 
+            "object_repr": "tester5", 
+            "object_id": "7", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.956", 
+            "object_repr": "tester4", 
+            "object_id": "6", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.956", 
+            "object_repr": "tester3", 
+            "object_id": "5", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.955", 
+            "object_repr": "tester2", 
+            "object_id": "4", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.954", 
+            "object_repr": "tester1", 
+            "object_id": "3", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.953", 
+            "object_repr": "tester0", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.952", 
+            "object_repr": "founder2", 
+            "object_id": "14", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.951", 
+            "object_repr": "founder1", 
+            "object_id": "13", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:16.949", 
+            "object_repr": "founder0", 
+            "object_id": "12", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:05.002", 
+            "object_repr": "alpha", 
+            "object_id": "1", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:05.001", 
+            "object_repr": "beta", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-06-18T15:11:04.993", 
+            "object_repr": "gamma", 
+            "object_id": "3", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2013-06-18T15:08:55.088", 
+            "object_repr": "localhost", 
+            "object_id": "1", 
+            "change_message": "Changed domain and name.", 
+            "user": 1, 
+            "content_type": 6
         }
     }, 
     {
         "pk": 1, 
         "model": "teamwork.team", 
         "fields": {
-            "modified": "2013-06-18T11:52:04.876", 
-            "created": "2013-06-18T11:52:04.876", 
-            "name": "alpha", 
-            "founder": 12, 
-            "description": "Cool people"
+            "modified": "2013-06-18T15:36:34.403", 
+            "created": "2013-06-18T15:13:31.454", 
+            "name": "Section 1 Team", 
+            "founder": 2, 
+            "description": ""
         }
     }, 
     {
         "pk": 2, 
         "model": "teamwork.team", 
         "fields": {
-            "modified": "2013-06-18T11:52:04.876", 
-            "created": "2013-06-18T11:52:04.876", 
-            "name": "beta", 
-            "founder": 13, 
-            "description": "A team of folks"
+            "modified": "2013-06-18T15:36:45.710", 
+            "created": "2013-06-18T15:16:11.600", 
+            "name": "Section 2 Team", 
+            "founder": 3, 
+            "description": ""
         }
     }, 
     {
         "pk": 3, 
         "model": "teamwork.team", 
         "fields": {
-            "modified": "2013-06-18T11:52:04.877", 
-            "created": "2013-06-18T11:52:04.877", 
-            "name": "gamma", 
-            "founder": 14, 
-            "description": "Assemblage of users"
+            "modified": "2013-06-18T15:37:01.096", 
+            "created": "2013-06-18T15:16:47.998", 
+            "name": "Section 3 Team", 
+            "founder": 4, 
+            "description": ""
         }
     }, 
     {
@@ -846,16 +1335,49 @@
         "model": "teamwork.role", 
         "fields": {
             "users": [
-                3
+                2
             ], 
             "description": "", 
-            "permissions": [], 
-            "name": "trainee", 
+            "permissions": [
+                42, 
+                45, 
+                43, 
+                44, 
+                46, 
+                48, 
+                49, 
+                50, 
+                47
+            ], 
+            "name": "leader", 
             "team": 1
         }
     }, 
     {
         "pk": 2, 
+        "model": "teamwork.role", 
+        "fields": {
+            "users": [
+                3
+            ], 
+            "description": "", 
+            "permissions": [
+                42, 
+                45, 
+                43, 
+                44, 
+                46, 
+                48, 
+                49, 
+                50, 
+                47
+            ], 
+            "name": "leader", 
+            "team": 2
+        }
+    }, 
+    {
+        "pk": 3, 
         "model": "teamwork.role", 
         "fields": {
             "users": [
@@ -863,25 +1385,18 @@
             ], 
             "description": "", 
             "permissions": [
-                46
-            ], 
-            "name": "normal", 
-            "team": 1
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "teamwork.role", 
-        "fields": {
-            "users": [
-                5
-            ], 
-            "description": "", 
-            "permissions": [
+                42, 
+                45, 
+                43, 
+                44, 
+                46, 
+                48, 
+                49, 
+                50, 
                 47
             ], 
-            "name": "foo", 
-            "team": 2
+            "name": "leader", 
+            "team": 3
         }
     }, 
     {
@@ -889,15 +1404,15 @@
         "model": "teamwork.role", 
         "fields": {
             "users": [
-                5, 
                 6
             ], 
             "description": "", 
             "permissions": [
-                48
+                43, 
+                50
             ], 
-            "name": "bar", 
-            "team": 2
+            "name": "editor", 
+            "team": 1
         }
     }, 
     {
@@ -905,16 +1420,15 @@
         "model": "teamwork.role", 
         "fields": {
             "users": [
-                6, 
                 7
             ], 
             "description": "", 
             "permissions": [
-                46, 
-                47
+                43, 
+                50
             ], 
-            "name": "baz", 
-            "team": 3
+            "name": "editor", 
+            "team": 2
         }
     }, 
     {
@@ -922,26 +1436,91 @@
         "model": "teamwork.role", 
         "fields": {
             "users": [
-                7, 
                 8
             ], 
             "description": "", 
             "permissions": [
+                43, 
+                50
+            ], 
+            "name": "editor", 
+            "team": 3
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "teamwork.policy", 
+        "fields": {
+            "groups": [], 
+            "authenticated": false, 
+            "content_type": 12, 
+            "creator": 1, 
+            "created": "2013-06-18T15:22:12.418", 
+            "modified": "2013-06-18T15:22:39.056", 
+            "object_id": 4, 
+            "apply_to_owners": false, 
+            "anonymous": true, 
+            "team": null, 
+            "permissions": [
+                50
+            ], 
+            "users": []
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "teamwork.policy", 
+        "fields": {
+            "groups": [], 
+            "authenticated": true, 
+            "content_type": 12, 
+            "creator": 1, 
+            "created": "2013-06-18T15:23:43.406", 
+            "modified": "2013-06-18T15:23:43.406", 
+            "object_id": 4, 
+            "apply_to_owners": false, 
+            "anonymous": false, 
+            "team": null, 
+            "permissions": [
+                45, 
+                43, 
+                44, 
                 46, 
                 48, 
+                49, 
+                50, 
                 47
             ], 
-            "name": "quux", 
-            "team": 3
+            "users": []
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "teamwork.policy", 
+        "fields": {
+            "groups": [], 
+            "authenticated": true, 
+            "content_type": 12, 
+            "creator": null, 
+            "created": "2013-06-18T15:33:33.317", 
+            "modified": "2013-06-18T15:34:06.752", 
+            "object_id": 2, 
+            "apply_to_owners": false, 
+            "anonymous": true, 
+            "team": null, 
+            "permissions": [
+                50
+            ], 
+            "users": []
         }
     }, 
     {
         "pk": 1, 
         "model": "wiki.document", 
         "fields": {
-            "content": null, 
-            "creator": null, 
-            "name": "doc1", 
+            "content": "This is the root of section 1", 
+            "creator": 1, 
+            "name": "Section 1", 
             "parent": null, 
             "team": 1
         }
@@ -950,9 +1529,9 @@
         "pk": 2, 
         "model": "wiki.document", 
         "fields": {
-            "content": null, 
-            "creator": null, 
-            "name": "doc2", 
+            "content": "This is the root of section 2", 
+            "creator": 1, 
+            "name": "Section 2", 
             "parent": null, 
             "team": 2
         }
@@ -961,11 +1540,77 @@
         "pk": 3, 
         "model": "wiki.document", 
         "fields": {
-            "content": null, 
-            "creator": null, 
-            "name": "doc3", 
+            "content": "This is the root of section 3", 
+            "creator": 1, 
+            "name": "Section 3", 
             "parent": null, 
             "team": 3
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "wiki.document", 
+        "fields": {
+            "content": "This is a section that's open to the public", 
+            "creator": 1, 
+            "name": "Public section", 
+            "parent": null, 
+            "team": null
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "wiki.document", 
+        "fields": {
+            "content": "This is a sub page of the public section", 
+            "creator": 5, 
+            "name": "Public sub 1", 
+            "parent": 4, 
+            "team": null
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "wiki.document", 
+        "fields": {
+            "content": "This is yet another sub-page", 
+            "creator": 2, 
+            "name": "Public sub sub 1", 
+            "parent": 5, 
+            "team": null
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "wiki.document", 
+        "fields": {
+            "content": "This is a subsection of section 1", 
+            "creator": 2, 
+            "name": "Sub-section 1", 
+            "parent": 1, 
+            "team": null
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "wiki.document", 
+        "fields": {
+            "content": "Here's a subsection of section 2", 
+            "creator": 1, 
+            "name": "Sub-section 2", 
+            "parent": 2, 
+            "team": null
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "wiki.document", 
+        "fields": {
+            "content": "And one more subsection, this time for Section 3", 
+            "creator": 1, 
+            "name": "Sub-section 3", 
+            "parent": 3, 
+            "team": null
         }
     }
 ]
