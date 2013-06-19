@@ -21,7 +21,7 @@ DATABASES = {
 }
 
 FIXTURE_DIRS = (
-    'teamwork_example',
+    'teamwork_example/fixtures',
 )
 
 # Local time zone for this installation. Choices can be found here:

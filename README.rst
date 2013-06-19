@@ -40,12 +40,26 @@ TODO
 * Consider optimizations for mass-lookup cases, because this does nothing for
   that now.
 
-Notes to self
+Hacking notes
 -------------
 
-* To regenerate ``initial_data.json``::
+* Setting up a virtualenv::
 
-    ./teamwork_example/manage.py dumpdata -n --indent=4 sites auth.user teamwork wiki > teamwork_example/initial_data.json
+    virtualenv ./test-venv
+    . ./test-venv/bin/activate
+    pip install -r requirements-test.txt
+
+* Running tests::
+
+    ./teamwork_example/manage.py test teamwork
+
+* Running the example site::
+
+    ./teamwork_example/manage.py syncdb --noinput; ./teamwork_example/manage.py runserver
+
+* To regenerate ``initial_data.json`` from example site::
+
+    ./teamwork_example/manage.py dumpdata -n --indent=4 sites auth.user teamwork wiki > teamwork_example/fixtures/initial_data.json
 
 Use Cases / Specs
 -----------------
