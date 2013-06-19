@@ -37,6 +37,7 @@ class TemplateTagsTests(TestCaseBase):
         self.policy.permissions.add(*perms)
 
     def test_simple_policy(self):
+        """get_all_obj_permissions tag should work for a simple case"""
         template = ''.join((
             '{% load teamwork_tags %}',
             '{% get_all_obj_permissions user for obj as "perms" %}',
@@ -47,6 +48,7 @@ class TemplateTagsTests(TestCaseBase):
         eq_('wiki.hello', result)
 
     def test_anon_user(self):
+        """get_all_obj_permissions tag should work for an anonymous user"""
         template = ''.join((
             '{% load teamwork_tags %}',
             '{% get_all_obj_permissions user for obj as "perms" %}',
@@ -58,6 +60,7 @@ class TemplateTagsTests(TestCaseBase):
 
     @raises(Exception)
     def test_bad_user(self):
+        """get_all_obj_permissions tag should gripe about a non-user param"""
         template = ''.join((
             '{% load teamwork_tags %}',
             '{% get_all_obj_permissions user for obj as "perms" %}',
@@ -68,6 +71,7 @@ class TemplateTagsTests(TestCaseBase):
 
     @raises(TemplateSyntaxError)
     def test_bad_format(self):
+        """get_all_obj_permissions tag should gripe if syntax is bad"""
         template = ''.join((
             '{% load teamwork_tags %}',
             '{% get_all_obj_permissions blah blah blah %}',
@@ -78,6 +82,7 @@ class TemplateTagsTests(TestCaseBase):
 
     @raises(TemplateSyntaxError)
     def test_bad_context_var(self):
+        """get_all_obj_permissions tag should require quoted context var"""
         template = ''.join((
             '{% load teamwork_tags %}',
             '{% get_all_obj_permissions user for obj as i_should_be_quoted %}',
