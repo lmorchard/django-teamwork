@@ -31,26 +31,16 @@ class TeamTests(TestCaseBase):
 
     def test_has_member(self):
         """Users with roles on a team should be counted as members"""
-        # Not an exhaustive list, but should be decent.
         cases = (
-            (True, 'alpha', 'tester1'),
-            (True, 'alpha', 'tester2'),
-            (True, 'beta',  'tester3'),
-            (True, 'beta',  'tester4'),
-            (True, 'gamma', 'tester4'),
-            (True, 'gamma', 'tester5'),
-            (True, 'gamma', 'tester6'),
-
-            (False, 'beta',  'tester0'),
-            (False, 'gamma', 'tester0'),
-            (False, 'beta',  'tester2'),
-            (False, 'alpha', 'tester3'),
-            (False, 'alpha', 'tester4'),
-
-            # TODO: The founder is not considered a member, lacking a Role
-            (False, 'alpha', 'founder0'),
-            (False, 'beta',  'founder1'),
-            (False, 'gamma', 'founder2'),
+            (True, u'Section 1 Team', u'section1_leader'),
+            (True, u'Section 1 Team', u'section1_editor'),
+            (True, u'Section 2 Team', u'section2_leader'),
+            (True, u'Section 2 Team', u'section2_editor'),
+            (True, u'Section 3 Team', u'section3_leader'),
+            (True, u'Section 3 Team', u'section3_editor'),
+            (False, u'Section 1 Team', u'randomguy1'),
+            (False, u'Section 2 Team', u'randomguy1'),
+            (False, u'Section 3 Team', u'randomguy1'),
         )
         for expected, team_name, user_name in cases:
             team = self.teams[team_name]

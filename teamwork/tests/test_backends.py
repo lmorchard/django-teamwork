@@ -27,12 +27,12 @@ class TeamBackendTests(TestCaseBase):
 
     def test_empty_object(self):
         """Backend should yield empty permission set when no object supplied"""
-        eq_(set(), self.backend.get_all_permissions(self.users['tester0']))
+        eq_(set(), self.backend.get_all_permissions(self.users['randomguy1']))
 
     def test_superuser_is_super(self):
         """A superuser should be granted all object permissions"""
         doc = Document.objects.create(name='random_doc_1',
-                                      creator=self.users['tester0'])
+                                      creator=self.users['randomguy1'])
         obj_perms = Permission.objects.filter(content_type=self.doc_ct).all()
         expected_perms = set([u"%s.%s" % (self.doc_ct.app_label, p.codename)
                               for p in obj_perms])
@@ -44,11 +44,13 @@ class TeamBackendTests(TestCaseBase):
     def test_mixed_permissions(self):
         """Policies & teams grant permissions by object to users & groups"""
         anon_user = AnonymousUser()
-        auth_user = self.users['tester0']
-        role_user = self.users['tester1']
-        users_users = [self.users[u] for u in ('tester2', 'tester3')]
-        group_users = [self.users[u] for u in ('tester4', 'tester5')]
-        owner_user = self.users['tester6']
+        founder_user = User.objects.create_user(
+            'founder0', 'founder0@example.com', 'founder0')
+        auth_user = self.users['randomguy1']
+        role_user = self.users['randomguy2']
+        users_users = [self.users[u] for u in ('randomguy3', 'randomguy4')]
+        group_users = [self.users[u] for u in ('randomguy5', 'randomguy6')]
+        owner_user = self.users['randomguy7']
 
         expected_anon_perms = set((u'frob', u'xyzzy'))
         expected_auth_perms = set((u'xyzzy', u'hello'))
@@ -58,7 +60,7 @@ class TeamBackendTests(TestCaseBase):
         expected_owner_perms = set((u'add_document_child',))
 
         team = Team.objects.create(name='general_permissive_team',
-                                   founder=self.users['founder0'])
+                                   founder=founder_user)
 
         doc = Document.objects.create(name='general_doc_1',
                                       creator=owner_user,
@@ -123,7 +125,7 @@ class TeamBackendTests(TestCaseBase):
         u_quux1 = User.objects.create_user(
             'quux1', 'quux1@example.com', 'quux1')
         u_randomguy1 = User.objects.create_user(
-            'randomguy1', 'randomguy1@example.com', 'randomguy1')
+            'randomguy23', 'randomguy23@example.com', 'randomguy23')
         doc = Document.objects.create(name='Quuxy')
         ok_(u_quux1.has_perm('wiki.quux', doc))
         ok_(not u_randomguy1.has_perm('wiki.quux', doc))
@@ -199,53 +201,3 @@ class TeamBackendTests(TestCaseBase):
             eq_(set(case), perms,
                 'Permissions for doc #%s should be %s, were instead %s' %
                 (idx, case, perms))
-
-    def test_team_permissions(self):
-        """Teams grant permissions to users by role"""
-        # FIXME: This test kind of sucks, depends on fixtures set up in another
-        # file, and is very hard to follow.
-        cases = (
-            ('tester0', 'doc1', []),
-            ('tester0', 'doc2', []),
-            ('tester0', 'doc3', []),
-            ('tester1', 'doc1', []),
-            ('tester1', 'doc2', []),
-            ('tester1', 'doc3', []),
-            ('tester2', 'doc1', ['frob']),
-            ('tester2', 'doc2', []),
-            ('tester2', 'doc3', []),
-            ('tester3', 'doc1', []),
-            ('tester3', 'doc2', ['hello', 'xyzzy']),
-            ('tester3', 'doc3', []),
-            ('tester4', 'doc1', []),
-            ('tester4', 'doc2', ['hello']),
-            ('tester4', 'doc3', ['frob', 'xyzzy']),
-            ('tester5', 'doc1', []),
-            ('tester5', 'doc2', []),
-            ('tester5', 'doc3', ['hello', 'frob', 'xyzzy']),
-            ('tester6', 'doc1', []),
-            ('tester6', 'doc2', []),
-            ('tester6', 'doc3', ['hello', 'frob', 'xyzzy']),
-        )
-        all_perms = ['wiki.%s' % p[0] for p in (
-            'frob', 'xyzzy', 'hello'
-        )]
-        for user_name, doc_name, perm_names in cases:
-            user = self.users[user_name]
-            doc = self.docs[doc_name]
-
-            expected = set('wiki.%s' % p for p in perm_names)
-
-            # Try the backend directly, then try it through the user
-            result = self.backend.get_all_permissions(user, doc)
-            eq_(expected, result)
-            result = user.get_all_permissions(doc)
-            eq_(expected, result)
-
-            for perm in all_perms:
-                hp_expected = perm in expected
-                # Try the backend directly, then try it through the user
-                hp_result = self.backend.has_perm(user, perm, doc)
-                eq_(hp_expected, hp_result)
-                hp_result = user.has_perm(perm, doc)
-                eq_(hp_expected, hp_result)
