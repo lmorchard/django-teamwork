@@ -103,13 +103,6 @@ class TestCaseBase(TestCase):
         self.docs = dict([(d['name'], Document.objects.create(**d))
                           for d in docs_data])
 
-        if False:
-            from django.core.management import call_command
-            sysout = sys.stdout
-            sys.stdout = open('test_data.json', 'w')
-            call_command('dumpdata', indent=4)
-            sys.stdout = sysout
-
     def tearDown(self):
         super(TestCaseBase, self).tearDown()
 
