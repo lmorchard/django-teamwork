@@ -4,14 +4,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import PermissionDenied
 
 from teamwork.models import Team, Role
+from teamwork.shortcuts import get_object_or_404_or_403
 
 from .models import Document
 from .forms import DocumentCreateForm, DocumentEditForm
 
 def view(request, name):
-    document = get_object_or_404(Document, name=name)
-    if not request.user.has_perm('wiki.view_document', document):
-        raise PermissionDenied
+    document = get_object_or_404_or_403('wiki.view_document', request.user,
+                                        Document, name=name)
 
     perms = request.user.get_all_permissions(document)
 
@@ -21,11 +21,11 @@ def view(request, name):
 
 def create(request):
     parent_pk = request.GET.get('parent', None)
-    parent = (parent_pk and 
-              get_object_or_404(Document, pk=parent_pk) or
-              None)
-    if parent and not request.user.has_perm('wiki.add_document_child', parent):
-        raise PermissionDenied
+    if not parent_pk:
+        parent = None
+    else:
+        parent = get_object_or_404_or_403(
+            'wiki.add_document_child',request.user, Document, pk=parent_pk)
 
     # TODO: Handle permission for creating a root document?
 
@@ -46,9 +46,8 @@ def create(request):
     ))
 
 def edit(request, name):
-    document = get_object_or_404(Document, name=name)
-    if not request.user.has_perm('wiki.change_document', document):
-        raise PermissionDenied
+    document = get_object_or_404_or_403('wiki.change_document', request.user,
+                                        Document, name=name)
 
     if 'POST' != request.method:
         form = DocumentEditForm(instance=document)
@@ -63,9 +62,8 @@ def edit(request, name):
     ))
 
 def delete(request, name):
-    document = get_object_or_404(Document, name=name)
-    if not request.user.has_perm('wiki.delete_document', document):
-        raise PermissionDenied
+    document = get_object_or_404_or_403('wiki.delete_document', request.user,
+                                        Document, name=name)
 
     if 'POST' == request.method:
         document.delete()

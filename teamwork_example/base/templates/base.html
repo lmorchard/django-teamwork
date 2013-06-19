@@ -20,6 +20,7 @@
             {% else %}
                 Logged in as: {{ request.user }} (<a href="{% url profiles.views.logout %}">logout</a>)
             {% endif %}
+            <hr>
         </header>
         <section id="main">{% block content %}{% endblock %}</section>
     </body>

@@ -1,26 +1,42 @@
 {% extends "base.html" %}
+{% load teamwork_tags %}
 {% block title %}{{ document.name }} | view{% endblock %}
 {% block content %}
+<article id="document">
 
-<h1>{{ document.name }}</h1>
+<p class="parents">
+    {% for parent in document.get_permission_parents reversed %}
+        <a href="{% url wiki.views.view name=parent.name %}">{{ parent.name }}</a> /
+    {% endfor %}
+</p>
+
 <section id="content">
-    {{ document.content }}
-</section>
-<section>
-    <h2>Parents</h2>
-    <ul>
-        {% for parent in document.get_permission_parents reversed %}
-            <li><a href="{% url wiki.views.view name=parent.name %}">{{ parent.name }}</a></li>
-        {% endfor %}
-    </ul>
-</section>
-<section>
-    <h2>Permissions</h2>
-    <ul>
-        {% for p in perms %}
-            <li>{{ p }}</li>
-        {% endfor %}
-    </ul>
+    <h1>{{ document.name }}</h1>
+    <section>{{ document.content }}</section>
 </section>
 
+<hr>
+
+<h3>Actions</h3>
+{% get_all_obj_permissions request.user for document as "perms" %}
+<ul>
+    {% if 'wiki.add_document_child' in perms %}
+        <li><a href="{% url wiki.views.create %}?parent={{ document.pk }}">create child document</a></li>
+    {% endif %}
+    {% if 'wiki.change_document' in perms %}
+        <li><a href="{% url wiki.views.edit name=document.name %}">edit this document</a></li>
+    {% endif %}
+    {% if 'wiki.delete_document' in perms %}
+        <li><a href="{% url wiki.views.delete name=document.name %}">delete this document</a></li>
+    {% endif %}
+</ul>
+
+<h3>Permissions</h3>
+<ul>
+    {% for p in perms %}
+        <li>{{ p }}</li>
+    {% endfor %}
+</ul>
+
+</article>
 {% endblock %}
