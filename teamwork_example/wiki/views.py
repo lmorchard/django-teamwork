@@ -10,7 +10,7 @@ from .models import Document
 from .forms import DocumentCreateForm, DocumentEditForm
 
 def view(request, name):
-    document = get_object_or_404_or_403('wiki.view_document', request.user,
+    document = get_object_or_404_or_403('view_document', request.user,
                                         Document, name=name)
 
     perms = request.user.get_all_permissions(document)
@@ -25,7 +25,7 @@ def create(request):
         parent = None
     else:
         parent = get_object_or_404_or_403(
-            'wiki.add_document_child',request.user, Document, pk=parent_pk)
+            'add_document_child',request.user, Document, pk=parent_pk)
 
     # TODO: Handle permission for creating a root document?
 
@@ -46,7 +46,7 @@ def create(request):
     ))
 
 def edit(request, name):
-    document = get_object_or_404_or_403('wiki.change_document', request.user,
+    document = get_object_or_404_or_403('change_document', request.user,
                                         Document, name=name)
 
     if 'POST' != request.method:
@@ -62,7 +62,7 @@ def edit(request, name):
     ))
 
 def delete(request, name):
-    document = get_object_or_404_or_403('wiki.delete_document', request.user,
+    document = get_object_or_404_or_403('delete_document', request.user,
                                         Document, name=name)
 
     if 'POST' == request.method:

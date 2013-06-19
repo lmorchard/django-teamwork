@@ -17,7 +17,7 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2013-06-19T14:04:53.891", 
+            "last_login": "2013-06-19T15:10:03.179", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$2bKfqkwwypVS$9qZpWT1gbm6ygPjuuCO+C5qyNhPi9QB8B/kNziKKUpk=", 
@@ -35,7 +35,7 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-19T14:09:48.631", 
+            "last_login": "2013-06-19T14:20:49.501", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$ahJbzPPcgoIp$5voVIE9hfra39+lYfzi4tzhrIj06Djhx32yWWRG0qBA=", 
@@ -107,7 +107,7 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T15:38:26.149", 
+            "last_login": "2013-06-19T15:10:06.869", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$LgK5pCbxHe0E$Vu5bXf837WRGNtQ+BRxgYxAUxQin7ctPi5q0MlR7fsE=", 
@@ -498,7 +498,7 @@
                     "document"
                 ], 
                 [
-                    "quux", 
+                    "view_document", 
                     "wiki", 
                     "document"
                 ]
@@ -524,7 +524,7 @@
                     "document"
                 ], 
                 [
-                    "quux", 
+                    "view_document", 
                     "wiki", 
                     "document"
                 ]
@@ -550,7 +550,7 @@
                     "document"
                 ], 
                 [
-                    "quux", 
+                    "view_document", 
                     "wiki", 
                     "document"
                 ]

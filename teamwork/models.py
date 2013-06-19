@@ -84,7 +84,7 @@ class Role(models.Model):
     team = models.ForeignKey(Team, db_index=True, blank=False, null=False)
     name = models.CharField(_("name"), max_length=128, db_index=False)
     description = models.TextField(_("Description of intended use"),
-                                   blank=False)
+                                   blank=True)
 
     permissions = models.ManyToManyField(
         Permission, blank=True,
