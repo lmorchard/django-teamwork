@@ -6,3 +6,4 @@ _build
 _static
 _templates
 test.db
+htmlcov
