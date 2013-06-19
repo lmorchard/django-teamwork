@@ -40,11 +40,9 @@ class TeamBackendTests(TestCaseBase):
         anon_user = AnonymousUser()
         auth_user = self.users['tester0']
         role_user = self.users['tester1']
-        users_users = (self.users[u] for u in
-                       ('tester2', 'tester3'))
-        group_users = (self.users[u] for u in
-                       ('tester4', 'tester5', 'tester6'))
-        owner_user = self.users['tester7']
+        users_users = [self.users[u] for u in ('tester2', 'tester3')]
+        group_users = [self.users[u] for u in ('tester4', 'tester5')]
+        owner_user = self.users['tester6']
 
         expected_anon_perms = set((u'frob', u'xyzzy'))
         expected_auth_perms = set((u'xyzzy', u'hello'))
@@ -105,10 +103,14 @@ class TeamBackendTests(TestCaseBase):
         assert_perms(expected_role_perms, role_user)
         assert_perms(expected_auth_perms.union(expected_owner_perms),
                      owner_user)
+
+        expected_perms = expected_users_perms.union(expected_auth_perms)
         for user in users_users:
-            assert_perms(expected_users_perms, user)
+            assert_perms(expected_perms, user)
+
+        expected_perms = expected_group_perms.union(expected_auth_perms)
         for user in group_users:
-            assert_perms(expected_group_perms, user)
+            assert_perms(expected_perms, user)
 
     def test_object_logic_permissions(self):
         """Objects can apply custom logic to permissions"""
