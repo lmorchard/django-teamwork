@@ -25,6 +25,10 @@ class TeamBackendTests(TestCaseBase):
 
         self.backend = TeamworkBackend()
 
+    def test_empty_object(self):
+        """Backend should yield empty permission set when no object supplied"""
+        eq_(set(), self.backend.get_all_permissions(self.users['tester0']))
+
     def test_superuser_is_super(self):
         """A superuser should be granted all object permissions"""
         doc = Document.objects.create(name='random_doc_1',
@@ -34,6 +38,8 @@ class TeamBackendTests(TestCaseBase):
                               for p in obj_perms])
         result_perms = self.users['admin'].get_all_permissions(doc)
         eq_(expected_perms, result_perms)
+        for perm in expected_perms:
+            self.users['admin'].has_perm(perm)
 
     def test_mixed_permissions(self):
         """Policies & teams grant permissions by object to users & groups"""

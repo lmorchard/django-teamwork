@@ -16,9 +16,6 @@ class TeamManager(models.Manager):
     """
     Manager and utilities for Teams
     """
-    def get_by_natural_key(self, name):
-        return self.get(name=name)
-
     def get_teams_for_user(self, user):
         member_teams = (Role.users.through.objects
                             .filter(user=user)
@@ -52,20 +49,6 @@ class Team(models.Model):
     def __unicode__(self):
         return self.name
 
-    def natural_key(self):
-        return (self.name,)
-
-    def has_member(self, user, role):
-        """Determine whether the given user is a member of this team"""
-        # TODO: founder is not considered a member without an associated role
-        hits = (Role.users.through.objects
-                    .filter(role__team=self, user=user).count())
-        return hits > 0
-
-    def get_members(self):
-        """Convenience property with a QuerySet of user/role RoleUser"""
-        return RoleUser.objects.filter(role__team=self)
-
     def has_user(self, user):
         """Determine whether the given user is a member of this team"""
         # TODO: founder is not considered a member without an associated role
@@ -73,26 +56,11 @@ class Team(models.Model):
                     .filter(role__team=self, user=user)).count()
         return hits > 0
 
-    def get_users(self):
-        """Convenience property with a QuerySet of unique users"""
-        members = (Role.user.through.objects
-                       .filter(role__team=self)
-                       .values('user').distinct())
-        return User.objects.filter(id__in=members)
-
     def get_all_permissions(self, user):
         """Get all Permissions applied to this User based on assigned Roles"""
-        # TODO: Keep thinking about how to simplify these queries
-        if user.is_anonymous():
-            return []
-
         role_ids = (Role.users.through.objects
                         .filter(user=user, role__team=self)
                         .values('role'))
-
-        if 0 == len(role_ids):
-            return []
-
         return (p.permission for p in
                 Role.permissions.through.objects
                     .filter(role__in=role_ids)
@@ -103,11 +71,7 @@ class RoleManager(models.Manager):
     """
     Manager and utilities for Roles
     """
-    def get_by_natural_key(self, name, team_name):
-        return self.get(
-            name=name,
-            team=Team.objects.get_by_natural_key(team_name)
-        )
+    pass
 
 
 class Role(models.Model):
@@ -132,6 +96,9 @@ class Role(models.Model):
 
     objects = RoleManager()
 
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         unique_together = (('name', 'team'),)
         permissions = (
@@ -139,13 +106,6 @@ class Role(models.Model):
             ('manage_permissions', 'Can manage role permissions'),
             ('manage_users', 'Can manage role users'),
         )
-
-    def __unicode__(self):
-        return self.name
-
-    def natural_key(self):
-        return (self.name,) + self.team.natural_key()
-    natural_key.dependencies = ['teamwork.team']
 
 
 class PolicyManager(models.Manager):
@@ -155,7 +115,7 @@ class PolicyManager(models.Manager):
     def get_all_permissions(self, user, obj):
         if user.is_anonymous():
             user_filter = Q(anonymous=True)
-        elif user.is_authenticated():
+        else:
             groups = user.groups.all().values('id')
             user_filter = (Q(authenticated=True) |
                            Q(users__pk=user.pk) |
@@ -163,8 +123,6 @@ class PolicyManager(models.Manager):
             if (hasattr(obj, 'get_owner_user') and
                     user == obj.get_owner_user()):
                 user_filter |= Q(apply_to_owners=True)
-        else:
-            return []
         ct = ContentType.objects.get_for_model(obj)
         policies = self.filter(user_filter,
                                content_type__pk=ct.id,

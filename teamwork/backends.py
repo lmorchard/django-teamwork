@@ -72,6 +72,4 @@ class TeamworkBackend(object):
         return obj._teamwork_perms_cache[user_pk]
 
     def has_perm(self, user, perm, obj=None):
-        if user.is_superuser:
-            return True
         return perm in self.get_all_permissions(user, obj)

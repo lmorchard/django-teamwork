@@ -17,6 +17,18 @@ from . import TestCaseBase
 
 class TeamTests(TestCaseBase):
 
+    def test_unicode_repr(self):
+        """Teamwork objects should have useful string representations"""
+        team = Team.objects.create(name="foo")
+        eq_("foo", unicode(team))
+
+        role = Role.objects.create(team=team, name="bar")
+        eq_("bar", unicode(role))
+
+        doc = Document.objects.create(name="baz")
+        policy = Policy.objects.create(content_object=doc)
+        eq_("Policy(baz)", unicode(policy))
+
     def test_has_member(self):
         """Users with roles on a team should be counted as members"""
         # Not an exhaustive list, but should be decent.
