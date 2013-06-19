@@ -40,6 +40,13 @@ TODO
 * Consider optimizations for mass-lookup cases, because this does nothing for
   that now.
 
+Notes to self
+-------------
+
+* To regenerate ``initial_data.json``::
+
+    ./teamwork_example/manage.py dumpdata -n --indent=4 sites auth.user teamwork wiki > teamwork_example/initial_data.json
+
 Use Cases / Specs
 -----------------
 

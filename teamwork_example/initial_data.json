@@ -17,7 +17,7 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2013-06-18T15:19:45.787", 
+            "last_login": "2013-06-19T14:04:53.891", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$2bKfqkwwypVS$9qZpWT1gbm6ygPjuuCO+C5qyNhPi9QB8B/kNziKKUpk=", 
@@ -35,7 +35,7 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T15:39:33.157", 
+            "last_login": "2013-06-19T14:09:48.631", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$ahJbzPPcgoIp$5voVIE9hfra39+lYfzi4tzhrIj06Djhx32yWWRG0qBA=", 
@@ -89,7 +89,7 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T17:36:50.249", 
+            "last_login": "2013-06-19T14:09:43.020", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$ssuaCpGwY86Y$dFE1Dsnb6BdBus2fM7RyGWRZMFh0+K5okHICvheZOZU=", 
@@ -266,7 +266,9 @@
             "modified": "2013-06-18T15:36:34.403", 
             "created": "2013-06-18T15:13:31.454", 
             "name": "Section 1 Team", 
-            "founder": 2, 
+            "founder": [
+                "section1_leader"
+            ], 
             "description": ""
         }
     }, 
@@ -277,7 +279,9 @@
             "modified": "2013-06-18T15:36:45.710", 
             "created": "2013-06-18T15:16:11.600", 
             "name": "Section 2 Team", 
-            "founder": 3, 
+            "founder": [
+                "section2_leader"
+            ], 
             "description": ""
         }
     }, 
@@ -288,7 +292,9 @@
             "modified": "2013-06-18T15:37:01.096", 
             "created": "2013-06-18T15:16:47.998", 
             "name": "Section 3 Team", 
-            "founder": 4, 
+            "founder": [
+                "section3_leader"
+            ], 
             "description": ""
         }
     }, 
@@ -297,19 +303,57 @@
         "model": "teamwork.role", 
         "fields": {
             "users": [
-                2
+                [
+                    "section1_leader"
+                ]
             ], 
             "description": "", 
             "permissions": [
-                42, 
-                45, 
-                43, 
-                44, 
-                46, 
-                48, 
-                49, 
-                50, 
-                47
+                [
+                    "add_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "add_document_child", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "change_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "delete_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "frob", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "hello", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "quux", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "view_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "xyzzy", 
+                    "wiki", 
+                    "document"
+                ]
             ], 
             "name": "leader", 
             "team": 1
@@ -320,19 +364,57 @@
         "model": "teamwork.role", 
         "fields": {
             "users": [
-                3
+                [
+                    "section2_leader"
+                ]
             ], 
             "description": "", 
             "permissions": [
-                42, 
-                45, 
-                43, 
-                44, 
-                46, 
-                48, 
-                49, 
-                50, 
-                47
+                [
+                    "add_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "add_document_child", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "change_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "delete_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "frob", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "hello", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "quux", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "view_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "xyzzy", 
+                    "wiki", 
+                    "document"
+                ]
             ], 
             "name": "leader", 
             "team": 2
@@ -343,19 +425,57 @@
         "model": "teamwork.role", 
         "fields": {
             "users": [
-                4
+                [
+                    "section3_leader"
+                ]
             ], 
             "description": "", 
             "permissions": [
-                42, 
-                45, 
-                43, 
-                44, 
-                46, 
-                48, 
-                49, 
-                50, 
-                47
+                [
+                    "add_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "add_document_child", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "change_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "delete_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "frob", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "hello", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "quux", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "view_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "xyzzy", 
+                    "wiki", 
+                    "document"
+                ]
             ], 
             "name": "leader", 
             "team": 3
@@ -366,12 +486,22 @@
         "model": "teamwork.role", 
         "fields": {
             "users": [
-                6
+                [
+                    "section1_editor"
+                ]
             ], 
             "description": "", 
             "permissions": [
-                43, 
-                50
+                [
+                    "change_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "quux", 
+                    "wiki", 
+                    "document"
+                ]
             ], 
             "name": "editor", 
             "team": 1
@@ -382,12 +512,22 @@
         "model": "teamwork.role", 
         "fields": {
             "users": [
-                7
+                [
+                    "section2_editor"
+                ]
             ], 
             "description": "", 
             "permissions": [
-                43, 
-                50
+                [
+                    "change_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "quux", 
+                    "wiki", 
+                    "document"
+                ]
             ], 
             "name": "editor", 
             "team": 2
@@ -398,35 +538,25 @@
         "model": "teamwork.role", 
         "fields": {
             "users": [
-                8
+                [
+                    "section3_editor"
+                ]
             ], 
             "description": "", 
             "permissions": [
-                43, 
-                50
+                [
+                    "change_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "quux", 
+                    "wiki", 
+                    "document"
+                ]
             ], 
             "name": "editor", 
             "team": 3
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "teamwork.policy", 
-        "fields": {
-            "groups": [], 
-            "authenticated": false, 
-            "content_type": 12, 
-            "creator": 1, 
-            "created": "2013-06-18T15:22:12.418", 
-            "modified": "2013-06-18T15:22:39.056", 
-            "object_id": 4, 
-            "apply_to_owners": false, 
-            "anonymous": true, 
-            "team": null, 
-            "permissions": [
-                50
-            ], 
-            "users": []
         }
     }, 
     {
@@ -435,8 +565,13 @@
         "fields": {
             "groups": [], 
             "authenticated": true, 
-            "content_type": 12, 
-            "creator": 1, 
+            "content_type": [
+                "wiki", 
+                "document"
+            ], 
+            "creator": [
+                "admin"
+            ], 
             "created": "2013-06-18T15:23:43.406", 
             "modified": "2013-06-18T15:23:43.406", 
             "object_id": 4, 
@@ -444,14 +579,46 @@
             "anonymous": false, 
             "team": null, 
             "permissions": [
-                45, 
-                43, 
-                44, 
-                46, 
-                48, 
-                49, 
-                50, 
-                47
+                [
+                    "add_document_child", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "change_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "delete_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "frob", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "hello", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "quux", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "view_document", 
+                    "wiki", 
+                    "document"
+                ], 
+                [
+                    "xyzzy", 
+                    "wiki", 
+                    "document"
+                ]
             ], 
             "users": []
         }
@@ -462,7 +629,10 @@
         "fields": {
             "groups": [], 
             "authenticated": true, 
-            "content_type": 12, 
+            "content_type": [
+                "wiki", 
+                "document"
+            ], 
             "creator": null, 
             "created": "2013-06-18T15:33:33.317", 
             "modified": "2013-06-18T15:34:06.752", 
@@ -471,7 +641,65 @@
             "anonymous": true, 
             "team": null, 
             "permissions": [
-                50
+                [
+                    "quux", 
+                    "wiki", 
+                    "document"
+                ]
+            ], 
+            "users": []
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "teamwork.policy", 
+        "fields": {
+            "groups": [], 
+            "authenticated": false, 
+            "content_type": [
+                "wiki", 
+                "document"
+            ], 
+            "creator": null, 
+            "created": "2013-06-19T14:08:11.376", 
+            "modified": "2013-06-19T14:08:11.376", 
+            "object_id": 4, 
+            "apply_to_owners": false, 
+            "anonymous": true, 
+            "team": null, 
+            "permissions": [
+                [
+                    "view_document", 
+                    "wiki", 
+                    "document"
+                ]
+            ], 
+            "users": []
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "teamwork.policy", 
+        "fields": {
+            "groups": [], 
+            "authenticated": true, 
+            "content_type": [
+                "wiki", 
+                "document"
+            ], 
+            "creator": null, 
+            "created": "2013-06-19T14:09:29.218", 
+            "modified": "2013-06-19T14:09:29.218", 
+            "object_id": 10, 
+            "apply_to_owners": false, 
+            "anonymous": true, 
+            "team": null, 
+            "permissions": [
+                [
+                    "view_document", 
+                    "wiki", 
+                    "document"
+                ]
             ], 
             "users": []
         }
@@ -481,7 +709,9 @@
         "model": "wiki.document", 
         "fields": {
             "content": "This is the root of section 1", 
-            "creator": 1, 
+            "creator": [
+                "admin"
+            ], 
             "name": "Section 1", 
             "parent": null, 
             "team": 1
@@ -492,7 +722,9 @@
         "model": "wiki.document", 
         "fields": {
             "content": "This is the root of section 2", 
-            "creator": 1, 
+            "creator": [
+                "admin"
+            ], 
             "name": "Section 2", 
             "parent": null, 
             "team": 2
@@ -503,7 +735,9 @@
         "model": "wiki.document", 
         "fields": {
             "content": "This is the root of section 3", 
-            "creator": 1, 
+            "creator": [
+                "admin"
+            ], 
             "name": "Section 3", 
             "parent": null, 
             "team": 3
@@ -514,7 +748,9 @@
         "model": "wiki.document", 
         "fields": {
             "content": "This is a section that's open to the public", 
-            "creator": 1, 
+            "creator": [
+                "admin"
+            ], 
             "name": "Public section", 
             "parent": null, 
             "team": null
@@ -525,7 +761,9 @@
         "model": "wiki.document", 
         "fields": {
             "content": "This is a sub page of the public section", 
-            "creator": 5, 
+            "creator": [
+                "randomguy1"
+            ], 
             "name": "Public sub 1", 
             "parent": 4, 
             "team": null
@@ -536,7 +774,9 @@
         "model": "wiki.document", 
         "fields": {
             "content": "This is yet another sub-page", 
-            "creator": 2, 
+            "creator": [
+                "section1_leader"
+            ], 
             "name": "Public sub sub 1", 
             "parent": 5, 
             "team": null
@@ -547,7 +787,9 @@
         "model": "wiki.document", 
         "fields": {
             "content": "This is a subsection of section 1", 
-            "creator": 2, 
+            "creator": [
+                "section1_leader"
+            ], 
             "name": "Sub-section 1", 
             "parent": 1, 
             "team": null
@@ -558,7 +800,9 @@
         "model": "wiki.document", 
         "fields": {
             "content": "Here's a subsection of section 2", 
-            "creator": 1, 
+            "creator": [
+                "admin"
+            ], 
             "name": "Sub-section 2", 
             "parent": 2, 
             "team": null
@@ -569,9 +813,37 @@
         "model": "wiki.document", 
         "fields": {
             "content": "And one more subsection, this time for Section 3", 
-            "creator": 1, 
+            "creator": [
+                "admin"
+            ], 
             "name": "Sub-section 3", 
             "parent": 3, 
+            "team": null
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "wiki.document", 
+        "fields": {
+            "content": "This section can only be edited by admin", 
+            "creator": [
+                "admin"
+            ], 
+            "name": "Read only section", 
+            "parent": null, 
+            "team": null
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "wiki.document", 
+        "fields": {
+            "content": "A subsection editable only by admin", 
+            "creator": [
+                "admin"
+            ], 
+            "name": "Read only sub-section", 
+            "parent": 10, 
             "team": null
         }
     }
