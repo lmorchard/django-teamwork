@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ document.name }} | delete{% endblock %}
+{% block content %}
+
+<h1>{{ document.name }} | delete</h1>
+<form method="POST" action="">
+    {% csrf_token %}
+    <p>Delete - are you sure? <input type="submit" value="delete"></p>
+</form>
+<section id="content">
+    {{ document.content }}
+</section>
+
+{% endblock %}

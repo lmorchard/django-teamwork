@@ -332,7 +332,7 @@
         }
     }, 
     {
-        "pk": 38, 
+        "pk": 35, 
         "model": "auth.permission", 
         "fields": {
             "codename": "add_policy", 
@@ -341,7 +341,7 @@
         }
     }, 
     {
-        "pk": 39, 
+        "pk": 36, 
         "model": "auth.permission", 
         "fields": {
             "codename": "change_policy", 
@@ -350,7 +350,7 @@
         }
     }, 
     {
-        "pk": 40, 
+        "pk": 37, 
         "model": "auth.permission", 
         "fields": {
             "codename": "delete_policy", 
@@ -359,7 +359,43 @@
         }
     }, 
     {
-        "pk": 35, 
+        "pk": 41, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "manage_groups", 
+            "name": "Can manage role groups", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "manage_permissions", 
+            "name": "Can manage role permissions", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "manage_users", 
+            "name": "Can manage role users", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "view_policy", 
+            "name": "Can view policy", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 29, 
         "model": "auth.permission", 
         "fields": {
             "codename": "add_role", 
@@ -368,7 +404,7 @@
         }
     }, 
     {
-        "pk": 36, 
+        "pk": 30, 
         "model": "auth.permission", 
         "fields": {
             "codename": "change_role", 
@@ -377,11 +413,38 @@
         }
     }, 
     {
-        "pk": 37, 
+        "pk": 31, 
         "model": "auth.permission", 
         "fields": {
             "codename": "delete_role", 
             "name": "Can delete role", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "manage_permissions", 
+            "name": "Can manage role permissions", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "manage_users", 
+            "name": "Can manage role users", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "view_role", 
+            "name": "Can view role", 
             "content_type": 10
         }
     }, 
@@ -391,60 +454,6 @@
         "fields": {
             "codename": "add_team", 
             "name": "Can add team", 
-            "content_type": 9
-        }
-    }, 
-    {
-        "pk": 32, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "can_add_member", 
-            "name": "Can add member", 
-            "content_type": 9
-        }
-    }, 
-    {
-        "pk": 29, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "can_add_role", 
-            "name": "Can add role", 
-            "content_type": 9
-        }
-    }, 
-    {
-        "pk": 33, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "can_change_member", 
-            "name": "Can change member", 
-            "content_type": 9
-        }
-    }, 
-    {
-        "pk": 30, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "can_change_role", 
-            "name": "Can change role", 
-            "content_type": 9
-        }
-    }, 
-    {
-        "pk": 34, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "can_delete_member", 
-            "name": "Can delete member", 
-            "content_type": 9
-        }
-    }, 
-    {
-        "pk": 31, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "can_delete_role", 
-            "name": "Can delete role", 
             "content_type": 9
         }
     }, 
@@ -476,7 +485,7 @@
         }
     }, 
     {
-        "pk": 41, 
+        "pk": 42, 
         "model": "auth.permission", 
         "fields": {
             "codename": "add_document", 
@@ -485,34 +494,16 @@
         }
     }, 
     {
-        "pk": 44, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "can_frob", 
-            "name": "Can frobulate pages", 
-            "content_type": 12
-        }
-    }, 
-    {
-        "pk": 46, 
-        "model": "auth.permission", 
-        "fields": {
-            "codename": "can_hello", 
-            "name": "Can hello pages", 
-            "content_type": 12
-        }
-    }, 
-    {
         "pk": 45, 
         "model": "auth.permission", 
         "fields": {
-            "codename": "can_xyzzy", 
-            "name": "Can xyzzy pages", 
+            "codename": "add_document_child", 
+            "name": "Can add child document", 
             "content_type": 12
         }
     }, 
     {
-        "pk": 42, 
+        "pk": 43, 
         "model": "auth.permission", 
         "fields": {
             "codename": "change_document", 
@@ -521,11 +512,47 @@
         }
     }, 
     {
-        "pk": 43, 
+        "pk": 44, 
         "model": "auth.permission", 
         "fields": {
             "codename": "delete_document", 
             "name": "Can delete document", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "frob", 
+            "name": "Can frobulate documents", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "hello", 
+            "name": "Can hello documents", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "quux", 
+            "name": "Can quuxify documents", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "xyzzy", 
+            "name": "Can xyzzy documents", 
             "content_type": 12
         }
     }, 
@@ -539,12 +566,12 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2013-06-17T11:37:34.206", 
+            "last_login": "2013-06-18T11:52:03.332", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$o56cgqH1xmIS$se5qe5nMPcvlcYtw+9DGLV+3TgAg9qyngvYBCJk78aU=", 
+            "password": "pbkdf2_sha256$10000$2bKfqkwwypVS$9qZpWT1gbm6ygPjuuCO+C5qyNhPi9QB8B/kNziKKUpk=", 
             "email": "admin@example.com", 
-            "date_joined": "2013-06-17T11:37:34.206"
+            "date_joined": "2013-06-18T11:52:03.332"
         }
     }, 
     {
@@ -557,12 +584,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:34.338", 
+            "last_login": "2013-06-18T11:52:03.443", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$GT47UaHTJHy6$gZ1uaFPp8ihGB19q3PmnQgcvix9onjF7d4Di+sRiYL4=", 
+            "password": "pbkdf2_sha256$10000$XDbHMSYzkM6H$KgVdQKGhIrqoQLQgtSAGxS/A0XLPcrtATBJnNDNTKkE=", 
             "email": "tester0@example.com", 
-            "date_joined": "2013-06-17T11:37:34.338"
+            "date_joined": "2013-06-18T11:52:03.443"
         }
     }, 
     {
@@ -575,12 +602,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:34.461", 
+            "last_login": "2013-06-18T11:52:03.551", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$oapo91aant1L$Qq9y28QV93yMXR/sDPCKICC9okI/4DA82v26nh8SuVA=", 
+            "password": "pbkdf2_sha256$10000$3Rwtr3RhkyV5$ayV7gwoWbubLj2nqbud2dTKTxXVb/O49jQnQ+iqdCug=", 
             "email": "tester1@example.com", 
-            "date_joined": "2013-06-17T11:37:34.461"
+            "date_joined": "2013-06-18T11:52:03.551"
         }
     }, 
     {
@@ -593,12 +620,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:34.577", 
+            "last_login": "2013-06-18T11:52:03.659", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$Eqxtc3ymtYbL$lAj31n9y9EHK0E+Mtg+uGN2A0keucXmxwOo7v5AqS48=", 
+            "password": "pbkdf2_sha256$10000$e2jXxvbqMVxb$eH4AnK/+AeJEu1V54/XI/TrhUL41RGp2B8fe2CBUWaA=", 
             "email": "tester2@example.com", 
-            "date_joined": "2013-06-17T11:37:34.577"
+            "date_joined": "2013-06-18T11:52:03.659"
         }
     }, 
     {
@@ -611,12 +638,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:34.690", 
+            "last_login": "2013-06-18T11:52:03.768", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$pCTqVIXX901b$ZE/zB7aOnaLi9kc7pfEwbjShW2b/HkZF+Kj+LW+siMU=", 
+            "password": "pbkdf2_sha256$10000$ops8GyQarVBK$5BZHBvDG5VnuGyvoIbyj88gWnPwksMi2ZXp6Dz5nOh4=", 
             "email": "tester3@example.com", 
-            "date_joined": "2013-06-17T11:37:34.690"
+            "date_joined": "2013-06-18T11:52:03.768"
         }
     }, 
     {
@@ -629,12 +656,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:34.802", 
+            "last_login": "2013-06-18T11:52:03.881", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$FTo2AsQZM7DW$SiJ79nLG+cwVPEW4GgGDdWj4WAtfwXP69KbfCVjlLVk=", 
+            "password": "pbkdf2_sha256$10000$UolWCe9DUbDG$s5KaUjHOJwf7jhp+LGPxwKl2SrlbsVvv/8hNVQbFFWs=", 
             "email": "tester4@example.com", 
-            "date_joined": "2013-06-17T11:37:34.802"
+            "date_joined": "2013-06-18T11:52:03.881"
         }
     }, 
     {
@@ -647,12 +674,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:34.918", 
+            "last_login": "2013-06-18T11:52:03.989", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$qMGJVbTPGWen$oZOSvBiDfhdtJMBVjXuUY3mYfH829xV2jnwGdvZtR4o=", 
+            "password": "pbkdf2_sha256$10000$s3A3TXO2tE2p$oWmon8bUpt10rhql95hVcve5+xYYqJua7DSYUQDJC+Y=", 
             "email": "tester5@example.com", 
-            "date_joined": "2013-06-17T11:37:34.918"
+            "date_joined": "2013-06-18T11:52:03.989"
         }
     }, 
     {
@@ -665,12 +692,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:35.031", 
+            "last_login": "2013-06-18T11:52:04.098", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$epD9jbmRIo9p$Rjo6CJexciHDqSQolvco8npZoxLQ9YxbCI9wE7nCxzA=", 
+            "password": "pbkdf2_sha256$10000$R7vIkjhTi72y$oW+AiL314Ft4OQOfIjFO52bzpf+2lA5cYkz/ydASY/o=", 
             "email": "tester6@example.com", 
-            "date_joined": "2013-06-17T11:37:35.031"
+            "date_joined": "2013-06-18T11:52:04.098"
         }
     }, 
     {
@@ -683,12 +710,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:35.149", 
+            "last_login": "2013-06-18T11:52:04.207", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$vH6cvj7FoN3F$W/aIaiXaWgR8E9n2RHGP1cmopdO9tHFXleFt3wcVx9w=", 
+            "password": "pbkdf2_sha256$10000$KmFbcCOIG9Tb$aw+cU/IZd/8RJue2a4kcFKKzD1sATKXv74LO62UA8Ss=", 
             "email": "tester7@example.com", 
-            "date_joined": "2013-06-17T11:37:35.149"
+            "date_joined": "2013-06-18T11:52:04.207"
         }
     }, 
     {
@@ -701,12 +728,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:35.264", 
+            "last_login": "2013-06-18T11:52:04.315", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$cHhGCvHhhZTv$NmW8ieuLqMw6dUiqxpndKzJg2CFVQEfscDk5yaUlsnk=", 
+            "password": "pbkdf2_sha256$10000$seVOJr8VGWqM$fxTAAcGAHLtxTvIJLqP/+Ao70dbrX1nANjDzxSOWw7w=", 
             "email": "tester8@example.com", 
-            "date_joined": "2013-06-17T11:37:35.264"
+            "date_joined": "2013-06-18T11:52:04.315"
         }
     }, 
     {
@@ -719,12 +746,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:35.378", 
+            "last_login": "2013-06-18T11:52:04.425", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$lA42V3ZylVMo$RmcWmyjXqDl878IN1s7qAouv9MVjgGDQqG0QgzoelOw=", 
+            "password": "pbkdf2_sha256$10000$UaRZof4xXEQe$EWg4/aOoeEB7xkn0Mf2yoFTtA+uQAQwdRBWxGuBCVhc=", 
             "email": "tester9@example.com", 
-            "date_joined": "2013-06-17T11:37:35.378"
+            "date_joined": "2013-06-18T11:52:04.425"
         }
     }, 
     {
@@ -737,12 +764,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:35.489", 
+            "last_login": "2013-06-18T11:52:04.533", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$52AIYYIeTBf4$g96hTR4DIB/e/R1bmFmTUUwnODM37zGpAv2nZt2DkHE=", 
+            "password": "pbkdf2_sha256$10000$ZG3CUQj6D3BH$vrRm3o53WC6usD5OJg05OhyfSS8oFDSF6bcHe/zL6Vg=", 
             "email": "founder0@example.com", 
-            "date_joined": "2013-06-17T11:37:35.489"
+            "date_joined": "2013-06-18T11:52:04.533"
         }
     }, 
     {
@@ -755,12 +782,12 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:35.600", 
+            "last_login": "2013-06-18T11:52:04.640", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$CLt22qUUxGQT$CNWLwIthYfa66E2A9hEWx15w2T2zZ87VQMvkQqWUTgw=", 
+            "password": "pbkdf2_sha256$10000$7a1aK98j2dXa$qIcikaNYx4LUNFwB8HIbvJ1qfVXIxAu3KRHlgcTOmNM=", 
             "email": "founder1@example.com", 
-            "date_joined": "2013-06-17T11:37:35.600"
+            "date_joined": "2013-06-18T11:52:04.640"
         }
     }, 
     {
@@ -773,20 +800,20 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-17T11:37:35.718", 
+            "last_login": "2013-06-18T11:52:04.752", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$AaWBmvS1m4WW$9mt1nZfPu4izGfArB1fBxhp4l/V8x1wk+BeRAcVTJzQ=", 
+            "password": "pbkdf2_sha256$10000$g0sEaBZDF38z$gYO2qQIpQjUmqG7+oEKm207alBSyxNmeeUwvBZQ+5Ww=", 
             "email": "founder2@example.com", 
-            "date_joined": "2013-06-17T11:37:35.718"
+            "date_joined": "2013-06-18T11:52:04.752"
         }
     }, 
     {
         "pk": 1, 
         "model": "teamwork.team", 
         "fields": {
-            "modified": "2013-06-17T11:37:35.834", 
-            "created": "2013-06-17T11:37:35.834", 
+            "modified": "2013-06-18T11:52:04.876", 
+            "created": "2013-06-18T11:52:04.876", 
             "name": "alpha", 
             "founder": 12, 
             "description": "Cool people"
@@ -796,8 +823,8 @@
         "pk": 2, 
         "model": "teamwork.team", 
         "fields": {
-            "modified": "2013-06-17T11:37:35.835", 
-            "created": "2013-06-17T11:37:35.835", 
+            "modified": "2013-06-18T11:52:04.876", 
+            "created": "2013-06-18T11:52:04.876", 
             "name": "beta", 
             "founder": 13, 
             "description": "A team of folks"
@@ -807,8 +834,8 @@
         "pk": 3, 
         "model": "teamwork.team", 
         "fields": {
-            "modified": "2013-06-17T11:37:35.835", 
-            "created": "2013-06-17T11:37:35.835", 
+            "modified": "2013-06-18T11:52:04.877", 
+            "created": "2013-06-18T11:52:04.877", 
             "name": "gamma", 
             "founder": 14, 
             "description": "Assemblage of users"
@@ -836,7 +863,7 @@
             ], 
             "description": "", 
             "permissions": [
-                44
+                46
             ], 
             "name": "normal", 
             "team": 1
@@ -851,7 +878,7 @@
             ], 
             "description": "", 
             "permissions": [
-                45
+                47
             ], 
             "name": "foo", 
             "team": 2
@@ -867,7 +894,7 @@
             ], 
             "description": "", 
             "permissions": [
-                46
+                48
             ], 
             "name": "bar", 
             "team": 2
@@ -883,8 +910,8 @@
             ], 
             "description": "", 
             "permissions": [
-                44, 
-                45
+                46, 
+                47
             ], 
             "name": "baz", 
             "team": 3
@@ -900,9 +927,9 @@
             ], 
             "description": "", 
             "permissions": [
-                44, 
                 46, 
-                45
+                48, 
+                47
             ], 
             "name": "quux", 
             "team": 3

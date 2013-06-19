@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}create{% endblock %}
+{% block content %}
+
+<h1>Create</h1>
+{% if parent %}
+<p>Parent: <a href="{% url wiki.views.view name=parent.name %}">{{ parent.name }}</a></p>
+{% endif %}
+<form method="POST" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p><input type="submit" value="create"></p>
+</form>
+
+{% endblock %}

@@ -6,5 +6,21 @@
 <section id="content">
     {{ document.content }}
 </section>
+<section>
+    <h2>Parents</h2>
+    <ul>
+        {% for parent in document.get_permission_parents reversed %}
+            <li><a href="{% url wiki.views.view name=parent.name %}">{{ parent.name }}</a></li>
+        {% endfor %}
+    </ul>
+</section>
+<section>
+    <h2>Permissions</h2>
+    <ul>
+        {% for p in perms %}
+            <li>{{ p }}</li>
+        {% endfor %}
+    </ul>
+</section>
 
 {% endblock %}

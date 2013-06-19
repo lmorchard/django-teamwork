@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load teamwork_tags %}
 {% block title %}Home{% endblock %}
 {% block content %}
 
@@ -7,11 +8,8 @@
 
 <section>
     <h2>Documents</h2>
-    <ul>
-        {% for document in documents %}
-        <li><a href="{% url wiki.views.view name=document.name %}">{{ document.name }}</a></li>
-        {% endfor %}
-    </ul>
+    <p><a href="{% url wiki.views.create %}">Create new doc</a></p>
+    {% include "wiki/includes/document_list.html" with document_list=documents %}
 </section>
 
 <section>
@@ -20,23 +18,30 @@
         {% for team in teams %}
             <li>
                 <a href="">{{ team.name }}</a>
-                <ul>
+                <table border="1" cellpadding="4" cellspacing="2"><tr valign="top">
                     {% for role in team.role_set.all %}
-                        <li>
-                            <a href="">{{ role.name }}</a>
-                            <ul>
-                                {% for permission in role.permissions.all %}
-                                    <li><a href="">{{ permission }}</a></li>
-                                {% endfor %}
-                            </ul>
-                            <ul>
-                                {% for user in role.users.all %}
-                                    <li><a href="">{{ user.username }}</a></li>
-                                {% endfor %}
-                            </ul>
-                        </li>
+                        <td>
+                            Role: <a href="">{{ role.name }}</a>
+                            <table border="0" cellpadding="2" cellspacing="2"><tr valign="top">
+                                <td>
+                                    Permissions
+                                    <ul>
+                                        {% for permission in role.permissions.all %}
+                                        <li>{{ permission.content_type.app_label}}.{{ permission.codename }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td><td>
+                                    Members
+                                    <ul>
+                                        {% for user in role.users.all %}
+                                            <li><a href="">{{ user.username }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                        </tr></table>
+                        </td>
                     {% endfor %}
-                </ul>
+            </tr></table>
             </li>
         {% endfor %}
     </ul>

@@ -14,8 +14,11 @@ from teamwork_example.wiki.models import Document
 
 def view_link(self):
     """Public link to the document"""
-    link = self.get_absolute_url()
-    return '<a target="_blank" href="%s">View</a>' % (link,)
+    try:
+        link = self.get_absolute_url()
+        return '<a target="_blank" href="%s">View</a>' % (link,)
+    except:
+        return ''
 
 view_link.allow_tags = True
 view_link.short_description = "Public"

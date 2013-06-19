@@ -1,0 +1,32 @@
+{% load teamwork_tags %}
+<ul>
+    {% for document in document_list %}
+        {% get_all_obj_permissions request.user for document as "perms" %}
+        {% if 'wiki.view_document' in perms %}
+        <li>
+            <a href="{% url wiki.views.view name=document.name %}">{{ document.name }}</a>
+            (
+                {% if 'wiki.add_document_child' in perms %}
+                    <a href="{% url wiki.views.create %}?parent={{ document.pk }}">create</a>
+                {% endif %}
+                {% if 'wiki.change_document' in perms %}
+                    <a href="{% url wiki.views.edit name=document.name %}">edit</a>
+                {% endif %}
+                {% if 'wiki.delete_document' in perms %}
+                    <a href="{% url wiki.views.delete name=document.name %}">delete</a>
+                {% endif %}
+            )
+            <br>
+            by {{ document.creator }}
+            {% if document.team %}
+                for {{ document.team }}
+            {% endif %}
+            {% if document.get_children|length%}
+                {% with "wiki/includes/document_list.html" as filename %}  
+                    {% include filename with document_list=document.get_children %}  
+                {% endwith %}
+            {% endif %}
+        </li>
+        {% endif %}
+    {% endfor %}
+</ul>

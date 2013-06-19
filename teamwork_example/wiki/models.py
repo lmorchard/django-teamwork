@@ -8,6 +8,7 @@ from teamwork.models import Team, Role
 class DocumentManager(models.Manager):
     pass
 
+
 class Document(models.Model):
     name = models.CharField(max_length=80, unique=True)
     content = models.TextField(blank=True, null=True)
@@ -20,6 +21,7 @@ class Document(models.Model):
 
     class Meta:
         permissions = (
+            ('view_document', 'Can view document'),
             ('add_document_child', 'Can add child document'),
             ('frob', 'Can frobulate documents'),
             ('xyzzy', 'Can xyzzy documents'),
@@ -34,6 +36,9 @@ class Document(models.Model):
         """Build the absolute URL to this document from its full path"""
         return reverse('wiki.views.view', args=[self.name])
 
+    def get_owner_user(self):
+        return self.creator
+
     def get_all_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
         if ('quux' in user.username):
@@ -47,3 +52,6 @@ class Document(models.Model):
             curr = curr.parent
             parents.append(curr)
         return parents
+
+    def get_children(self):
+        return Document.objects.filter(parent=self).all()
