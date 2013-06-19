@@ -10,6 +10,36 @@ for more background.
 - `Latest documentation on Read The Docs <https://django-teamwork.readthedocs.org/en/latest/>`_
   (`source <https://github.com/lmorchard/django-teamwork/tree/master/docs>`_)
 
+TODO
+----
+
+* Move all the below into GitHub Issues, once this gets to feature-complete
+
+* API ergonomics
+
+  - shortcut to convert from codename + content object to Permission
+
+* Support ForeignKey for Policy directly from content objects?
+
+* Support many-to-many for Policies and content objects?
+
+* Popup-friendly views? 
+
+  - to apply / adjust Policy on a content Object
+  
+  - to assign a user to one of your Teams
+
+* Abstract out / make more flexible some of the integration points
+    
+  - optional fields & methods on content objects
+      
+    * team field
+    
+    * get_permission_parents, get_all_permissions
+
+* Consider optimizations for mass-lookup cases, because this does nothing for
+  that now.
+
 Use Cases / Specs
 -----------------
 
@@ -50,22 +80,6 @@ to accomplish here:
 * As a creator of content Objects in a hierarchical tree,
   I want a Policy to apply recursively down through the tree,
   In order to avoid assigning a Policy to each child Object individually
-
-TODO
-----
-
-* API ergonomics
-    * shortcut to convert from codename + content object to Permission
-
-* Support ForeignKey for Policy directly from content objects?
-
-* Support many-to-many for Policies and content objects?
-
-* Popup-friendly views? 
-
-  - to apply / adjust Policy on a content Object
-  
-  - to assign a user to one of your Teams
 
 
 .. |build-status| image:: https://secure.travis-ci.org/lmorchard/django-teamwork.png?branch=master
