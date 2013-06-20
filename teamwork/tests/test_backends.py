@@ -7,6 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 
 from django.test import TestCase
 
+from django.contrib.sites.models import Site, get_current_site
+
 from nose.tools import assert_equal, with_setup, assert_false, eq_, ok_
 from nose.plugins.attrib import attr
 
@@ -68,36 +70,30 @@ class TeamBackendTests(TestCaseBase):
 
         role1 = Role.objects.create(name='role1', team=team)
         role1.users.add(role_user)
-        perms = self.names_to_doc_permissions(expected_role_perms)
-        role1.permissions.add(*perms)
+        role1.add_permissions_by_name(expected_role_perms, doc)
 
         anon_policy = Policy.objects.create(content_object=doc,
                                             anonymous=True)
-        perms = self.names_to_doc_permissions(expected_anon_perms)
-        anon_policy.permissions.add(*perms)
+        anon_policy.add_permissions_by_name(expected_anon_perms, doc)
 
         auth_policy = Policy.objects.create(content_object=doc,
                                             authenticated=True)
-        perms = self.names_to_doc_permissions(expected_auth_perms)
-        auth_policy.permissions.add(*perms)
+        auth_policy.add_permissions_by_name(expected_auth_perms, doc)
 
         users_policy = Policy.objects.create(content_object=doc)
-        perms = self.names_to_doc_permissions(expected_users_perms)
         users_policy.users.add(*users_users)
-        users_policy.permissions.add(*perms)
+        users_policy.add_permissions_by_name(expected_users_perms, doc)
 
         group_policy = Policy.objects.create(content_object=doc)
         group = Group.objects.create(name='Honk honk')
         for user in group_users:
             user.groups.add(group)
         group_policy.groups.add(group)
-        perms = self.names_to_doc_permissions(expected_group_perms)
-        group_policy.permissions.add(*perms)
+        group_policy.add_permissions_by_name(expected_group_perms, doc)
 
         owner_policy = Policy.objects.create(content_object=doc,
                                              apply_to_owners=True)
-        perms = self.names_to_doc_permissions(expected_owner_perms)
-        owner_policy.permissions.add(*perms)
+        owner_policy.add_permissions_by_name(expected_owner_perms, doc)
 
         def assert_perms(expected_perms, user):
             eq_(expected_perms, set(
@@ -153,23 +149,19 @@ class TeamBackendTests(TestCaseBase):
 
         policy_on_0 = Policy.objects.create(content_object=docs[0],
                                             authenticated=True)
-        perms = self.names_to_doc_permissions(('frob',))
-        policy_on_0.permissions.add(*perms)
+        policy_on_0.add_permissions_by_name(('frob',))
 
         policy_on_1 = Policy.objects.create(content_object=docs[1],
                                             authenticated=True)
-        perms = self.names_to_doc_permissions(('xyzzy',))
-        policy_on_1.permissions.add(*perms)
+        policy_on_1.add_permissions_by_name(('xyzzy',))
 
         policy_on_2 = Policy.objects.create(content_object=docs[2],
                                             authenticated=True)
-        perms = self.names_to_doc_permissions(('hello',))
-        policy_on_2.permissions.add(*perms)
+        policy_on_2.add_permissions_by_name(('hello',))
 
         policy_on_5 = Policy.objects.create(content_object=docs[5],
                                             authenticated=True)
-        perms = self.names_to_doc_permissions(('quux',))
-        policy_on_5.permissions.add(*perms)
+        policy_on_5.add_permissions_by_name(('quux',))
 
         # Set up a team & role to exercise team inheritance
         team_for_7 = Team.objects.create(name="Team for 7")
@@ -178,8 +170,7 @@ class TeamBackendTests(TestCaseBase):
 
         role1 = Role.objects.create(name='role1_for_7', team=team_for_7)
         role1.users.add(user)
-        perms = self.names_to_doc_permissions(('add_document_child',))
-        role1.permissions.add(*perms)
+        role1.add_permissions_by_name(('add_document_child',), docs[7])
 
         # Check the team inheritance as a special case
         perms = user.get_all_permissions(docs[8])
@@ -201,3 +192,36 @@ class TeamBackendTests(TestCaseBase):
             eq_(set(case), perms,
                 'Permissions for doc #%s should be %s, were instead %s' %
                 (idx, case, perms))
+
+    def test_site_policy(self):
+        """Policies on Sites should grant base-level permissions"""
+        curr_site = Site.objects.get_current()
+        new_site = Site.objects.create(domain='site2', name='site2')
+
+        doc = Document.objects.create(name="site_doc")
+        doc2 = Document.objects.create(name="site_doc2", site=new_site)
+
+        policy = Policy.objects.create(content_object=curr_site)
+        policy2 = Policy.objects.create(content_object=new_site)
+
+        user = User.objects.create_user(
+            'sitemember0', 'sitemember0@example.com', 'sitemember0')
+        policy.users.add(user)
+        policy2.users.add(user)
+
+        expected_perms = ('add_document', 'add_document_child')
+        policy.add_permissions_by_name(expected_perms, obj=doc)
+
+        expected_perms2 = ('hello', 'quux')
+        policy2.add_permissions_by_name(expected_perms2, obj=doc2)
+
+        result_perms = user.get_all_permissions(doc)
+        eq_(set(('wiki.add_document', 'wiki.add_document_child')),
+            result_perms)
+
+        result_perms = user.get_all_permissions()
+        eq_(set(('wiki.add_document', 'wiki.add_document_child')),
+            result_perms)
+
+        result_perms = user.get_all_permissions(doc2)
+        eq_(set(('wiki.hello', 'wiki.quux')), result_perms)

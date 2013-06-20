@@ -107,6 +107,11 @@ class Role(models.Model):
             ('manage_users', 'Can manage role users'),
         )
 
+    def add_permissions_by_name(self, names, obj=None):
+        from .shortcuts import get_permission_by_name
+        self.permissions.add(*(get_permission_by_name(name, obj)
+                             for name in names))
+
 
 class PolicyManager(models.Manager):
     """
@@ -180,3 +185,10 @@ class Policy(models.Model):
 
     def __unicode__(self):
         return u'Policy(%s)' % self.content_object
+
+    def add_permissions_by_name(self, names, obj=None):
+        from .shortcuts import get_permission_by_name
+        if obj is None:
+            obj = self.content_object
+        self.permissions.add(*(get_permission_by_name(name, obj)
+                             for name in names))

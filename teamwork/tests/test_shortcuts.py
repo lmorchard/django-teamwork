@@ -17,12 +17,12 @@ from teamwork_example.wiki.models import Document
 
 from ..models import Team, Role, Policy
 from ..backends import TeamworkBackend
-from ..shortcuts import get_object_or_404_or_403
+from ..shortcuts import get_object_or_404_or_403, get_permission_by_name
 
 from . import TestCaseBase
 
 
-class ShortcutTests(TestCaseBase):
+class GetObjectOr403Or404Tests(TestCaseBase):
 
     def setUp(self):
         self.obj = Document.objects.create(name='shortcut_test')
@@ -30,8 +30,7 @@ class ShortcutTests(TestCaseBase):
                                              'noob2')
         self.policy = Policy.objects.create(content_object=self.obj)
         self.policy.users.add(self.user)
-        perms = self.names_to_doc_permissions(('hello',))
-        self.policy.permissions.add(*perms)
+        self.policy.add_permissions_by_name(('hello',))
 
     def test_simple_get(self):
         """get_object_or_404_or_403 shortcut should return an object"""
@@ -56,3 +55,30 @@ class ShortcutTests(TestCaseBase):
         """get_object_or_404_or_403 should throw Http404"""
         obj = get_object_or_404_or_403('wiki.hello', self.user,
                                        Document, name='does_not_exist')
+
+
+class GetPermissionByNameTests(TestCaseBase):
+
+    def setUp(self):
+        self.obj = Document.objects.create(name='shortcut_test')
+        self.ct = ContentType.objects.get_for_model(self.obj)
+        self.codename = 'add_document_child'
+        self.expected_perm = Permission.objects.get(
+            content_type__app_label=self.ct.app_label,
+            codename=self.codename)
+
+    def test_no_object_get(self):
+        """get_permission_by_name should accept app_label.codename"""
+        result_perm = get_permission_by_name('%s.%s' % (self.ct.app_label,
+                                                        self.codename))
+        eq_(self.expected_perm, result_perm)
+
+    def test_object_get(self):
+        """get_permission_by_name should accept codename, object"""
+        result_perm = get_permission_by_name(self.codename, self.obj)
+        eq_(self.expected_perm, result_perm)
+
+    @raises(ValueError)
+    def test_bad_name(self):
+        """get_permission_by_name should raise exception on codename"""
+        get_permission_by_name('thisisbad')

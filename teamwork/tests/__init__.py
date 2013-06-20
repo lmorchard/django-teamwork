@@ -8,6 +8,7 @@ from django.contrib.auth.models import User, Permission, Group
 from teamwork_example.wiki.models import Document
 
 from ..models import Team, Role
+from ..shortcuts import get_permission_by_name
 
 
 class TestCaseBase(TestCase):
@@ -27,7 +28,3 @@ class TestCaseBase(TestCase):
 
     def tearDown(self):
         super(TestCaseBase, self).tearDown()
-
-    def names_to_doc_permissions(self, names):
-        return [Permission.objects.get_by_natural_key(name, 'wiki', 'document')
-                for name in names]

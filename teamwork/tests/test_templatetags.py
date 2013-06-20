@@ -33,8 +33,7 @@ class TemplateTagsTests(TestCaseBase):
                                              'noob2')
         self.policy = Policy.objects.create(content_object=self.obj)
         self.policy.users.add(self.user)
-        perms = self.names_to_doc_permissions(('hello',))
-        self.policy.permissions.add(*perms)
+        self.policy.add_permissions_by_name(('hello',))
 
     def test_simple_policy(self):
         """get_all_obj_permissions tag should work for a simple case"""
