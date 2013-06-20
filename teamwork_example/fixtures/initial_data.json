@@ -17,7 +17,7 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2013-06-19T15:10:03.179", 
+            "last_login": "2013-06-20T15:23:57.651", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$2bKfqkwwypVS$9qZpWT1gbm6ygPjuuCO+C5qyNhPi9QB8B/kNziKKUpk=", 
@@ -35,7 +35,7 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-19T14:20:49.501", 
+            "last_login": "2013-06-20T15:21:58.765", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$ahJbzPPcgoIp$5voVIE9hfra39+lYfzi4tzhrIj06Djhx32yWWRG0qBA=", 
@@ -53,7 +53,7 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T15:19:37", 
+            "last_login": "2013-06-20T15:30:51.689", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$72khnxbD9kut$mh+mU8KBD+dz958VPyOwrluG47SRplvBuyFHTromOaI=", 
@@ -107,7 +107,7 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-19T15:10:06.869", 
+            "last_login": "2013-06-20T14:03:36.169", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$LgK5pCbxHe0E$Vu5bXf837WRGNtQ+BRxgYxAUxQin7ctPi5q0MlR7fsE=", 
@@ -125,7 +125,7 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2013-06-18T17:36:32.737", 
+            "last_login": "2013-06-20T15:56:47.279", 
             "groups": [], 
             "user_permissions": [], 
             "password": "pbkdf2_sha256$10000$zSnfPN7oNcDQ$ICT9Jh7vw+I2J1gebdWvZUc7Ibz0JiTFUQTwOlOMQuE=", 
@@ -705,15 +705,43 @@
         }
     }, 
     {
+        "pk": 6, 
+        "model": "teamwork.policy", 
+        "fields": {
+            "groups": [], 
+            "authenticated": true, 
+            "content_type": [
+                "sites", 
+                "site"
+            ], 
+            "creator": null, 
+            "created": "2013-06-20T15:28:19.338", 
+            "modified": "2013-06-20T15:28:19.338", 
+            "object_id": 1, 
+            "apply_to_owners": false, 
+            "anonymous": false, 
+            "team": null, 
+            "permissions": [
+                [
+                    "add_document", 
+                    "wiki", 
+                    "document"
+                ]
+            ], 
+            "users": []
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "wiki.document", 
         "fields": {
-            "content": "This is the root of section 1", 
+            "name": "Section 1", 
+            "parent": null, 
             "creator": [
                 "admin"
             ], 
-            "name": "Section 1", 
-            "parent": null, 
+            "site": null, 
+            "content": "This is the root of section 1", 
             "team": 1
         }
     }, 
@@ -721,12 +749,13 @@
         "pk": 2, 
         "model": "wiki.document", 
         "fields": {
-            "content": "This is the root of section 2", 
+            "name": "Section 2", 
+            "parent": null, 
             "creator": [
                 "admin"
             ], 
-            "name": "Section 2", 
-            "parent": null, 
+            "site": null, 
+            "content": "This is the root of section 2", 
             "team": 2
         }
     }, 
@@ -734,12 +763,13 @@
         "pk": 3, 
         "model": "wiki.document", 
         "fields": {
-            "content": "This is the root of section 3", 
+            "name": "Section 3", 
+            "parent": null, 
             "creator": [
                 "admin"
             ], 
-            "name": "Section 3", 
-            "parent": null, 
+            "site": null, 
+            "content": "This is the root of section 3", 
             "team": 3
         }
     }, 
@@ -747,12 +777,13 @@
         "pk": 4, 
         "model": "wiki.document", 
         "fields": {
-            "content": "This is a section that's open to the public", 
+            "name": "Public section", 
+            "parent": null, 
             "creator": [
                 "admin"
             ], 
-            "name": "Public section", 
-            "parent": null, 
+            "site": null, 
+            "content": "This is a section that's open to the public", 
             "team": null
         }
     }, 
@@ -760,12 +791,13 @@
         "pk": 5, 
         "model": "wiki.document", 
         "fields": {
-            "content": "This is a sub page of the public section", 
+            "name": "Public sub 1", 
+            "parent": 4, 
             "creator": [
                 "randomguy1"
             ], 
-            "name": "Public sub 1", 
-            "parent": 4, 
+            "site": null, 
+            "content": "This is a sub page of the public section", 
             "team": null
         }
     }, 
@@ -773,12 +805,13 @@
         "pk": 6, 
         "model": "wiki.document", 
         "fields": {
-            "content": "This is yet another sub-page", 
+            "name": "Public sub sub 1", 
+            "parent": 5, 
             "creator": [
                 "section1_leader"
             ], 
-            "name": "Public sub sub 1", 
-            "parent": 5, 
+            "site": null, 
+            "content": "This is yet another sub-page", 
             "team": null
         }
     }, 
@@ -786,12 +819,13 @@
         "pk": 7, 
         "model": "wiki.document", 
         "fields": {
-            "content": "This is a subsection of section 1", 
+            "name": "Sub-section 1", 
+            "parent": 1, 
             "creator": [
                 "section1_leader"
             ], 
-            "name": "Sub-section 1", 
-            "parent": 1, 
+            "site": null, 
+            "content": "This is a subsection of section 1", 
             "team": null
         }
     }, 
@@ -799,12 +833,13 @@
         "pk": 8, 
         "model": "wiki.document", 
         "fields": {
-            "content": "Here's a subsection of section 2", 
+            "name": "Sub-section 2", 
+            "parent": 2, 
             "creator": [
                 "admin"
             ], 
-            "name": "Sub-section 2", 
-            "parent": 2, 
+            "site": null, 
+            "content": "Here's a subsection of section 2", 
             "team": null
         }
     }, 
@@ -812,12 +847,13 @@
         "pk": 9, 
         "model": "wiki.document", 
         "fields": {
-            "content": "And one more subsection, this time for Section 3", 
+            "name": "Sub-section 3", 
+            "parent": 3, 
             "creator": [
                 "admin"
             ], 
-            "name": "Sub-section 3", 
-            "parent": 3, 
+            "site": null, 
+            "content": "And one more subsection, this time for Section 3", 
             "team": null
         }
     }, 
@@ -825,12 +861,13 @@
         "pk": 10, 
         "model": "wiki.document", 
         "fields": {
-            "content": "This section can only be edited by admin", 
+            "name": "Read only section", 
+            "parent": null, 
             "creator": [
                 "admin"
             ], 
-            "name": "Read only section", 
-            "parent": null, 
+            "site": null, 
+            "content": "This section can only be edited by admin", 
             "team": null
         }
     }, 
@@ -838,12 +875,13 @@
         "pk": 11, 
         "model": "wiki.document", 
         "fields": {
-            "content": "A subsection editable only by admin", 
+            "name": "Read only sub-section", 
+            "parent": 10, 
             "creator": [
                 "admin"
             ], 
-            "name": "Read only sub-section", 
-            "parent": 10, 
+            "site": null, 
+            "content": "A subsection editable only by admin", 
             "team": null
         }
     }

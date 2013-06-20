@@ -20,14 +20,17 @@ def view(request, name):
     ))
 
 def create(request):
+    """Create a new wiki document"""
+    base_perms = user.get_all_permissions()
+    if 'wiki.add_document' not in base_perms:
+        raise PermissionDenied()
+
     parent_pk = request.GET.get('parent', None)
     if not parent_pk:
         parent = None
     else:
         parent = get_object_or_404_or_403(
             'add_document_child',request.user, Document, pk=parent_pk)
-
-    # TODO: Handle permission for creating a root document?
 
     if 'POST' != request.method:
         form = DocumentCreateForm()

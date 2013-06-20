@@ -5,7 +5,9 @@
     </head>
     <body>
         <header>
-            <a href="{% url base.views.index %}">Home</a> | 
+        <a href="{% url base.views.index %}">Home</a>
+            {% block breadcrumbs %}{% endblock %}
+            | 
             {% if not request.user.is_authenticated %}
                 Log in as:
                 <form style="display: inline" action="{% url profiles.views.login %}" method="POST">
@@ -18,7 +20,9 @@
                     <input type="submit" value="Log in">
                 </form>
             {% else %}
-                Logged in as: {{ request.user }} (<a href="{% url profiles.views.logout %}">logout</a>)
+                Logged in as:
+                <a href="{% url profiles.views.user_detail request.user.username %}">{{ request.user }}</a>
+                (<a href="{% url profiles.views.logout %}">logout</a>)
             {% endif %}
             <hr>
         </header>

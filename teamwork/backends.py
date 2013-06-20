@@ -39,9 +39,9 @@ class TeamworkBackend(object):
         # Map the permissions down to a set of app.codename strings
         named_perms = self._perms_to_names(perms)
 
-        if hasattr(obj, 'get_all_permissions'):
+        if hasattr(obj, 'filter_permissions'):
             # Allow the object to filter the permissions
-            named_perms = obj.get_all_permissions(user, named_perms)
+            named_perms = obj.filter_permissions(user, named_perms)
 
         return named_perms
 

@@ -40,7 +40,7 @@ class Document(models.Model):
     def get_owner_user(self):
         return self.creator
 
-    def get_all_permissions(self, user, permissions):
+    def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
         if ('quux' in user.username):
             permissions.add('wiki.quux')

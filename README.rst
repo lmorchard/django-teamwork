@@ -15,6 +15,16 @@ TODO
 
 * Move all the below into GitHub Issues, once this gets to feature-complete
 
+* Add views for Team and Policy management, outside of Admin
+  
+  - Need views in example app for profile views
+
+* Popup-friendly views? 
+
+  - to apply / adjust Policy on a content Object
+  
+  - to assign a user to one of your Teams
+
 * API ergonomics
 
   - shortcut to convert from codename + content object to Permission
@@ -22,12 +32,6 @@ TODO
 * Support ForeignKey for Policy directly from content objects?
 
 * Support many-to-many for Policies and content objects?
-
-* Popup-friendly views? 
-
-  - to apply / adjust Policy on a content Object
-  
-  - to assign a user to one of your Teams
 
 * Abstract out / make more flexible some of the integration points
     

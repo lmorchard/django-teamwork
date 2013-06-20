@@ -14,7 +14,6 @@ urlpatterns = patterns('',
     ('', include('base.urls')),
     (r'^profiles/', include('profiles.urls')),
     (r'^wiki/', include('wiki.urls')),
-    #(r'^teamwork/', include('teamwork.urls')),
     (r'^admin/', include(admin.site.urls)),
 )
 

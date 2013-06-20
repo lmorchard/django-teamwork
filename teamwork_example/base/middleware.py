@@ -8,4 +8,5 @@ class UserListMiddleware(object):
     """
     def process_request(self, request):
         request.user_list = User.objects.all()
+        request.base_perms = request.user.get_all_permissions()
         return None

@@ -134,6 +134,7 @@ INSTALLED_APPS = [
     'south',
     'teamwork',
     'teamwork_example.base',
+    'teamwork_example.profiles',
     'teamwork_example.wiki',
 ]
 

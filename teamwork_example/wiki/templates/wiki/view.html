@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% load teamwork_tags %}
 {% block title %}{{ document.name }} | view{% endblock %}
-{% block content %}
-<article id="document">
 
-<p class="parents">
+{% block breadcrumbs %}
+    /
     {% for parent in document.get_permission_parents reversed %}
         <a href="{% url wiki.views.view name=parent.name %}">{{ parent.name }}</a> /
     {% endfor %}
-</p>
+    <a href="{% url wiki.views.view name=document.name %}">{{ document.name }}</a>
+{% endblock %}
+
+{% block content %}
+<article id="document">
 
 <section id="content">
     <h1>{{ document.name }}</h1>

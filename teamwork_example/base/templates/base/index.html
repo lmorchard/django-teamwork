@@ -4,44 +4,11 @@
 {% block content %}
 
 <section>
-    <h2>Documents</h2>
-    <p><a href="{% url wiki.views.create %}">Create new document</a></p>
+    <h1>Documents</h1>
+    {% if 'wiki.add_document' in request.base_perms %}
+        <p><a href="{% url wiki.views.create %}">Create new document</a></p>
+    {% endif %}
     {% include "wiki/includes/document_list.html" with document_list=documents %}
-</section>
-
-<section>
-    <h2>Teams</h2>
-    <ul>
-        {% for team in teams %}
-            <li>
-                <a href="">{{ team.name }}</a>
-                <table border="1" cellpadding="4" cellspacing="2"><tr valign="top">
-                    {% for role in team.role_set.all %}
-                        <td>
-                            Role: <a href="">{{ role.name }}</a>
-                            <table border="0" cellpadding="2" cellspacing="2"><tr valign="top">
-                                <td>
-                                    Permissions
-                                    <ul>
-                                        {% for permission in role.permissions.all %}
-                                        <li>{{ permission.content_type.app_label}}.{{ permission.codename }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                </td><td>
-                                    Members
-                                    <ul>
-                                        {% for user in role.users.all %}
-                                            <li><a href="">{{ user.username }}</a></li>
-                                        {% endfor %}
-                                    </ul>
-                                </td>
-                        </tr></table>
-                        </td>
-                    {% endfor %}
-            </tr></table>
-            </li>
-        {% endfor %}
-    </ul>
 </section>
 
 {% endblock %}
