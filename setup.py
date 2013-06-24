@@ -7,15 +7,15 @@ except ImportError:
 
 
 setup(
-    name='django-valet-keys',
+    name='django-teamwork',
     version='0.0.1',
     description='Django app for managing valet keys for robots',
     long_description=open('README.rst').read(),
     author='Les Orchard',
     author_email='me@lmorchard.com',
-    url='http://github.com/lmorchard/django-valet-keys',
+    url='http://github.com/lmorchard/django-teamwork',
     license='BSD',
-    packages=['valet_keys'],
+    packages=['teamwork'],
     package_data={},
     classifiers=[
         'Development Status :: 4 - Beta',
