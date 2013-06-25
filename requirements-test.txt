@@ -1,5 +1,7 @@
-Django==1.4.3
+Django==1.4.5
 pyquery==1.2.4
 South==0.7.6
 django-nose==1.1
 nose==1.2.1
+coverage==3.6
+pep8==1.4.5
