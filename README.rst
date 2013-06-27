@@ -57,6 +57,11 @@ Hacking notes
 
     ./teamwork_example/manage.py test teamwork
 
+* To continually check pep8, tests, and coverage while working on OS X:
+
+    gem install kicker
+    kicker -c -e ./run-tests.sh teamwork teamwork_example
+
 * Running the example site::
 
     ./teamwork_example/manage.py syncdb --noinput; ./teamwork_example/manage.py runserver

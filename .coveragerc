@@ -1,0 +1,9 @@
+[run]
+source =
+    teamwork
+include =
+    teamwork/*.py
+omit =
+    teamwork/admin.py
+    teamwork/tests/*py
+    teamwork/migrations/*.py
