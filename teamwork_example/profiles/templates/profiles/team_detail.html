@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load teamwork_tags %}
+{% block title %}{{ team.name }} | team detail{% endblock %}
+{% block content %}
+<article id="team">
+
+    <h1>Team: <span class="name">{{ team.name }}</span></h1>
+    <p class="description">{{ team.description }}</p>
+
+    <h2>Members:</h2>
+    <ul>
+        {% for member in members %}
+        <li>
+            <a href="{% url profiles.views.user_detail member.user.username %}">{{ member.user }}</a>
+            ({{ member.roles|join:", " }})
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Roles</h2>
+    <ul>
+        {% for role in roles %}
+            <li>
+                <span>{{ role }}</span>
+                <ul>
+                    {% for permission in role.permissions.all %}
+                        <li>{{ permission }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+
+</article>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load teamwork_tags %}
+{% block title %}{{ user.username }} | user detail{% endblock %}
+{% block content %}
+<article id="user">
+
+    <h1><span>User:</span>
+        <span class="name">{{ user.username }}</span>
+        {% if user.is_superuser %}
+            <span class="is_superuser">(Is superuser)</span>
+        {% endif %}
+    </h1>
+
+    {% if roles %}
+        <h2>Roles</h2>
+        <ul class="roles">
+            {% for role in roles %}
+                <li>
+                    <a class="team" href="{% url profiles.views.team_detail role.team.name %}">{{ role.team }}</a>:
+                    <span class="role">{{ role }}</span>
+                    <dl>
+                        {% for permission in role.permissions.all %}
+                            <dt>{{ permission.content_type.app_label }}.{{ permission.codename }}</dt>
+                            <dd>{{ permission }}</dd>
+                        {% endfor %}
+                    </dl>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Base permissions</h2>
+    <ul class="base_perms">
+        {% for perm in base_perms %}
+            <li>{{ perm }}</li>
+        {% endfor %}
+    </ul>
+
+</article>
+{% endblock %}
