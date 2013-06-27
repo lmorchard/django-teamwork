@@ -272,8 +272,6 @@ class TeamBackendTests(TestCaseBase):
 
         with override_settings(TEAMWORK_BASE_POLICIES=test_policies):
 
-            logging.debug("SETTINGS %s" % settings.TEAMWORK_BASE_POLICIES)
-
             assert_perms(expected_anon_perms, anon_user, doc)
             assert_perms(expected_anon_perms, anon_user)
             assert_perms(expected_auth_perms, auth_user, doc)

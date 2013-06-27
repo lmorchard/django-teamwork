@@ -113,41 +113,31 @@ class TeamworkBackend(object):
         """
         Get permissions based on a baseline policy specified in settings.
         """
-        logging.debug("OH HAI SETTINGS PERMS")
-
         policy = getattr(settings, 'TEAMWORK_BASE_POLICIES', None)
         if not policy:
-            logging.debug("NO SETTINGS POLICY")
             return set()
 
         if user.is_anonymous():
-            logging.debug("\tANON DETECTED FOR %s" % user)
             return policy.get('anonymous', set())
 
-        logging.debug("\tUSER IS %s" % user)
         perms = set()
 
         if user.is_authenticated():
             perms.update(policy.get('authenticated', set()))
-            logging.debug("\tAFTER AUTH %s" % perms)
 
         users_perms = policy.get('users', dict())
         if user.username in users_perms:
             perms.update(users_perms[user.username])
-            logging.debug("\tAFTER USERS %s" % perms)
 
         group_perms = policy.get('groups', None)
         if group_perms:
             for group in user.groups.all():
                 if group.name in group_perms:
                     perms.update(group_perms[group.name])
-                    logging.debug("\tAFTER GROUPS %s" % perms)
 
         if (obj and 'apply_to_owners' in policy and
                     hasattr(obj, 'get_owner_user') and
                     user == obj.get_owner_user()):
             perms.update(policy['apply_to_owners'])
-
-        logging.debug("\tAFTER OWNERS %s" % perms)
 
         return perms
