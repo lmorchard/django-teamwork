@@ -1,9 +1,9 @@
 import logging
 from itertools import chain
 
+from django.conf import settings
 from django.contrib.auth.models import User, Permission, Group
 from django.contrib.contenttypes.models import ContentType
-
 from django.contrib.sites.models import Site, get_current_site
 
 from . import DEFAULT_ANONYMOUS_USER_PK
@@ -14,6 +14,55 @@ class TeamworkBackend(object):
     supports_object_permissions = True
     supports_anonymous_user = True
     supports_inactive_user = True
+
+    perms_cache = dict()
+
+    def get_all_permissions(self, user, obj=None):
+
+        if not obj:
+            # If there's no obj, then much can be shortcircuited
+            perms = self._get_site_permissions(user)
+            if not perms:
+                perms = self._get_settings_permissions(user)
+            return perms
+
+        if user.is_anonymous():
+            user_pk = DEFAULT_ANONYMOUS_USER_PK
+        else:
+            user_pk = user.pk
+
+        # TODO: Stash this in the global django cache (ie. memcache)?
+        if not hasattr(obj, '_teamwork_perms_cache'):
+            obj._teamwork_perms_cache = dict()
+
+        if not user_pk in obj._teamwork_perms_cache:
+
+            # Try getting perms for the current object
+            perms = self._get_obj_permissions(user, obj)
+
+            # If the object yielded no perms, try traversing parents
+            if not perms and hasattr(obj, 'get_permission_parents'):
+                parents = obj.get_permission_parents()
+                for parent in parents:
+                    perms = self._get_obj_permissions(user, parent)
+                    if perms:
+                        break
+
+            # Check for policies attached to the current Site object, if any.
+            if not perms:
+                perms = self._get_site_permissions(user, obj)
+
+            # Last ditch effort, consult settings for a baseline policy.
+            if not perms:
+                perms = self._get_settings_permissions(user, obj)
+
+            # Cache all this work...
+            obj._teamwork_perms_cache[user_pk] = perms
+
+        return obj._teamwork_perms_cache[user_pk]
+
+    def has_perm(self, user, perm, obj=None):
+        return perm in self.get_all_permissions(user, obj)
 
     def _perms_to_names(self, perms):
         return set([u"%s.%s" % (p.content_type.app_label, p.codename)
@@ -60,41 +109,45 @@ class TeamworkBackend(object):
             perms = self._perms_to_names(raw_perms)
         return perms
 
-    def get_all_permissions(self, user, obj=None):
+    def _get_settings_permissions(self, user, obj=None):
+        """
+        Get permissions based on a baseline policy specified in settings.
+        """
+        logging.debug("OH HAI SETTINGS PERMS")
 
-        if obj is None:
-            return self._get_site_permissions(user)
+        policy = getattr(settings, 'TEAMWORK_BASE_POLICIES', None)
+        if not policy:
+            logging.debug("NO SETTINGS POLICY")
+            return set()
 
         if user.is_anonymous():
-            user_pk = DEFAULT_ANONYMOUS_USER_PK
-        else:
-            user_pk = user.pk
+            logging.debug("\tANON DETECTED FOR %s" % user)
+            return policy.get('anonymous', set())
 
-        if not hasattr(obj, '_teamwork_perms_cache'):
-            obj._teamwork_perms_cache = dict()
+        logging.debug("\tUSER IS %s" % user)
+        perms = set()
 
-        if not user_pk in obj._teamwork_perms_cache:
+        if user.is_authenticated():
+            perms.update(policy.get('authenticated', set()))
+            logging.debug("\tAFTER AUTH %s" % perms)
 
-            # Try getting perms for the current object
-            perms = self._get_obj_permissions(user, obj)
+        users_perms = policy.get('users', dict())
+        if user.username in users_perms:
+            perms.update(users_perms[user.username])
+            logging.debug("\tAFTER USERS %s" % perms)
 
-            # If the object yielded no perms, try traversing the parent chain
-            if not perms and hasattr(obj, 'get_permission_parents'):
-                parents = obj.get_permission_parents()
-                for parent in parents:
-                    perms = self._get_obj_permissions(user, parent)
-                    if perms:
-                        break
+        group_perms = policy.get('groups', None)
+        if group_perms:
+            for group in user.groups.all():
+                if group.name in group_perms:
+                    perms.update(group_perms[group.name])
+                    logging.debug("\tAFTER GROUPS %s" % perms)
 
-            # Last ditch for permissions is to look for policies attached to
-            # the current Site object.
-            if not perms:
-                perms = self._get_site_permissions(user, obj)
+        if (obj and 'apply_to_owners' in policy and
+                    hasattr(obj, 'get_owner_user') and
+                    user == obj.get_owner_user()):
+            perms.update(policy['apply_to_owners'])
 
-            # Cache all this work...
-            obj._teamwork_perms_cache[user_pk] = perms
+        logging.debug("\tAFTER OWNERS %s" % perms)
 
-        return obj._teamwork_perms_cache[user_pk]
-
-    def has_perm(self, user, perm, obj=None):
-        return perm in self.get_all_permissions(user, obj)
+        return perms

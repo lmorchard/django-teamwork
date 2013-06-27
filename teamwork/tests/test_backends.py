@@ -17,7 +17,21 @@ from teamwork_example.wiki.models import Document
 from ..models import Team, Role, Policy
 from ..backends import TeamworkBackend
 
-from . import TestCaseBase
+from . import TestCaseBase, override_settings
+
+
+def full_perms(pre, perms):
+    return ['%s.%s' % (pre, p) for p in perms]
+
+
+def assert_perms(expected_perms, user, doc=None):
+    result_perms = set(
+        n.split('.')[1] for n in
+        user.get_all_permissions(doc))
+    eq_(expected_perms, result_perms,
+        "Expected perms %s, result was %s" % (expected_perms, result_perms))
+    for perm in expected_perms:
+        user.has_perm(perm, doc)
 
 
 class TeamBackendTests(TestCaseBase):
@@ -91,26 +105,19 @@ class TeamBackendTests(TestCaseBase):
                                              apply_to_owners=True)
         owner_policy.add_permissions_by_name(expected_owner_perms, doc)
 
-        def assert_perms(expected_perms, user):
-            eq_(expected_perms, set(
-                n.split('.')[1] for n in
-                user.get_all_permissions(doc)))
-            for perm in expected_perms:
-                user.has_perm(perm, doc)
-
-        assert_perms(expected_anon_perms, anon_user)
-        assert_perms(expected_auth_perms, auth_user)
-        assert_perms(expected_role_perms, role_user)
+        assert_perms(expected_anon_perms, anon_user, doc)
+        assert_perms(expected_auth_perms, auth_user, doc)
+        assert_perms(expected_role_perms, role_user, doc)
         assert_perms(expected_auth_perms.union(expected_owner_perms),
-                     owner_user)
+                     owner_user, doc)
 
         expected_perms = expected_users_perms.union(expected_auth_perms)
         for user in users_users:
-            assert_perms(expected_perms, user)
+            assert_perms(expected_perms, user, doc)
 
         expected_perms = expected_group_perms.union(expected_auth_perms)
         for user in group_users:
-            assert_perms(expected_perms, user)
+            assert_perms(expected_perms, user, doc)
 
     def test_object_logic_permissions(self):
         """Objects can apply custom logic to permissions"""
@@ -221,3 +228,65 @@ class TeamBackendTests(TestCaseBase):
 
         result_perms = user.get_all_permissions(doc2)
         eq_(set(('wiki.hello', 'wiki.quux')), result_perms)
+
+    def test_settings_base_policy(self):
+        """Base policy for the site overall can be specified in settings"""
+        # Crude, but ensure there are no policies to override settings
+        Policy.objects.all().delete()
+
+        anon_user = AnonymousUser()
+        founder_user = User.objects.create_user(
+            'founder0', 'founder0@example.com', 'founder0')
+        auth_user = self.users['randomguy1']
+        role_user = self.users['randomguy2']
+        users_users = [self.users[u] for u in ('randomguy3', 'randomguy4')]
+        owner_user = self.users['randomguy7']
+
+        group_name = 'settings_policy_group'
+        group_users = [self.users[u] for u in ('randomguy5', 'randomguy6')]
+        group = Group.objects.create(name=group_name)
+        for user in group_users:
+            user.groups.add(group)
+
+        doc = Document.objects.create(name='general_doc_2',
+                                      creator=owner_user)
+
+        expected_anon_perms = set((u'xyzzy', u'hello'))
+        expected_auth_perms = set((u'frob', u'xyzzy'))
+        expected_role_perms = set((u'frob',))
+        expected_users_perms = set((u'frob', u'hello'))
+        expected_group_perms = set((u'add_document_child',))
+        expected_owner_perms = set((u'hello',))
+
+        test_policies = dict(
+            anonymous=full_perms('wiki', expected_anon_perms),
+            authenticated=full_perms('wiki', expected_auth_perms),
+            apply_to_owners=full_perms('wiki', expected_owner_perms),
+            users=dict(
+                (u.username, full_perms('wiki', expected_users_perms))
+                for u in users_users),
+            groups=dict())
+
+        test_policies['groups'][group_name] = full_perms(
+            'wiki', expected_group_perms)
+
+        with override_settings(TEAMWORK_BASE_POLICIES=test_policies):
+
+            logging.debug("SETTINGS %s" % settings.TEAMWORK_BASE_POLICIES)
+
+            assert_perms(expected_anon_perms, anon_user, doc)
+            assert_perms(expected_anon_perms, anon_user)
+            assert_perms(expected_auth_perms, auth_user, doc)
+            assert_perms(expected_auth_perms, auth_user)
+            assert_perms(expected_auth_perms.union(expected_owner_perms),
+                         owner_user, doc)
+
+            expected_perms = expected_users_perms.union(expected_auth_perms)
+            for user in users_users:
+                assert_perms(expected_perms, user, doc)
+                assert_perms(expected_perms, user)
+
+            expected_perms = expected_group_perms.union(expected_auth_perms)
+            for user in group_users:
+                assert_perms(expected_perms, user, doc)
+                assert_perms(expected_perms, user)
