@@ -288,3 +288,23 @@ class TeamBackendTests(TestCaseBase):
             for user in group_users:
                 assert_perms(expected_perms, user, doc)
                 assert_perms(expected_perms, user)
+
+    def test_empty_obj_policy_overrides_base(self):
+        """Policy on an object with no permissions overrides base policy"""
+        Policy.objects.all().delete()
+        anon_user = AnonymousUser()
+        owner_user = self.users['randomguy7']
+        doc = Document.objects.create(name='general_doc_2',
+                                      creator=owner_user)
+        anon_perms = set((u'xyzzy', u'hello'))
+        base_policies = dict(anonymous=full_perms('wiki', anon_perms),)
+        doc_policy = Policy.objects.create(content_object=doc,
+                                           anonymous=True)
+
+        # Note: No permissions added to this doc_policy, which should *revoke*
+        # the base policies.
+        expected_perms = set()
+        #doc_policy.add_permissions_by_name(expected_perms, obj=doc)
+
+        with override_settings(TEAMWORK_BASE_POLICIES=base_policies):
+            assert_perms(expected_perms, anon_user, doc)

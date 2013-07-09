@@ -131,6 +131,8 @@ class PolicyManager(models.Manager):
         policies = self.filter(user_filter,
                                content_type__pk=ct.id,
                                object_id=obj.id).all()
+        if 0 == len(policies):
+            return None
         return chain(*(policy.permissions.all() for policy in policies))
 
 

@@ -22,8 +22,10 @@ class TeamworkBackend(object):
         if not obj:
             # If there's no obj, then much can be shortcircuited
             perms = self._get_site_permissions(user)
-            if not perms:
+            if perms is None:
                 perms = self._get_settings_permissions(user)
+            if perms is None:
+                perms = set()
             return perms
 
         if user.is_anonymous():
@@ -41,20 +43,25 @@ class TeamworkBackend(object):
             perms = self._get_obj_permissions(user, obj)
 
             # If the object yielded no perms, try traversing parents
-            if not perms and hasattr(obj, 'get_permission_parents'):
+            if perms is None and hasattr(obj, 'get_permission_parents'):
                 parents = obj.get_permission_parents()
                 for parent in parents:
                     perms = self._get_obj_permissions(user, parent)
-                    if perms:
+                    if perms is not None:
                         break
 
             # Check for policies attached to the current Site object, if any.
-            if not perms:
+            if perms is None:
                 perms = self._get_site_permissions(user, obj)
 
-            # Last ditch effort, consult settings for a baseline policy.
-            if not perms:
+            # Consult settings for a baseline policy.
+            if perms is None:
                 perms = self._get_settings_permissions(user, obj)
+
+            # If none of the above came up with permissions (even an empty
+            # set), then we have an empty set.
+            if perms is None:
+                perms = set()
 
             # Cache all this work...
             obj._teamwork_perms_cache[user_pk] = perms
@@ -86,7 +93,10 @@ class TeamworkBackend(object):
             perms = team.get_all_permissions(user)
 
         # Map the permissions down to a set of app.codename strings
-        named_perms = self._perms_to_names(perms)
+        if perms is None:
+            named_perms = None
+        else:
+            named_perms = self._perms_to_names(perms)
 
         if hasattr(obj, 'filter_permissions'):
             # Allow the object to filter the permissions
@@ -106,6 +116,8 @@ class TeamworkBackend(object):
         if curr_site:
             raw_perms = Policy.objects.get_all_permissions(
                 user, curr_site)
+            if raw_perms is None:
+                return None
             perms = self._perms_to_names(raw_perms)
         return perms
 
@@ -115,7 +127,7 @@ class TeamworkBackend(object):
         """
         policy = getattr(settings, 'TEAMWORK_BASE_POLICIES', None)
         if not policy:
-            return set()
+            return None
 
         if user.is_anonymous():
             return policy.get('anonymous', set())

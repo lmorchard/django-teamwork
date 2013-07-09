@@ -43,6 +43,8 @@ class Document(models.Model):
     def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
         if ('quux' in user.username):
+            if permissions is None:
+                permissions = set()
             permissions.add('wiki.quux')
         return permissions
 
