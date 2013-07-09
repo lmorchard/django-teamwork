@@ -41,6 +41,10 @@ class TeamBackendTests(TestCaseBase):
 
         self.backend = TeamworkBackend()
 
+    def test_blank_slate_permissions(self):
+        """Permission set should be empty, given a blank slate"""
+        assert_perms(set(), AnonymousUser())
+
     def test_superuser_is_super(self):
         """A superuser should be granted all object permissions"""
         doc = Document.objects.create(name='random_doc_1',
