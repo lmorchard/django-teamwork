@@ -112,16 +112,20 @@ class TeamworkBackend(object):
         Get policy permissions attached to the current Site, or the Site
         specified by an object, if any.
         """
+        perms = None
         # TODO: Abstract this hardcoded 'site' field name
         curr_site = getattr(obj, 'site', None)
         if not curr_site:
             curr_site = Site.objects.get_current()
-        if curr_site:
+        # HACK: Ensure we have a current site, and that it is in fact a Site
+        # object. This turns out to be a problem with mozilla/kuma, which mocks
+        # out Site.objects.get_current() for some tests and doesn't result in a
+        # real Site object.
+        if curr_site and isinstance(curr_site, Site):
             raw_perms = Policy.objects.get_all_permissions(
                 user, curr_site)
-            if raw_perms is None:
-                return None
-            perms = self._perms_to_names(raw_perms)
+            if raw_perms is not None:
+                perms = self._perms_to_names(raw_perms)
         return perms
 
     def _get_settings_permissions(self, user, obj=None):
