@@ -17,6 +17,9 @@ class TeamworkBackend(object):
 
     perms_cache = dict()
 
+    def authenticate(self, username, password):
+        return None
+
     def get_all_permissions(self, user, obj=None):
 
         if not obj:

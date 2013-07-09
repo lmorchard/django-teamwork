@@ -41,6 +41,11 @@ class TeamBackendTests(TestCaseBase):
 
         self.backend = TeamworkBackend()
 
+    def test_authenticate_none(self):
+        """Backend should punt on authenticate handling"""
+        ok_(True, hasattr(self.backend, 'authenticate'))
+        eq_(None, self.backend.authenticate('foo', 'bar'))
+
     def test_blank_slate_permissions(self):
         """Permission set should be empty, given a blank slate"""
         assert_perms(set(), AnonymousUser())
