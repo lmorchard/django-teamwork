@@ -41,7 +41,7 @@ class PolicyAdmin(admin.ModelAdmin):
         'anonymous', 'authenticated',
         'users', 'groups',
     )
-    # raw_id_fields = ('users', 'creator',)
+    raw_id_fields = ('users', 'creator',)
     list_select_related = True
     filter_horizontal = ('permissions', 'groups', 'users',)
 
@@ -58,7 +58,7 @@ class PolicyInline(generic.GenericTabularInline):
         'users', 'groups',
     )
     filter_horizontal = ('permissions', 'groups', 'users',)
-    # raw_id_fields = ('users', 'creator',)
+    raw_id_fields = ('users', 'creator',)
     extra = 0
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
@@ -83,7 +83,7 @@ class RoleInline(admin.TabularInline):
     model = Role
     fields = ('name', 'permissions', 'users',)
     filter_horizontal = ('users', 'permissions',)
-    # raw_id_fields = ('users',)
+    raw_id_fields = ('users',)
     extra = 0
 
 
