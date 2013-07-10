@@ -1,0 +1,3 @@
+[submodule "docs/_themes/mozilla-mdn-sphinx-theme"]
+	path = docs/_themes/mozilla-mdn-sphinx-theme
+	url = git://github.com/lmorchard/mozilla-mdn-sphinx-theme.git
