@@ -33,7 +33,7 @@ some highlights:
   
   - whether the User owns the object;
   
-  - or by specifying specific Users and Groups.
+  - or by matching specific Users and Groups.
 
 * Policies can be set on a Site objects to apply site-wide
   
