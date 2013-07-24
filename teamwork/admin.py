@@ -42,6 +42,11 @@ class PolicyAdmin(admin.ModelAdmin):
         'users', 'groups',
     )
     raw_id_fields = ('users', 'creator',)
+    related_lookup_fields = {
+        'fk': ['creator'],
+        'm2m': ['users'],
+        'generic': [['content_type', 'object_id'], ]
+    }
     list_select_related = True
     filter_horizontal = ('permissions', 'groups', 'users',)
 
