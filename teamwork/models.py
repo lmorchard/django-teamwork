@@ -43,10 +43,17 @@ class Team(models.Model):
     class Meta:
         permissions = (
             ('view_team', 'Can view team'),
+            ('alter_roles', 'Can alter team roles'),
+            ('grant_roles', 'Can grant team roles'),
+            ('drop_roles', 'Can drop team roles'),
         )
 
     def __unicode__(self):
         return self.name
+
+    @property
+    def team(self):
+        return self
 
     def has_user(self, user):
         """Determine whether the given user is a member of this team"""
@@ -54,6 +61,16 @@ class Team(models.Model):
         hits = (Role.users.through.objects
                     .filter(role__team=self, user=user)).count()
         return hits > 0
+
+    def filter_permissions(self, user, permissions):
+        """Filter permissions with custom logic"""
+        if user == self.founder:
+            # Founder is admin-equivalent for the team
+            if permissions is None:
+                permissions = set()
+            for perm, desc in self._meta.permissions:
+                permissions.add('teamwork.%s' % perm)
+        return permissions
 
     def get_all_permissions(self, user):
         """Get all Permissions applied to this User based on assigned Roles"""
@@ -102,9 +119,19 @@ class Role(models.Model):
         unique_together = (('name', 'team'),)
         permissions = (
             ('view_role', 'Can view role'),
-            ('manage_permissions', 'Can manage role permissions'),
-            ('manage_users', 'Can manage role users'),
+            ('manage_role_permissions', 'Can manage role permissions'),
+            ('manage_role_users', 'Can manage role users'),
         )
+
+    def filter_permissions(self, user, permissions):
+        """Filter permissions with custom logic"""
+        if user == self.team.founder:
+            # Founder is admin-equivalent for the team
+            if permissions is None:
+                permissions = set()
+            for perm, desc in self._meta.permissions:
+                permissions.add('teamwork.%s' % perm)
+        return permissions
 
     def add_permissions_by_name(self, names, obj=None):
         from .shortcuts import get_permission_by_name
@@ -140,8 +167,8 @@ class Policy(models.Model):
     """
     Permissions granted by an object to users matching various criteria
     """
-    #description = models.TextField(_("Description of policy"),
-    #                               blank=False)
+    description = models.TextField(_("Description of policy"),
+                                   blank=False, null=True)
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
