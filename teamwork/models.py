@@ -206,9 +206,6 @@ class Policy(models.Model):
         verbose_name_plural = _('Policies')
         permissions = (
             ('view_policy', 'Can view policy'),
-            ('manage_permissions', 'Can manage role permissions'),
-            ('manage_users', 'Can manage role users'),
-            ('manage_groups', 'Can manage role groups'),
         )
 
     def __unicode__(self):

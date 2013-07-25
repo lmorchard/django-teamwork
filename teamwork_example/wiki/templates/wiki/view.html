@@ -22,7 +22,15 @@
 
 <h3>Actions</h3>
 {% get_all_obj_permissions request.user for document as "perms" %}
+{% get_policy_admin_links request.user for document as "policy_links" %}
 <ul>
+    {% if policy_links.change_one %}
+        <li><a href="{{ policy_links.change_one }}">manage access policy</a></li>
+    {% elif policy_links.change_list %}
+        <li><a href="{{ policy_links.change_list }}">manage access policies</a></li>
+    {% elif policy_links.add %}
+        <li><a href="{{ policy_links.add }}">add access policy</a></li>
+    {% endif %}
     {% if 'wiki.add_document_child' in perms %}
         <li><a href="{% url wiki.views.create %}?parent={{ document.pk }}">create child document</a></li>
     {% endif %}

@@ -25,7 +25,7 @@ def render(template, context):
     return t.render(Context(context))
 
 
-class TemplateTagsTests(TestCaseBase):
+class ObjPermissionsTagTests(TestCaseBase):
 
     def setUp(self):
         self.obj = Document.objects.create(name='templ_test')
@@ -88,4 +88,80 @@ class TemplateTagsTests(TestCaseBase):
             '{{ perms|join:" " }}',
         ))
         context = dict(user=self.user, obj=self.obj)
+        result = render(template, context)
+
+
+class PolicyLinksTagTests(TestCaseBase):
+
+    def setUp(self):
+        self.admin = User.objects.get(username='admin')
+
+        self.obj1 = Document.objects.create(name='templ_test1')
+
+        self.obj2 = Document.objects.create(name='templ_test2')
+        self.policy2_1 = Policy.objects.create(content_object=self.obj2)
+
+        self.obj3 = Document.objects.create(name='templ_test3')
+        self.policy3_1 = Policy.objects.create(content_object=self.obj3)
+        self.policy3_2 = Policy.objects.create(content_object=self.obj3)
+
+        self.user = User.objects.create_user(
+            'noob2', 'noob2@example.com', 'noob2')
+
+    def test_simple_policy(self):
+        """get_policy_admin_links tag should work for a simple case"""
+        template = ''.join((
+            '{% load teamwork_tags %}',
+            '{% get_policy_admin_links user for obj as "policy_links" %}',
+            '{% if policy_links.change_one %}',
+            'change_one',
+            '{% elif policy_links.change_list %}',
+            'change_list',
+            '{% elif policy_links.add %}',
+            'add',
+            '{% endif %}',
+        ))
+        cases = (
+            (self.admin, 'add', 'change_one', 'change_list'),
+            (self.user, '', '', ''),
+            (AnonymousUser(), '', '', ''),
+        )
+        for user, ex1, ex2, ex3 in cases:
+            obj_cases = (ex1, self.obj1), (ex2, self.obj2), (ex3, self.obj3)
+            for expected, obj in obj_cases:
+                context = dict(user=user, obj=obj)
+                result = render(template, context)
+                eq_(expected, result)
+
+    @raises(Exception)
+    def test_bad_user(self):
+        """get_policy_admin_links tag should gripe about a non-user param"""
+        template = ''.join((
+            '{% load teamwork_tags %}',
+            '{% get_policy_admin_links user for obj as "links" %}',
+            '{{ perms|join:" " }}',
+        ))
+        context = dict(user=dict(bad="input"), obj=self.obj1)
+        result = render(template, context)
+
+    @raises(TemplateSyntaxError)
+    def test_bad_format(self):
+        """get_policy_admin_links tag should gripe if syntax is bad"""
+        template = ''.join((
+            '{% load teamwork_tags %}',
+            '{% get_policy_admin_links blah blah blah %}',
+            '{{ perms|join:" " }}',
+        ))
+        context = dict(user=self.user, obj=self.obj1)
+        result = render(template, context)
+
+    @raises(TemplateSyntaxError)
+    def test_bad_context_var(self):
+        """get_policy_admin_links tag should require quoted context var"""
+        template = ''.join((
+            '{% load teamwork_tags %}',
+            '{% get_policy_admin_links user for obj as i_should_be_quoted %}',
+            '{{ perms|join:" " }}',
+        ))
+        context = dict(user=self.user, obj=self.obj1)
         result = render(template, context)
