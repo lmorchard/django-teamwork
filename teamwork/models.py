@@ -22,6 +22,35 @@ class TeamManager(models.Manager):
         teams = self.filter(id__in=member_teams)
         return teams
 
+    def get_team_roles_managed_by(self, manager_user, managed_user):
+        """
+        Assemble a list of roles collated by team, for which the manager_user
+        has permission to manage users, annotated with which roles have been
+        granted to the managed_user.
+        """
+        # Get a set of IDs for all the roles granted to the user in question.
+        user_role_ids = set(
+            r['role'] for r in
+            Role.users.through.objects.filter(user=managed_user)
+                                      .values('role'))
+
+        # Join up roles managed by the auth'd user with roles granted to the
+        # user in question.
+        avail_roles = [
+            dict(role=role, granted=(role.id in user_role_ids))
+            for role in Role.objects.select_related('team').all()
+            if manager_user.has_perm('teamwork.manage_role_users', role)
+        ]
+
+        # Extract the unique teams, indexed by ID
+        teams = dict((r['role'].team.id, r['role'].team) for r in avail_roles)
+
+        # Collate available roles by team
+        return [
+            (t[1], [r for r in avail_roles if r['role'].team.id == t[0]])
+            for t in teams.items()
+        ]
+
 
 class Team(models.Model):
     """
@@ -43,9 +72,6 @@ class Team(models.Model):
     class Meta:
         permissions = (
             ('view_team', 'Can view team'),
-            ('alter_roles', 'Can alter team roles'),
-            ('grant_roles', 'Can grant team roles'),
-            ('drop_roles', 'Can drop team roles'),
         )
 
     def __unicode__(self):
@@ -122,6 +148,10 @@ class Role(models.Model):
             ('manage_role_permissions', 'Can manage role permissions'),
             ('manage_role_users', 'Can manage role users'),
         )
+
+    def is_granted_to(self, user):
+        """Return whether this role is granted to the given user"""
+        return (self.users.filter(id=user.id).count() > 0)
 
     def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""

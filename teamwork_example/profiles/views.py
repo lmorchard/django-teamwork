@@ -45,18 +45,14 @@ def user_roles(request, username):
     # Get the user in question
     user = get_object_or_404(User, username=username)
     
+    # POST is an attempt to grant / revoke a role
     if 'POST' == request.method:
-        role_id = request.POST.get('role_id')
-        role = Role.objects.get(id=role_id)
-        
-        if not request.user.has_perm('teamwork.grant_roles', role.team):
-            raise PermissionDenied
-        
-        if not request.user.has_perm('teamwork.manage_role_users', role):
-            raise PermissionDenied
 
-        is_granted = (role.users.filter(id=user.id).count() > 0)
-        if is_granted:
+        role = get_object_or_404_or_403(
+            'teamwork.manage_role_users', request.user,
+            Role, id=request.POST.get('role_id'))
+
+        if role.is_granted_to(user):
             role.users.remove(user)
             messages.info(request, 'Revoked %s for %s from %s' %
                           (role, role.team, user))
@@ -68,34 +64,12 @@ def user_roles(request, username):
         return redirect(reverse('profiles.views.user_roles',
                                 args=(user.username,)))
     
-    # Get a set of IDs for all the roles granted to the user in question.
-    user_role_ids = set(r['role'] for r in
-        Role.users.through.objects.filter(user=user).values('role'))
-
-    # Build a set of all teams for which the auth'd user can grant roles
-    teams = (team for team in Team.objects.all()
-        if request.user.has_perm('teamwork.grant_roles', team))
-
-    # Join up the roles by team for which the auth'd user can grant roles,
-    # along with whether the user in question has been granted the role.
-    roles_by_team = [
-        (team, [
-            dict(
-                role=role,
-                granted=(role.id in user_role_ids)
-            ) 
-            for role in team.role_set.all()
-            if request.user.has_perm('teamwork.manage_role_users', role)
-        ])
-        for team in teams
-    ]
+    roles_by_team = Team.objects.get_team_roles_managed_by(request.user, user)
 
     return render(request, 'profiles/user_roles.html', dict(
         user=user,
         roles_by_team=roles_by_team,
     ))
-
-    #return HttpResponse('%s' % [[user_role_ids, roles_by_team]])
 
 
 def team_detail(request, name):
