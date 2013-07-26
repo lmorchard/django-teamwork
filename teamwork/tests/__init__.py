@@ -67,6 +67,8 @@ class TestCaseBase(TestCase):
         super(TestCaseBase, self).setUp()
 
         self.admin = User.objects.get(username='admin')
+        self.admin_password = 'admin'
+
         self.users = dict((o.username, o) for o in User.objects.all())
         self.teams = dict((o.name, o) for o in Team.objects.all())
         self.roles = dict((o.name, o) for o in Role.objects.all())

@@ -15,16 +15,18 @@
         <h2>Roles</h2>
         <ul class="teams">
             {% for team, roles in roles_by_team %}
-                <li>
+                <li id="team-{{ team.id }}">
                     <a class="team" href="{% url profiles.views.team_detail team.name %}">{{ team }}</a>
                     <ul class="roles">
                         {% for r in roles %}
-                        <li><form method="POST" action="">
+                        <li class="role" id="role-{{ r.role.id }}">
+                            <form method="POST" action="">
                                 <span class="name">{{ r.role }}</span>
                                 {% csrf_token %}
                                 <input type="hidden" name="role_id" value="{{ r.role.pk }}">
                                 <input type="submit" value="{% if r.granted %}revoke{% else %}grant{% endif %}">
-                        </form></li>
+                            </form>
+                        </li>
                         {% endfor %}
                     </ul>
                 </li>

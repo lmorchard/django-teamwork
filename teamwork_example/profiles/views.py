@@ -38,40 +38,6 @@ def user_detail(request, username):
     ))
 
 
-def user_roles(request, username):
-    if not request.user.is_authenticated():
-        raise PermissionDenied
-
-    # Get the user in question
-    user = get_object_or_404(User, username=username)
-    
-    # POST is an attempt to grant / revoke a role
-    if 'POST' == request.method:
-
-        role = get_object_or_404_or_403(
-            'teamwork.manage_role_users', request.user,
-            Role, id=request.POST.get('role_id'))
-
-        if role.is_granted_to(user):
-            role.users.remove(user)
-            messages.info(request, 'Revoked %s for %s from %s' %
-                          (role, role.team, user))
-        else:
-            role.users.add(user)
-            messages.info(request, 'Granted %s for %s to %s' %
-                          (role, role.team, user))
-
-        return redirect(reverse('profiles.views.user_roles',
-                                args=(user.username,)))
-    
-    roles_by_team = Team.objects.get_team_roles_managed_by(request.user, user)
-
-    return render(request, 'profiles/user_roles.html', dict(
-        user=user,
-        roles_by_team=roles_by_team,
-    ))
-
-
 def team_detail(request, name):
     team = get_object_or_404_or_403('view_team', request.user,        
                                     Team, name=name)
