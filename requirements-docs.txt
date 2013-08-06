@@ -1,0 +1,1 @@
+-e git://github.com/lmorchard/mozilla-mdn-sphinx-theme.git#egg=mdn-theme
