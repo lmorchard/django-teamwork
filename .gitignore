@@ -8,3 +8,5 @@ _templates
 test.db
 .coverage
 htmlcov
+dist
+django_teamwork.egg-info

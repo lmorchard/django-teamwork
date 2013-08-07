@@ -8,8 +8,8 @@ except ImportError:
 
 setup(
     name='django-teamwork',
-    version='0.0.1',
-    description='Django app for managing valet keys for robots',
+    version='0.0.2',
+    description='Django app that offers an authorization backend with support for per-object permissions based on combinations of Teams, Roles, and Policies.',
     long_description=open('README.rst').read(),
     author='Les Orchard',
     author_email='me@lmorchard.com',
