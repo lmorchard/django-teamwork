@@ -1,0 +1,3 @@
+include README.rst run-tests.sh requirements-test.txt .coveragerc
+recursive-include docs *
+recursive-include teamwork/templates/teamwork *
