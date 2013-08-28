@@ -5,7 +5,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.shortcuts import redirect, render
 from django.views.i18n import javascript_catalog
 from django.views.decorators.cache import cache_page
-from django.views.generic.simple import direct_to_template
 
 
 admin.autodiscover()
