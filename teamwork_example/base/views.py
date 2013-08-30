@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User
 from teamwork_example.wiki.models import Document
-from teamwork.models import Team, Role
+from teamwork.models import Team
+
 
 def index(request):
     users = User.objects.all()
