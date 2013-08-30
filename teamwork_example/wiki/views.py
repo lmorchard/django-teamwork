@@ -1,13 +1,12 @@
-from django.contrib.auth.models import User, Permission
 from django.core.urlresolvers import reverse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 
-from teamwork.models import Team, Role
 from teamwork.shortcuts import get_object_or_404_or_403
 
 from .models import Document
 from .forms import DocumentCreateForm, DocumentEditForm
+
 
 def view(request, name):
     document = get_object_or_404_or_403('view_document', request.user,
@@ -19,9 +18,10 @@ def view(request, name):
         document=document, perms=perms
     ))
 
+
 def create(request):
     """Create a new wiki document"""
-    base_perms = user.get_all_permissions()
+    base_perms = request.user.get_all_permissions()
     if 'wiki.add_document' not in base_perms:
         raise PermissionDenied()
 
@@ -30,7 +30,7 @@ def create(request):
         parent = None
     else:
         parent = get_object_or_404_or_403(
-            'add_document_child',request.user, Document, pk=parent_pk)
+            'add_document_child', request.user, Document, pk=parent_pk)
 
     if 'POST' != request.method:
         form = DocumentCreateForm()
@@ -48,6 +48,7 @@ def create(request):
         parent=parent, form=form
     ))
 
+
 def edit(request, name):
     document = get_object_or_404_or_403('change_document', request.user,
                                         Document, name=name)
@@ -63,6 +64,7 @@ def edit(request, name):
     return render(request, 'wiki/edit.html', dict(
         document=document, form=form
     ))
+
 
 def delete(request, name):
     document = get_object_or_404_or_403('delete_document', request.user,
