@@ -4,7 +4,7 @@
 
 <h1>Create</h1>
 {% if parent %}
-<p>Parent: <a href="{% url wiki.views.view name=parent.name %}">{{ parent.name }}</a></p>
+<p>Parent: <a href="{% url "wiki.views.view" name=parent.name %}">{{ parent.name }}</a></p>
 {% endif %}
 <form method="POST" action="">
     {% csrf_token %}

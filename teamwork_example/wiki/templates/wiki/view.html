@@ -5,9 +5,9 @@
 {% block breadcrumbs %}
     /
     {% for parent in document.get_permission_parents reversed %}
-        <a href="{% url wiki.views.view name=parent.name %}">{{ parent.name }}</a> /
+        <a href="{% url "wiki.views.view" name=parent.name %}">{{ parent.name }}</a> /
     {% endfor %}
-    <a href="{% url wiki.views.view name=document.name %}">{{ document.name }}</a>
+    <a href="{% url "wiki.views.view" name=document.name %}">{{ document.name }}</a>
 {% endblock %}
 
 {% block content %}
@@ -32,13 +32,13 @@
         <li><a href="{{ policy_links.add }}">add access policy</a></li>
     {% endif %}
     {% if 'wiki.add_document_child' in perms %}
-        <li><a href="{% url wiki.views.create %}?parent={{ document.pk }}">create child document</a></li>
+        <li><a href="{% url "wiki.views.create" %}?parent={{ document.pk }}">create child document</a></li>
     {% endif %}
     {% if 'wiki.change_document' in perms %}
-        <li><a href="{% url wiki.views.edit name=document.name %}">edit this document</a></li>
+        <li><a href="{% url "wiki.views.edit" name=document.name %}">edit this document</a></li>
     {% endif %}
     {% if 'wiki.delete_document' in perms %}
-        <li><a href="{% url wiki.views.delete name=document.name %}">delete this document</a></li>
+        <li><a href="{% url "wiki.views.delete" name=document.name %}">delete this document</a></li>
     {% endif %}
 </ul>
 
