@@ -16,7 +16,7 @@
         <ul class="teams">
             {% for team, roles in roles_by_team %}
                 <li id="team-{{ team.id }}">
-                    <a class="team" href="{% url profiles.views.team_detail team.name %}">{{ team }}</a>
+                    <a class="team" href="{% url "profiles.views.team_detail" team.name %}">{{ team }}</a>
                     <ul class="roles">
                         {% for r in roles %}
                         <li class="role" id="role-{{ r.role.id }}">

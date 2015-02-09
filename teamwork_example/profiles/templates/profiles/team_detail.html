@@ -11,7 +11,7 @@
     <ul>
         {% for member in members %}
         <li>
-            <a href="{% url profiles.views.user_detail member.user.username %}">{{ member.user }}</a>
+            <a href="{% url "profiles.views.user_detail" member.user.username %}">{{ member.user }}</a>
             ({{ member.roles|join:", " }})
         </li>
         {% endfor %}

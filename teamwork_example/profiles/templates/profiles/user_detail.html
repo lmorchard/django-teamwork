@@ -16,7 +16,7 @@
         <ul class="roles">
             {% for role in roles %}
                 <li>
-                    <a class="team" href="{% url profiles.views.team_detail role.team.name %}">{{ role.team }}</a>:
+                    <a class="team" href="{% url "profiles.views.team_detail" role.team.name %}">{{ role.team }}</a>:
                     <span class="role">{{ role }}</span>
                     <dl>
                         {% for permission in role.permissions.all %}

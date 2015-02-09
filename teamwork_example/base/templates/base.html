@@ -5,12 +5,12 @@
     </head>
     <body>
         <header>
-        <a href="{% url base.views.index %}">Home</a>
+        <a href="{% url "base.views.index" %}">Home</a>
             {% block breadcrumbs %}{% endblock %}
             | 
             {% if not request.user.is_authenticated %}
                 Log in as:
-                <form style="display: inline" action="{% url profiles.views.login %}" method="POST">
+                <form style="display: inline" action="{% url "profiles.views.login" %}" method="POST">
                     {% csrf_token %}
                     <select name="username">
                         {% for user in request.user_list %}
@@ -21,8 +21,8 @@
                 </form>
             {% else %}
                 Logged in as:
-                <a href="{% url profiles.views.user_detail request.user.username %}">{{ request.user }}</a>
-                (<a href="{% url profiles.views.logout %}">logout</a>)
+                <a href="{% url "profiles.views.user_detail" request.user.username %}">{{ request.user }}</a>
+                (<a href="{% url "profiles.views.logout" %}">logout</a>)
             {% endif %}
             <hr>
         </header>
