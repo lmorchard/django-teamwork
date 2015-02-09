@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-teamwork',
-    version='0.0.2',
+    version='0.1.0',
     description='Django app that offers an authorization backend with support for per-object permissions based on combinations of Teams, Roles, and Policies.',
     long_description=open('README.rst').read(),
     author='Les Orchard',

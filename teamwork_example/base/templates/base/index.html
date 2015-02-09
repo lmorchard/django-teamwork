@@ -6,7 +6,7 @@
 <section>
     <h1>Documents</h1>
     {% if 'wiki.add_document' in request.base_perms %}
-        <p><a href="{% url wiki.views.create %}">Create new document</a></p>
+        <p><a href="{% url "wiki.views.create" %}">Create new document</a></p>
     {% endif %}
     {% include "wiki/includes/document_list.html" with document_list=documents %}
 </section>

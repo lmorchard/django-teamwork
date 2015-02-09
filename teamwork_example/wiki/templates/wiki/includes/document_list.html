@@ -7,19 +7,19 @@
         <a href="{{ document.get_absolute_url }}">{{ document.name }}</a>
             (
                 {% if 'wiki.add_document_child' in perms %}
-                    <a href="{% url wiki.views.create %}?parent={{ document.pk }}">create</a>
+                    <a href="{% url "wiki.views.create" %}?parent={{ document.pk }}">create</a>
                 {% endif %}
                 {% if 'wiki.change_document' in perms %}
-                    <a href="{% url wiki.views.edit name=document.name %}">edit</a>
+                    <a href="{% url "wiki.views.edit" name=document.name %}">edit</a>
                 {% endif %}
                 {% if 'wiki.delete_document' in perms %}
-                    <a href="{% url wiki.views.delete name=document.name %}">delete</a>
+                    <a href="{% url "wiki.views.delete" name=document.name %}">delete</a>
                 {% endif %}
             )
             <br>
-            by <a href="{% url profiles.views.user_detail document.creator.username %}">{{ document.creator }}</a>
+            by <a href="{% url "profiles.views.user_detail" document.creator.username %}">{{ document.creator }}</a>
             {% if document.team %}
-                for <a href="{% url profiles.views.team_detail document.team.name %}">{{ document.team }}</a>
+                for <a href="{% url "profiles.views.team_detail" document.team.name %}">{{ document.team }}</a>
             {% endif %}
             {% if document.get_children|length%}
                 {% with "wiki/includes/document_list.html" as filename %}  
