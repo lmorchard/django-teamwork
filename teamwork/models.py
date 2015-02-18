@@ -59,8 +59,7 @@ class Team(models.Model):
     name = models.CharField(
         _("name"), max_length=128, editable=True, unique=True,
         db_index=True)
-    description = models.TextField(
-        _("Description of intended use"), null=True, blank=True)
+    description = models.TextField(_("Description"), null=True, blank=True)
     founder = models.ForeignKey(
         User, db_index=True, blank=True, null=True)
 
@@ -76,6 +75,9 @@ class Team(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_owner_user(self):
+        return self.founder
 
     @property
     def team(self):
