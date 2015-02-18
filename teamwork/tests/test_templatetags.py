@@ -44,7 +44,7 @@ class ObjPermissionsTagTests(TestCaseBase):
         ))
         context = dict(user=self.user, obj=self.obj)
         result = render(template, context)
-        eq_('wiki.hello', result)
+        eq_('wiki.add_document wiki.hello', result)
 
     def test_anon_user(self):
         """get_all_obj_permissions tag should work for an anonymous user"""

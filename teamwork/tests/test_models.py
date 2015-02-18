@@ -23,12 +23,19 @@ class TeamTests(TestCaseBase):
         team = Team.objects.create(name="foo")
         eq_("foo", unicode(team))
 
-        role = Role.objects.create(team=team, name="bar")
+        role = Role.objects.create(name="bar")
         eq_("bar", unicode(role))
 
         doc = Document.objects.create(name="baz")
         policy = Policy.objects.create(content_object=doc)
         eq_("Policy(baz)", unicode(policy))
+
+    def test_owner_is_owner(self):
+        """Ensure that Teams claim owner as owner"""
+        owner = self.users['randomguy1']
+        team = Team.objects.create(name="ownerowned")
+        team.add_member(owner, is_owner=True)
+        ok_(team.has_owner(owner))
 
     def test_has_member(self):
         """Users with roles on a team should be counted as members"""
@@ -42,62 +49,29 @@ class TeamTests(TestCaseBase):
             (False, u'Section 1 Team', u'randomguy1'),
             (False, u'Section 2 Team', u'randomguy1'),
             (False, u'Section 3 Team', u'randomguy1'),
+            (True, u'Section 1 Team', u'randomguy8'),
+            (True, u'Section 2 Team', u'randomguy8'),
+            (True, u'Section 3 Team', u'randomguy8'),
         )
         for expected, team_name, user_name in cases:
             team = self.teams[team_name]
             user = self.users[user_name]
-            eq_(expected, team.has_user(user))
+            eq_(expected, team.has_member(user))
 
     def test_teams_for_user(self):
-        """List of teams for user should correspond to roles"""
-        for role_user in Role.users.through.objects.all():
-            role_user.role.team.has_user(role_user.user)
-            user_teams = Team.objects.get_teams_for_user(role_user.user)
-            ok_(role_user.role.team in user_teams)
-
-    def test_get_team_roles_managed_by(self):
-        """get_team_roles_managed_by should assemble list of roles by team"""
-        cases = [
-            ('section1_leader', [
-                ('Section 1 Team', [
-                    {'granted': False, 'role': 'leader'},
-                    {'granted': True, 'role': 'editor'}
-                ])
-            ]),
-            ('section2_leader', [
-                ('Section 2 Team', [
-                    {'granted': False, 'role': 'leader'},
-                    {'granted': False, 'role': 'editor'}
-                ])
-            ]),
-            ('randomguy1', []),
-        ]
-
-        managed_user = self.users['section1_editor']
-        for manager_username, expected in cases:
-            manager_user = self.users[manager_username]
-            result = Team.objects.get_team_roles_managed_by(
-                manager_user, managed_user)
-            for idx in range(0, len(expected)):
-                ex_team_name = expected[idx][0]
-                eq_(ex_team_name, result[idx][0].name)
-                ex_roles, r_roles = expected[idx][1], result[idx][1]
-                for s_idx in range(0, len(ex_roles)):
-                    ex_role = ex_roles[s_idx]
-                    r_role = r_roles[s_idx]
-                    eq_(ex_role['granted'], r_role['granted'])
-                    eq_(ex_role['role'], r_role['role'].name)
-                    eq_(ex_team_name, r_role['role'].team.name)
-
-
-class RoleTests(TestCaseBase):
-
-    def test_is_granted(self):
-        """Role.is_granted_to should indicate whether user has the role"""
-        team = Team.objects.create(name="foo")
-        role = Role.objects.create(team=team, name="bar")
-        user1 = self.users['randomguy1']
-        user2 = self.users['randomguy2']
-        role.users.add(user1)
-        eq_(True, role.is_granted_to(user1))
-        eq_(False, role.is_granted_to(user2))
+        """List of teams for user should correspond to membership"""
+        cases = (
+            (u'section1_leader', (u'Section 1 Team',)),
+            (u'section1_editor', (u'Section 1 Team',)),
+            (u'section2_leader', (u'Section 2 Team',)),
+            (u'section2_editor', (u'Section 2 Team',)),
+            (u'section3_leader', (u'Section 3 Team',)),
+            (u'section3_editor', (u'Section 3 Team',)),
+            (u'randomguy1', []),
+            (u'randomguy8', (u'Section 1 Team', u'Section 2 Team', u'Section 3 Team')),
+        )
+        for username, expected_team_names in cases:
+            expected_teams = set(name for name in expected_team_names)
+            user = User.objects.get(username=username)
+            result_teams = set(team.name for team in Team.objects.get_teams_for_user(user))
+            eq_(expected_teams, result_teams)

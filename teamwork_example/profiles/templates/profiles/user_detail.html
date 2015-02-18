@@ -11,19 +11,23 @@
         {% endif %}
     </h1>
 
-    {% if roles %}
-        <h2>Roles</h2>
-        <ul class="roles">
-            {% for role in roles %}
+    {% if members %}
+        <h2>Membership</h2>
+        <ul class="members">
+            {% for member in members %}
                 <li>
-                    <a class="team" href="{% url "profiles.views.team_detail" role.team.name %}">{{ role.team }}</a>:
-                    <span class="role">{{ role }}</span>
+                    <a class="team" href="{% url "profiles.views.team_detail" member.team.name %}">{{ member.team }}</a>:
+                    {% if not member.role %}
+                        No role
+                    {% else %}
+                    <span class="member.role">{{ member.role }}</span>
                     <dl>
-                        {% for permission in role.permissions.all %}
+                        {% for permission in member.role.permissions.all %}
                             <dt>{{ permission.content_type.app_label }}.{{ permission.codename }}</dt>
                             <dd>{{ permission }}</dd>
                         {% endfor %}
                     </dl>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

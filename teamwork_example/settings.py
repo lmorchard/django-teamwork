@@ -13,6 +13,9 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 MANAGERS = ADMINS
 
+SOUTH_TESTS_MIGRATE = False # To disable migrations and use syncdb instead
+SKIP_SOUTH_TESTS = True # To disable South's own unit tests
+
 DATABASES = {
     'default': {
         'NAME': 'test.db',

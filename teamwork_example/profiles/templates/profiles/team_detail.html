@@ -12,22 +12,8 @@
         {% for member in members %}
         <li>
             <a href="{% url "profiles.views.user_detail" member.user.username %}">{{ member.user }}</a>
-            ({{ member.roles|join:", " }})
+            {% if member.role %}({{ member.role }}){% endif %}
         </li>
-        {% endfor %}
-    </ul>
-
-    <h2>Roles</h2>
-    <ul>
-        {% for role in roles %}
-            <li>
-                <span>{{ role }}</span>
-                <ul>
-                    {% for permission in role.permissions.all %}
-                        <li>{{ permission }}</li>
-                    {% endfor %}
-                </ul>
-            </li>
         {% endfor %}
     </ul>
 

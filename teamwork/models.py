@@ -15,41 +15,11 @@ class TeamManager(models.Manager):
     """
     Manager and utilities for Teams
     """
+    def get_by_natural_key(self, name):
+        return self.get(name=name)
+
     def get_teams_for_user(self, user):
-        member_teams = (Role.users.through.objects
-                            .filter(user=user)
-                            .values('role__team').distinct())
-        teams = self.filter(id__in=member_teams)
-        return teams
-
-    def get_team_roles_managed_by(self, manager_user, managed_user):
-        """
-        Assemble a list of roles collated by team, for which the manager_user
-        has permission to manage users, annotated with which roles have been
-        granted to the managed_user.
-        """
-        # Get a set of IDs for all the roles granted to the user in question.
-        user_role_ids = set(
-            r['role'] for r in
-            Role.users.through.objects.filter(user=managed_user)
-                                      .values('role'))
-
-        # Join up roles managed by the auth'd user with roles granted to the
-        # user in question.
-        avail_roles = [
-            dict(role=role, granted=(role.id in user_role_ids))
-            for role in Role.objects.select_related('team').all()
-            if manager_user.has_perm('teamwork.manage_role_users', role)
-        ]
-
-        # Extract the unique teams, indexed by ID
-        teams = dict((r['role'].team.id, r['role'].team) for r in avail_roles)
-
-        # Collate available roles by team
-        return [
-            (t[1], [r for r in avail_roles if r['role'].team.id == t[0]])
-            for t in teams.items()
-        ]
+        return Team.objects.filter(members__pk=user.pk)
 
 
 class Team(models.Model):
@@ -59,10 +29,10 @@ class Team(models.Model):
     name = models.CharField(
         _("name"), max_length=128, editable=True, unique=True,
         db_index=True)
-    description = models.TextField(
-        _("Description of intended use"), null=True, blank=True)
-    founder = models.ForeignKey(
-        User, db_index=True, blank=True, null=True)
+
+    description = models.TextField(_("Description"), null=True, blank=True)
+
+    members = models.ManyToManyField(User, through='Member')
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
@@ -77,43 +47,54 @@ class Team(models.Model):
     def __unicode__(self):
         return self.name
 
+    def natural_key(self):
+        return self.name
+
     @property
     def team(self):
         return self
 
-    def has_user(self, user):
+    def add_member(self, user, is_owner=False, role=None):
+        member = Member(team=self, user=user, role=role, is_owner=is_owner)
+        member.save()
+        return member
+
+    def has_member(self, user):
         """Determine whether the given user is a member of this team"""
-        # TODO: founder is not considered a member without an associated role
-        hits = (Role.users.through.objects
-                    .filter(role__team=self, user=user)).count()
-        return hits > 0
+        return (self.members.through.objects
+                    .filter(team=self, user=user).count() > 0)
+
+    def has_owner(self, user):
+        """Determine whether the given user is an owner of this team"""
+        return (self.members.through.objects
+                    .filter(team=self, user=user, is_owner=True).count() > 0)
 
     def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
-        if user == self.founder:
-            # Founder is admin-equivalent for the team
-            if permissions is None:
-                permissions = set()
+        if self.has_owner(user):
+            # owner is admin-equivalent for the team
             for perm, desc in self._meta.permissions:
                 permissions.add('teamwork.%s' % perm)
         return permissions
 
-    def get_all_permissions(self, user):
+    def get_all_permissions(self, user, denied=False):
         """Get all Permissions applied to this User based on assigned Roles"""
-        role_ids = (Role.users.through.objects
-                        .filter(user=user, role__team=self)
-                        .values('role'))
-        return (p.permission for p in
-                Role.permissions.through.objects
-                    .filter(role__in=role_ids)
-                    .select_related())
+        out = []
+        for member in self.members.through.objects.filter(team=self, user=user):
+            if member.role:
+                permission_set = (denied and
+                        member.role.permissions_denied or
+                        member.role.permissions)
+                out.extend(permission_set.all())
+        return out
 
 
 class RoleManager(models.Manager):
     """
     Manager and utilities for Roles
     """
-    pass
+    def get_by_natural_key(self, name):
+        return self.get(name=name)
 
 
 class Role(models.Model):
@@ -123,40 +104,35 @@ class Role(models.Model):
     This works somewhat like a Group, but its Permissions only apply when a
     User acts upon an object belonging to the Role's parent Team.
     """
-    team = models.ForeignKey(Team, db_index=True, blank=False, null=False)
-    name = models.CharField(_("name"), max_length=128, db_index=False)
+    name = models.CharField(_("name"), max_length=128, db_index=False, unique=True)
+    team = models.ForeignKey(Team, db_index=True, blank=True, null=True)
     description = models.TextField(_("Description of intended use"),
                                    blank=True)
-
     permissions = models.ManyToManyField(
-        Permission, blank=True,
+        Permission, blank=True, related_name='roles_granted',
         help_text='Specific permissions for this role.')
-
-    users = models.ManyToManyField(
-        User, blank=True,
-        help_text='Users granted this role')
+    permissions_denied = models.ManyToManyField(
+        Permission, blank=True, related_name='roles_denied',
+        help_text='Specific permissions denied for this role.')
 
     objects = RoleManager()
 
     def __unicode__(self):
         return self.name
 
+    def natural_key(self):
+        return self.name
+
     class Meta:
-        unique_together = (('name', 'team'),)
         permissions = (
             ('view_role', 'Can view role'),
             ('manage_role_permissions', 'Can manage role permissions'),
-            ('manage_role_users', 'Can manage role users'),
         )
-
-    def is_granted_to(self, user):
-        """Return whether this role is granted to the given user"""
-        return (self.users.filter(id=user.id).count() > 0)
 
     def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
-        if user == self.team.founder:
-            # Founder is admin-equivalent for the team
+        if self.team.has_owner(user):
+            # owner is admin-equivalent for the team
             if permissions is None:
                 permissions = set()
             for perm, desc in self._meta.permissions:
@@ -165,15 +141,44 @@ class Role(models.Model):
 
     def add_permissions_by_name(self, names, obj=None):
         from .shortcuts import get_permission_by_name
-        self.permissions.add(*(get_permission_by_name(name, obj)
-                             for name in names))
+        self.permissions.add(
+                *(get_permission_by_name(name, obj)
+                for name in names if not name.startswith('-')))
+        self.permissions_denied.add(
+                *(get_permission_by_name(name[1:], obj)
+                for name in names if name.startswith('-')))
+
+
+class MemberManager(models.Manager):
+    def get_by_natural_key(self, team_name, username):
+        return self.get(team__name=name, user__username=username)
+
+
+class Member(models.Model):
+    """
+    Through model representing Team member Users, with annotations on granted
+    role and Team ownership status.
+    """
+    team = models.ForeignKey(Team, db_index=True)
+    user = models.ForeignKey(User, db_index=True)
+
+    role = models.ForeignKey(Role, db_index=True, null=True)
+    is_owner = models.BooleanField(default=False)
+
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
+
+    objects = MemberManager()
+
+    def natural_key(self):
+        return [self.team.name, self.user.username]
 
 
 class PolicyManager(models.Manager):
     """
     Manager and utilities for Policies
     """
-    def get_all_permissions(self, user, obj):
+    def get_all_permissions(self, user, obj, denied=False):
         if user.is_anonymous():
             user_filter = Q(anonymous=True)
         else:
@@ -181,16 +186,18 @@ class PolicyManager(models.Manager):
             user_filter = (Q(authenticated=True) |
                            Q(users__pk=user.pk) |
                            Q(groups__in=groups))
-            if (hasattr(obj, 'get_owner_user') and
-                    user == obj.get_owner_user()):
+            if hasattr(obj, 'has_owner') and obj.has_owner(user):
                 user_filter |= Q(apply_to_owners=True)
         ct = ContentType.objects.get_for_model(obj)
         policies = self.filter(user_filter,
                                content_type__pk=ct.id,
                                object_id=obj.id).all()
         if 0 == len(policies):
-            return None
-        return chain(*(policy.permissions.all() for policy in policies))
+            return set()
+
+        return chain(*(
+            (denied and policy.permissions_denied or policy.permissions).all()
+            for policy in policies))
 
 
 class Policy(models.Model):
@@ -223,9 +230,15 @@ class Policy(models.Model):
 
     permissions = models.ManyToManyField(
         Permission, blank=True,
-        related_name='permissions',
+        related_name='policies_granted',
         verbose_name=_('permissions'),
         help_text='Permissions granted by this policy')
+
+    permissions_denied = models.ManyToManyField(
+        Permission, blank=True,
+        related_name='policies_denied',
+        verbose_name=_('permissions'),
+        help_text='Permissions denied by this policy')
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
@@ -242,8 +255,14 @@ class Policy(models.Model):
         return u'Policy(%s)' % self.content_object
 
     def add_permissions_by_name(self, names, obj=None):
+        
         from .shortcuts import get_permission_by_name
         if obj is None:
             obj = self.content_object
-        self.permissions.add(*(get_permission_by_name(name, obj)
-                             for name in names))
+
+        self.permissions.add(
+                *(get_permission_by_name(name, obj)
+                for name in names if not name.startswith('-')))
+        self.permissions_denied.add(
+                *(get_permission_by_name(name[1:], obj)
+                for name in names if name.startswith('-')))
