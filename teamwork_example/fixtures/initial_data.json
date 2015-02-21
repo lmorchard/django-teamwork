@@ -260,15 +260,31 @@
         }
     }, 
     {
+        "pk": 15, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "randomguy8", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2013-06-18T17:36:50.249", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "pbkdf2_sha256$10000$ssuaCpGwY86Y$dFE1Dsnb6BdBus2fM7RyGWRZMFh0+K5okHICvheZOZU=", 
+            "email": "", 
+            "date_joined": "2013-06-18T15:15:13.602"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "teamwork.team", 
         "fields": {
             "modified": "2013-06-18T15:36:34.403", 
             "created": "2013-06-18T15:13:31.454", 
             "name": "Section 1 Team", 
-            "owner": [
-                "section1_leader"
-            ], 
+            "owner": [ "section1_leader" ], 
             "description": ""
         }
     }, 
@@ -279,9 +295,7 @@
             "modified": "2013-06-18T15:36:45.710", 
             "created": "2013-06-18T15:16:11.600", 
             "name": "Section 2 Team", 
-            "owner": [
-                "section2_leader"
-            ], 
+            "owner": [ "section2_leader" ], 
             "description": ""
         }
     }, 
@@ -292,9 +306,7 @@
             "modified": "2013-06-18T15:37:01.096", 
             "created": "2013-06-18T15:16:47.998", 
             "name": "Section 3 Team", 
-            "owner": [
-                "section3_leader"
-            ], 
+            "owner": [ "section3_leader" ], 
             "description": ""
         }
     }, 
@@ -302,276 +314,62 @@
         "pk": 1, 
         "model": "teamwork.role", 
         "fields": {
-            "users": [
-                [
-                    "section1_leader"
-                ]
-            ], 
-            "description": "", 
+            "name": "leader",
+            "description": "Section team leader", 
             "permissions": [
-                [
-                    "add_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "add_document_child", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "change_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "delete_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "frob", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "hello", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "quux", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "view_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "xyzzy", 
-                    "wiki", 
-                    "document"
-                ]
-            ], 
-            "name": "leader", 
-            "team": 1
+                [ "add_document", "wiki", "document" ], 
+                [ "add_document_child", "wiki", "document" ], 
+                [ "change_document", "wiki", "document" ], 
+                [ "delete_document", "wiki", "document" ], 
+                [ "frob", "wiki", "document" ], 
+                [ "hello", "wiki", "document" ], 
+                [ "quux", "wiki", "document" ], 
+                [ "view_document", "wiki", "document" ], 
+                [ "xyzzy", "wiki", "document" ]
+            ]
         }
     }, 
     {
         "pk": 2, 
         "model": "teamwork.role", 
         "fields": {
-            "users": [
-                [
-                    "section2_leader"
-                ]
-            ], 
-            "description": "", 
+            "name": "editor", 
+            "description": "Section editor", 
             "permissions": [
-                [
-                    "add_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "add_document_child", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "change_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "delete_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "frob", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "hello", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "quux", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "view_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "xyzzy", 
-                    "wiki", 
-                    "document"
-                ]
-            ], 
-            "name": "leader", 
-            "team": 2
+                [ "change_document", "wiki", "document" ], 
+                [ "view_document", "wiki", "document" ]
+            ]
         }
     }, 
     {
         "pk": 3, 
         "model": "teamwork.role", 
         "fields": {
-            "users": [
-                [
-                    "section3_leader"
-                ]
-            ], 
-            "description": "", 
+            "name": "section3frobber", 
+            "team": ["Section 3 Team"],
+            "description": "Frobber for section 3", 
             "permissions": [
-                [
-                    "add_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "add_document_child", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "change_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "delete_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "frob", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "hello", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "quux", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "view_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "xyzzy", 
-                    "wiki", 
-                    "document"
-                ]
-            ], 
-            "name": "leader", 
-            "team": 3
+                [ "frob", "wiki", "document" ]
+            ]
         }
     }, 
-    {
-        "pk": 4, 
-        "model": "teamwork.role", 
-        "fields": {
-            "users": [
-                [
-                    "section1_editor"
-                ]
-            ], 
-            "description": "", 
-            "permissions": [
-                [
-                    "change_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "view_document", 
-                    "wiki", 
-                    "document"
-                ]
-            ], 
-            "name": "editor", 
-            "team": 1
-        }
-    }, 
-    {
-        "pk": 5, 
-        "model": "teamwork.role", 
-        "fields": {
-            "users": [
-                [
-                    "section2_editor"
-                ]
-            ], 
-            "description": "", 
-            "permissions": [
-                [
-                    "change_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "view_document", 
-                    "wiki", 
-                    "document"
-                ]
-            ], 
-            "name": "editor", 
-            "team": 2
-        }
-    }, 
-    {
-        "pk": 6, 
-        "model": "teamwork.role", 
-        "fields": {
-            "users": [
-                [
-                    "section3_editor"
-                ]
-            ], 
-            "description": "", 
-            "permissions": [
-                [
-                    "change_document", 
-                    "wiki", 
-                    "document"
-                ], 
-                [
-                    "view_document", 
-                    "wiki", 
-                    "document"
-                ]
-            ], 
-            "name": "editor", 
-            "team": 3
-        }
-    }, 
+    { "pk": 1, "model": "teamwork.member", "fields": { "team": ["Section 1 Team"], "user": ["section1_leader"], "role": ["leader"] } },
+    { "pk": 2, "model": "teamwork.member", "fields": { "team": ["Section 2 Team"], "user": ["section2_leader"], "role": ["leader"] } },
+    { "pk": 3, "model": "teamwork.member", "fields": { "team": ["Section 3 Team"], "user": ["section3_leader"], "role": ["leader"] } },
+    { "pk": 4, "model": "teamwork.member", "fields": { "team": ["Section 1 Team"], "user": ["section1_editor"], "role": ["editor"] } },
+    { "pk": 5, "model": "teamwork.member", "fields": { "team": ["Section 2 Team"], "user": ["section2_editor"], "role": ["editor"] } },
+    { "pk": 6, "model": "teamwork.member", "fields": { "team": ["Section 3 Team"], "user": ["section3_editor"], "role": ["editor"] } },
+    { "pk": 7, "model": "teamwork.member", "fields": { "team": ["Section 1 Team"], "user": ["randomguy8"] } },
+    { "pk": 8, "model": "teamwork.member", "fields": { "team": ["Section 2 Team"], "user": ["randomguy8"] } },
+    { "pk": 9, "model": "teamwork.member", "fields": { "team": ["Section 3 Team"], "user": ["randomguy8"] } },
     {
         "pk": 2, 
         "model": "teamwork.policy", 
         "fields": {
             "groups": [], 
             "authenticated": true, 
-            "content_type": [
-                "wiki", 
-                "document"
-            ], 
-            "creator": [
-                "admin"
-            ], 
+            "content_type": [ "wiki", "document" ], 
+            "creator": [ "admin" ], 
             "created": "2013-06-18T15:23:43.406", 
             "modified": "2013-06-18T15:23:43.406", 
             "object_id": 4, 

@@ -21,91 +21,94 @@ class TeamworkBackend(object):
         return None
 
     def get_all_permissions(self, user, obj=None):
+        # TODO: Cache this on the object? or in memcache?
+        return self._merge_perms([
+            self._get_settings_permissions(user, obj),
+            self._get_site_permissions(user, obj),
+            self._get_obj_permissions(user, obj)
+        ])
 
-        if not obj:
-            # If there's no obj, then much can be shortcircuited
-            perms = self._get_site_permissions(user)
-            if perms is None:
-                perms = self._get_settings_permissions(user)
-            if perms is None:
-                perms = set()
-            return perms
+    def _merge_perms(self, sets):
+        out = set()
+        for perms in sets:
+            for perm in perms:
+                if perm.startswith('-'):
+                    out.discard(perm[1:])
+                else:
+                    out.add(perm)
+        return out
 
-        if user.is_anonymous():
-            user_pk = DEFAULT_ANONYMOUS_USER_PK
-        else:
-            user_pk = user.pk
+    def _get_settings_permissions(self, user, obj=None):
+        """
+        Get permissions based on a baseline policy specified in settings.
+        """
+        policy = getattr(settings, 'TEAMWORK_BASE_POLICIES', None)
+        if not policy:
+            return set()
 
-        # TODO: Stash this in the global django cache (ie. memcache)?
-        if not hasattr(obj, '_teamwork_perms_cache'):
-            obj._teamwork_perms_cache = dict()
+        sets = [ policy.get('all', []) ]
 
-        if not user_pk in obj._teamwork_perms_cache:
+        if user.is_authenticated():
+            sets.append(policy.get('authenticated', []))
 
-            # Try getting perms for the current object
-            perms = self._get_obj_permissions(user, obj)
+            if obj:
 
-            # If the object yielded no perms, try traversing parents
-            if perms is None and hasattr(obj, 'get_permission_parents'):
-                parents = obj.get_permission_parents()
-                for parent in parents:
-                    perms = self._get_obj_permissions(user, parent)
-                    if perms is not None:
-                        break
+                if ('owners' in policy and hasattr(obj, 'get_owner_user') and
+                        user == obj.get_owner_user()):
+                    sets.append(policy.get('owners', []))
 
-            # Check for policies attached to the current Site object, if any.
-            if perms is None:
-                perms = self._get_site_permissions(user, obj)
+                if ('members' in policy and hasattr(obj, 'team') and
+                        obj.team.has_user(user)):
+                    sets.append(policy.get('members', []))
+        
+        group_perms = policy.get('groups', None)
+        if group_perms:
+            for group in user.groups.all():
+                if group.name in group_perms:
+                    sets.append(group_perms[group.name])
 
-            # Consult settings for a baseline policy.
-            if perms is None:
-                perms = self._get_settings_permissions(user, obj)
+        users_perms = policy.get('users', dict())
+        if user.username in users_perms:
+            sets.append(users_perms[user.username])
 
-            # If none of the above came up with permissions (even an empty
-            # set), then we have an empty set.
-            if perms is None:
-                perms = set()
+        return self._merge_perms(sets)
 
-            # Cache all this work...
-            obj._teamwork_perms_cache[user_pk] = perms
-
-        return obj._teamwork_perms_cache[user_pk]
-
-    def has_perm(self, user, perm, obj=None):
-        return perm in self.get_all_permissions(user, obj)
-
-    def _perms_to_names(self, perms):
-        return set([u"%s.%s" % (p.content_type.app_label, p.codename)
-                    for p in perms])
-
-    def _get_obj_permissions(self, user, obj):
+    def _get_obj_permissions(self, user, obj, recurse=True):
         """Look up permissions for a single user / team / object"""
-        ct = ContentType.objects.get_for_model(obj)
+        if not obj:
+            return set()
+
+        names = []
+
+        if recurse and hasattr(obj, 'get_permission_parents'):
+            for parent in obj.get_permission_parents():
+                names.extend(self._get_obj_permissions(user, parent, False))
 
         # TODO: Consider multiple-team ownership of a content object
         team = getattr(obj, 'team', None)
+        if team and user.is_authenticated():
+            names.extend(self._perms_to_names(
+                team.get_all_permissions(user)))
+            names.extend(self._perms_to_names(
+                team.get_all_permissions(user, denied=True),
+                denied=True))
+
+        names.extend(self._perms_to_names(
+            Policy.objects.get_all_permissions(user, obj)))
+        names.extend(self._perms_to_names(
+            Policy.objects.get_all_permissions(user, obj, denied=True),
+            denied=True))
 
         if user.is_superuser:
             # Superuser is super, gets all object permissions
+            ct = ContentType.objects.get_for_model(obj)
             perms = Permission.objects.filter(content_type=ct).all()
-        elif user.is_anonymous() or not team or not team.has_user(user):
-            # Policies apply to anonymous users and non-team members
-            perms = Policy.objects.get_all_permissions(user, obj)
-        else:
-            # Team permissions apply to team members
-            perms = team.get_all_permissions(user)
-
-        # Map the permissions down to a set of app.codename strings
-        if perms is None:
-            named_perms = None
-        else:
-            named_perms = self._perms_to_names(perms)
+            names.extend(self._perms_to_names(perms))
 
         if hasattr(obj, 'filter_permissions'):
-            # Allow the object to filter the permissions
-            named_perms = obj.filter_permissions(user, named_perms)
+            names = obj.filter_permissions(user, set(names))
 
-        return named_perms
+        return names
 
     def _get_site_permissions(self, user, obj=None):
         """
@@ -128,35 +131,11 @@ class TeamworkBackend(object):
                 perms = self._perms_to_names(raw_perms)
         return perms
 
-    def _get_settings_permissions(self, user, obj=None):
-        """
-        Get permissions based on a baseline policy specified in settings.
-        """
-        policy = getattr(settings, 'TEAMWORK_BASE_POLICIES', None)
-        if not policy:
-            return None
+    def has_perm(self, user, perm, obj=None):
+        return perm in self.get_all_permissions(user, obj)
 
-        if user.is_anonymous():
-            return policy.get('anonymous', set())
-
-        perms = set()
-
-        if user.is_authenticated():
-            perms.update(policy.get('authenticated', set()))
-
-        users_perms = policy.get('users', dict())
-        if user.username in users_perms:
-            perms.update(users_perms[user.username])
-
-        group_perms = policy.get('groups', None)
-        if group_perms:
-            for group in user.groups.all():
-                if group.name in group_perms:
-                    perms.update(group_perms[group.name])
-
-        if (obj and 'apply_to_owners' in policy and
-                    hasattr(obj, 'get_owner_user') and
-                    user == obj.get_owner_user()):
-            perms.update(policy['apply_to_owners'])
-
-        return perms
+    def _perms_to_names(self, perms, denied=False):
+        return set([u"%s%s.%s" % (denied and '-' or '',
+                                  p.content_type.app_label,
+                                  p.codename)
+                    for p in perms])
