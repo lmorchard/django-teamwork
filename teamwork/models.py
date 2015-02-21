@@ -197,7 +197,7 @@ class Policy(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    creator = models.ForeignKey(User, null=True, blank=True)
+    creator = models.ForeignKey(User, null=True, blank=True, related_name='creator')
     team = models.ForeignKey(
         Team, db_index=True, blank=True, null=True,
         help_text='Team responsible for managing this policy')
@@ -209,7 +209,7 @@ class Policy(models.Model):
     apply_to_owners = models.BooleanField(default=False, help_text=(
         'Apply this policy to owners of content objects?'))
     users = models.ManyToManyField(
-        User, blank=True, related_name='users',
+        User, blank=True,
         help_text=('Apply this policy for these users.'))
     groups = models.ManyToManyField(Group, blank=True, help_text=(
         'Apply this policy for these user groups.'))
