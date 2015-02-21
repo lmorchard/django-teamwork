@@ -94,9 +94,9 @@ class RoleInline(admin.TabularInline):
 
 class TeamAdmin(admin.ModelAdmin):
     fields = (
-        'name', 'description', 'founder',
+        'name', 'description', 'owner',
     )
-    raw_id_fields = ('founder',)
+    raw_id_fields = ('owner',)
     list_select_related = True
     list_display = ('name', related_roles_link,)
     search_fields = ('name',)

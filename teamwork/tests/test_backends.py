@@ -65,8 +65,8 @@ class TeamBackendTests(TestCaseBase):
     def test_mixed_permissions(self):
         """Policies & teams grant permissions by object to users & groups"""
         anon_user = AnonymousUser()
-        founder_user = User.objects.create_user(
-            'founder0', 'founder0@example.com', 'founder0')
+        owner_user = User.objects.create_user(
+            'owner0', 'owner0@example.com', 'owner0')
         auth_user = self.users['randomguy1']
         role_user = self.users['randomguy2']
         users_users = [self.users[u] for u in ('randomguy3', 'randomguy4')]
@@ -81,7 +81,7 @@ class TeamBackendTests(TestCaseBase):
         expected_owner_perms = set((u'add_document_child',))
 
         team = Team.objects.create(name='general_permissive_team',
-                                   founder=founder_user)
+                                   owner=owner_user)
 
         doc = Document.objects.create(name='general_doc_1',
                                       creator=owner_user,
@@ -244,8 +244,8 @@ class TeamBackendTests(TestCaseBase):
         Policy.objects.all().delete()
 
         anon_user = AnonymousUser()
-        founder_user = User.objects.create_user(
-            'founder0', 'founder0@example.com', 'founder0')
+        owner_user = User.objects.create_user(
+            'owner0', 'owner0@example.com', 'owner0')
         auth_user = self.users['randomguy1']
         role_user = self.users['randomguy2']
         users_users = [self.users[u] for u in ('randomguy3', 'randomguy4')]
@@ -318,20 +318,20 @@ class TeamBackendTests(TestCaseBase):
         with override_settings(TEAMWORK_BASE_POLICIES=base_policies):
             assert_perms(expected_perms, anon_user, doc)
 
-    def test_founder_permissions(self):
-        """Founder should get special permissions to manage the team"""
-        founder_user = User.objects.create_user(
-            'founder0', 'founder0@example.com', 'founder0')
+    def test_owner_permissions(self):
+        """owner should get special permissions to manage the team"""
+        owner_user = User.objects.create_user(
+            'owner0', 'owner0@example.com', 'owner0')
         some_user = self.users['randomguy7']
-        team1 = Team.objects.create(name='founder_permissive',
-                                    founder=founder_user)
+        team1 = Team.objects.create(name='owner_permissive',
+                                    owner=owner_user)
         team2 = Team.objects.create(name='some_other_team',
-                                    founder=self.users['randomguy1'])
+                                    owner=self.users['randomguy1'])
         cases = (
-            # Founder of team1 has authority over team1
-            (team1, ((founder_user, True), (some_user, False))),
-            # Founder of team1 has NO authority over team2
-            (team2, ((founder_user, False), (some_user, False))),
+            # owner of team1 has authority over team1
+            (team1, ((owner_user, True), (some_user, False))),
+            # owner of team1 has NO authority over team2
+            (team2, ((owner_user, False), (some_user, False))),
         )
         for team, case in cases:
             all_perms = team._meta.permissions
@@ -341,15 +341,15 @@ class TeamBackendTests(TestCaseBase):
 
     def test_team_permissions(self):
         """Role with manage_role_users applies only to its own team"""
-        founder_user = User.objects.create_user(
-            'founder0', 'founder0@example.com', 'founder0')
+        owner_user = User.objects.create_user(
+            'owner0', 'owner0@example.com', 'owner0')
         user1 = self.users['randomguy1']
         user2 = self.users['randomguy2']
 
         team1 = Team.objects.create(name='role_delegation',
-                                    founder=founder_user)
+                                    owner=owner_user)
         team2 = Team.objects.create(name='disregard_this_team',
-                                    founder=founder_user)
+                                    owner=owner_user)
 
         role_granter = Role.objects.create(name='role_granter', team=team1)
         role_granter.add_permissions_by_name(('teamwork.manage_role_users',))
@@ -359,7 +359,7 @@ class TeamBackendTests(TestCaseBase):
         role_disregard.add_permissions_by_name(('teamwork.manage_role_users',))
 
         cases = (
-            (founder_user, True, True),
+            (owner_user, True, True),
             (user1, True, False),
             (user2, False, False),
         )

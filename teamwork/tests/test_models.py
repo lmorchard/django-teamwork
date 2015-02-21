@@ -30,11 +30,11 @@ class TeamTests(TestCaseBase):
         policy = Policy.objects.create(content_object=doc)
         eq_("Policy(baz)", unicode(policy))
 
-    def test_founder_is_owner(self):
-        """Ensure that Teams claim founder as owner"""
+    def test_owner_is_owner(self):
+        """Ensure that Teams claim owner as owner"""
         owner = self.users['randomguy1']
         team = Team.objects.create(name="ownerowned")
-        team.founder = owner
+        team.owner = owner
         eq_(owner, team.get_owner_user())
 
     def test_has_member(self):

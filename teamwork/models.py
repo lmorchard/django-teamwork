@@ -60,8 +60,8 @@ class Team(models.Model):
         _("name"), max_length=128, editable=True, unique=True,
         db_index=True)
     description = models.TextField(_("Description"), null=True, blank=True)
-    founder = models.ForeignKey(
-        User, db_index=True, blank=True, null=True)
+    owner = models.ForeignKey(
+        User, related_name='owned_teams', db_index=True, blank=False, null=True)
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
@@ -77,7 +77,7 @@ class Team(models.Model):
         return self.name
 
     def get_owner_user(self):
-        return self.founder
+        return self.owner
 
     @property
     def team(self):
@@ -85,15 +85,15 @@ class Team(models.Model):
 
     def has_user(self, user):
         """Determine whether the given user is a member of this team"""
-        # TODO: founder is not considered a member without an associated role
+        # TODO: owner is not considered a member without an associated role
         hits = (Role.users.through.objects
                     .filter(role__team=self, user=user)).count()
         return hits > 0
 
     def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
-        if user == self.founder:
-            # Founder is admin-equivalent for the team
+        if user == self.owner:
+            # owner is admin-equivalent for the team
             if permissions is None:
                 permissions = set()
             for perm, desc in self._meta.permissions:
@@ -157,8 +157,8 @@ class Role(models.Model):
 
     def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
-        if user == self.team.founder:
-            # Founder is admin-equivalent for the team
+        if user == self.team.owner:
+            # owner is admin-equivalent for the team
             if permissions is None:
                 permissions = set()
             for perm, desc in self._meta.permissions:

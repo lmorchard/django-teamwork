@@ -266,7 +266,7 @@
             "modified": "2013-06-18T15:36:34.403", 
             "created": "2013-06-18T15:13:31.454", 
             "name": "Section 1 Team", 
-            "founder": [
+            "owner": [
                 "section1_leader"
             ], 
             "description": ""
@@ -279,7 +279,7 @@
             "modified": "2013-06-18T15:36:45.710", 
             "created": "2013-06-18T15:16:11.600", 
             "name": "Section 2 Team", 
-            "founder": [
+            "owner": [
                 "section2_leader"
             ], 
             "description": ""
@@ -292,7 +292,7 @@
             "modified": "2013-06-18T15:37:01.096", 
             "created": "2013-06-18T15:16:47.998", 
             "name": "Section 3 Team", 
-            "founder": [
+            "owner": [
                 "section3_leader"
             ], 
             "description": ""
