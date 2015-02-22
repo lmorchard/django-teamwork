@@ -6,21 +6,21 @@ from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
-from .models import Team, Role, Policy
+from .models import Team, Member, Role, Policy
 
 
-def related_roles_link(self):
-    """HTML link to related roles for admin change list"""
+def related_members_link(self):
+    """HTML link to related members for admin change list"""
     link = '%s?%s' % (
-        reverse('admin:teamwork_role_changelist', args=[]),
+        reverse('admin:teamwork_member_changelist', args=[]),
         'team__exact=%s' % (self.id)
     )
-    count = self.role_set.count()
-    what = (count == 1) and 'role' or 'roles'
+    count = self.member_set.count()
+    what = (count == 1) and 'member' or 'members'
     return '<a href="%s">%s&nbsp;%s</a>' % (link, count, what)
 
-related_roles_link.allow_tags = True
-related_roles_link.short_description = "Roles"
+related_members_link.allow_tags = True
+related_members_link.short_description = "members"
 
 
 def team_link(self):
@@ -81,14 +81,13 @@ class RoleAdmin(admin.ModelAdmin):
     list_select_related = True
     list_display = ('name', team_link,)
     search_fields = ('name', 'team__name',)
-    filter_horizontal = ('users', 'permissions',)
+    filter_horizontal = ('permissions',)
 
 
 class RoleInline(admin.TabularInline):
     model = Role
-    fields = ('name', 'permissions', 'users',)
-    filter_horizontal = ('users', 'permissions',)
-    raw_id_fields = ('users',)
+    fields = ('name', 'permissions',)
+    filter_horizontal = ('permissions',)
     extra = 0
 
 
@@ -98,11 +97,20 @@ class TeamAdmin(admin.ModelAdmin):
     )
     raw_id_fields = ('owner',)
     list_select_related = True
-    list_display = ('name', related_roles_link,)
+    list_display = ('name', related_members_link,)
     search_fields = ('name',)
     inlines = (RoleInline,)
 
 
+class MemberAdmin(admin.ModelAdmin):
+    fields = ('team', 'user', 'role')
+    raw_id_fields = ('user',)
+    list_select_related = True
+    list_display = ('team', 'user', 'role')
+
+
+
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Role, RoleAdmin)
+admin.site.register(Member, MemberAdmin)
 admin.site.register(Policy, PolicyAdmin)

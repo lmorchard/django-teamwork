@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.http import (HttpResponse, HttpResponseRedirect)
 import django.contrib.auth
 
-from teamwork.models import Team, Role
+from teamwork.models import Team, Role, Member
 from teamwork.shortcuts import get_object_or_404_or_403
 
 
@@ -27,14 +27,13 @@ def logout(request):
 
 def user_detail(request, username):
     """View a user profile"""
-    # user = get_object_or_404_or_403('view_user', request.user,
-    #                                 User, username=username)
-    user = get_object_or_404(User, username=username)
-    base_perms = user.get_all_permissions()
-    roles = Role.objects.filter(users=user)
+    user = get_object_or_404_or_403('view_user', request.user,
+                                    User, username=username)
 
     return render(request, 'profiles/user_detail.html', dict(
-        user=user, base_perms=base_perms, roles=roles
+        user=user,
+        base_perms=user.get_all_permissions(), 
+        members=Member.objects.filter(user=user)
     ))
 
 
@@ -42,18 +41,7 @@ def team_detail(request, name):
     team = get_object_or_404_or_403('view_team', request.user,        
                                     Team, name=name)
 
-    # TODO: Should this be a team model method?
-    members = dict()
-    for role in team.role_set.all():
-        for user in role.users.all():
-            username = user.username
-            if username not in members:
-                members[username] = dict(user=user, roles=[role])
-            else:
-                members[username]['roles'].append(role)
-
     return render(request, 'profiles/team_detail.html', dict(
         team=team,
-        members=members.values(),
-        roles=team.role_set.all(),
+        members=team.member_set.all(),
     ))
