@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.http import (HttpResponse, HttpResponseRedirect)
 import django.contrib.auth
 
-from teamwork.models import Team, Role, Member
+from teamwork.models import Team, Role, Membership
 from teamwork.shortcuts import get_object_or_404_or_403
 
 
@@ -33,7 +33,7 @@ def user_detail(request, username):
     return render(request, 'profiles/user_detail.html', dict(
         user=user,
         base_perms=user.get_all_permissions(), 
-        members=Member.objects.filter(user=user)
+        members=Membership.objects.filter(user=user)
     ))
 
 
@@ -43,5 +43,5 @@ def team_detail(request, name):
 
     return render(request, 'profiles/team_detail.html', dict(
         team=team,
-        members=team.member_set.all(),
+        members=team.member.all(),
     ))

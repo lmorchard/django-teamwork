@@ -19,8 +19,7 @@ class TeamManager(models.Manager):
         return self.get(name=name)
 
     def get_teams_for_user(self, user):
-        return [member.team for member in
-                Member.objects.select_related('team').filter(user=user)]
+        return Team.objects.filter(members__pk=user.pk)
 
 
 class Team(models.Model):
@@ -30,9 +29,10 @@ class Team(models.Model):
     name = models.CharField(
         _("name"), max_length=128, editable=True, unique=True,
         db_index=True)
+
     description = models.TextField(_("Description"), null=True, blank=True)
-    owner = models.ForeignKey(
-        User, related_name='owned_teams', db_index=True, blank=False, null=True)
+
+    members = models.ManyToManyField(User, through='Membership')
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
@@ -50,26 +50,28 @@ class Team(models.Model):
     def natural_key(self):
         return self.name
 
-    def get_owner_user(self):
-        return self.owner
-
     @property
     def team(self):
         return self
 
-    def add_member(self, user, role=None):
-        member = Member(team=self, user=user, role=role)
+    def add_member(self, user, is_owner=False, role=None):
+        member = Membership(team=self, user=user, role=role, is_owner=is_owner)
         member.save()
         return member
 
-    def has_user(self, user):
+    def has_member(self, user):
         """Determine whether the given user is a member of this team"""
-        # TODO: owner is not considered a member without an associated role
-        return Member.objects.filter(team=self, user=user).count() > 0
+        return (self.members.through.objects
+                    .filter(team=self, user=user).count() > 0)
+
+    def has_owner(self, user):
+        """Determine whether the given user is an owner of this team"""
+        return (self.members.through.objects
+                    .filter(team=self, user=user, is_owner=True).count() > 0)
 
     def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
-        if user == self.owner:
+        if self.has_owner(user):
             # owner is admin-equivalent for the team
             for perm, desc in self._meta.permissions:
                 permissions.add('teamwork.%s' % perm)
@@ -78,7 +80,7 @@ class Team(models.Model):
     def get_all_permissions(self, user, denied=False):
         """Get all Permissions applied to this User based on assigned Roles"""
         out = []
-        for member in Member.objects.filter(user=user, team=self):
+        for member in self.members.through.objects.filter(team=self, user=user):
             if member.role:
                 permission_set = (denied and
                         member.role.permissions_denied or
@@ -129,7 +131,7 @@ class Role(models.Model):
 
     def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
-        if user == self.team.owner:
+        if self.team.has_owner(user):
             # owner is admin-equivalent for the team
             if permissions is None:
                 permissions = set()
@@ -147,16 +149,29 @@ class Role(models.Model):
                 for name in names if name.startswith('-')))
 
 
-class MemberManager(models.Manager):
-    pass
+class MembershipManager(models.Manager):
+    def get_by_natural_key(self, team_name, username):
+        return self.get(team__name=name, user__username=username)
 
 
-class Member(models.Model):
-    team = models.ForeignKey(Team, db_index=True, blank=False, null=False)
-    user = models.ForeignKey(User, db_index=True, blank=False, null=False)
-    role = models.ForeignKey(Role, db_index=True, blank=True, null=True)
+class Membership(models.Model):
+    """
+    Through model representing Team member Users, with annotations on granted
+    role and Team ownership status.
+    """
+    team = models.ForeignKey(Team, db_index=True)
+    user = models.ForeignKey(User, db_index=True)
 
-    objects = MemberManager()
+    role = models.ForeignKey(Role, db_index=True, null=True)
+    is_owner = models.BooleanField(default=False)
+
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
+
+    objects = MembershipManager()
+
+    def natural_key(self):
+        return [self.team.name, self.user.username]
 
 
 class PolicyManager(models.Manager):
@@ -171,8 +186,7 @@ class PolicyManager(models.Manager):
             user_filter = (Q(authenticated=True) |
                            Q(users__pk=user.pk) |
                            Q(groups__in=groups))
-            if (hasattr(obj, 'get_owner_user') and
-                    user == obj.get_owner_user()):
+            if hasattr(obj, 'has_owner') and obj.has_owner(user):
                 user_filter |= Q(apply_to_owners=True)
         ct = ContentType.objects.get_for_model(obj)
         policies = self.filter(user_filter,

@@ -284,7 +284,6 @@
             "modified": "2013-06-18T15:36:34.403", 
             "created": "2013-06-18T15:13:31.454", 
             "name": "Section 1 Team", 
-            "owner": [ "section1_leader" ], 
             "description": ""
         }
     }, 
@@ -295,7 +294,6 @@
             "modified": "2013-06-18T15:36:45.710", 
             "created": "2013-06-18T15:16:11.600", 
             "name": "Section 2 Team", 
-            "owner": [ "section2_leader" ], 
             "description": ""
         }
     }, 
@@ -306,7 +304,6 @@
             "modified": "2013-06-18T15:37:01.096", 
             "created": "2013-06-18T15:16:47.998", 
             "name": "Section 3 Team", 
-            "owner": [ "section3_leader" ], 
             "description": ""
         }
     }, 
@@ -353,15 +350,15 @@
             ]
         }
     }, 
-    { "pk": 1, "model": "teamwork.member", "fields": { "team": ["Section 1 Team"], "user": ["section1_leader"], "role": ["leader"] } },
-    { "pk": 2, "model": "teamwork.member", "fields": { "team": ["Section 2 Team"], "user": ["section2_leader"], "role": ["leader"] } },
-    { "pk": 3, "model": "teamwork.member", "fields": { "team": ["Section 3 Team"], "user": ["section3_leader"], "role": ["leader"] } },
-    { "pk": 4, "model": "teamwork.member", "fields": { "team": ["Section 1 Team"], "user": ["section1_editor"], "role": ["editor"] } },
-    { "pk": 5, "model": "teamwork.member", "fields": { "team": ["Section 2 Team"], "user": ["section2_editor"], "role": ["editor"] } },
-    { "pk": 6, "model": "teamwork.member", "fields": { "team": ["Section 3 Team"], "user": ["section3_editor"], "role": ["editor"] } },
-    { "pk": 7, "model": "teamwork.member", "fields": { "team": ["Section 1 Team"], "user": ["randomguy8"] } },
-    { "pk": 8, "model": "teamwork.member", "fields": { "team": ["Section 2 Team"], "user": ["randomguy8"] } },
-    { "pk": 9, "model": "teamwork.member", "fields": { "team": ["Section 3 Team"], "user": ["randomguy8"] } },
+    { "pk": 1, "model": "teamwork.membership", "fields": { "team": ["Section 1 Team"], "user": ["section1_leader"], "role": ["leader"], "is_owner": true, "created": "2013-06-18T15:16:11.600", "modified": "2013-06-18T15:16:11.600" } },
+    { "pk": 2, "model": "teamwork.membership", "fields": { "team": ["Section 2 Team"], "user": ["section2_leader"], "role": ["leader"], "is_owner": true, "created": "2013-06-18T15:16:11.600", "modified": "2013-06-18T15:16:11.600" } },
+    { "pk": 3, "model": "teamwork.membership", "fields": { "team": ["Section 3 Team"], "user": ["section3_leader"], "role": ["leader"], "is_owner": true, "created": "2013-06-18T15:16:11.600", "modified": "2013-06-18T15:16:11.600" } },
+    { "pk": 4, "model": "teamwork.membership", "fields": { "team": ["Section 1 Team"], "user": ["section1_editor"], "role": ["editor"], "created": "2013-06-18T15:16:11.600", "modified": "2013-06-18T15:16:11.600" } },
+    { "pk": 5, "model": "teamwork.membership", "fields": { "team": ["Section 2 Team"], "user": ["section2_editor"], "role": ["editor"], "created": "2013-06-18T15:16:11.600", "modified": "2013-06-18T15:16:11.600" } },
+    { "pk": 6, "model": "teamwork.membership", "fields": { "team": ["Section 3 Team"], "user": ["section3_editor"], "role": ["editor"], "created": "2013-06-18T15:16:11.600", "modified": "2013-06-18T15:16:11.600" } },
+    { "pk": 7, "model": "teamwork.membership", "fields": { "team": ["Section 1 Team"], "user": ["randomguy8"], "created": "2013-06-18T15:16:11.600", "modified": "2013-06-18T15:16:11.600" } },
+    { "pk": 8, "model": "teamwork.membership", "fields": { "team": ["Section 2 Team"], "user": ["randomguy8"], "created": "2013-06-18T15:16:11.600", "modified": "2013-06-18T15:16:11.600" } },
+    { "pk": 9, "model": "teamwork.membership", "fields": { "team": ["Section 3 Team"], "user": ["randomguy8"], "created": "2013-06-18T15:16:11.600", "modified": "2013-06-18T15:16:11.600" } },
     {
         "pk": 2, 
         "model": "teamwork.policy", 

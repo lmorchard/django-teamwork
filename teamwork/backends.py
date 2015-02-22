@@ -53,12 +53,12 @@ class TeamworkBackend(object):
 
             if obj:
 
-                if ('owners' in policy and hasattr(obj, 'get_owner_user') and
-                        user == obj.get_owner_user()):
+                if ('owners' in policy and hasattr(obj, 'has_owner') and
+                        obj.has_owner(user)):
                     sets.append(policy.get('owners', []))
 
                 if ('members' in policy and hasattr(obj, 'team') and
-                        obj.team.has_user(user)):
+                        obj.team.has_member(user)):
                     sets.append(policy.get('members', []))
         
         group_perms = policy.get('groups', None)

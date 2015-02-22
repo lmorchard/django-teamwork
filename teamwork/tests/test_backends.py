@@ -87,7 +87,9 @@ class TeamBackendTests(TestCaseBase):
         for user in group_users:
             user.groups.add(group)
 
-        team = Team.objects.create(name='settings_test_team', owner=owner_user)
+        team = Team.objects.create(name='settings_test_team')
+        team.add_member(owner_user, is_owner=True)
+
         member = team.add_member(self.users['randomguy7'])
         
         # Create a document to play with the permissions
@@ -116,7 +118,7 @@ class TeamBackendTests(TestCaseBase):
             assert_perms(('xyzzy', 'quux', 'hello'), self.users['randomguy1'], doc)
             assert_perms(('xyzzy', 'quux', 'hello'), self.users['randomguy1'])
 
-            assert_perms(('xyzzy', 'quux', 'change_document'), owner_user, doc)
+            assert_perms(('xyzzy', 'quux', 'add_document', 'change_document'), owner_user, doc)
 
             assert_perms(('xyzzy', 'quux', 'hello', 'add_document'), self.users['randomguy7'], doc)
 
@@ -132,8 +134,8 @@ class TeamBackendTests(TestCaseBase):
         owner = self.users['randomguy2']
         founder = self.users['randomguy3']
 
-        team = Team.objects.create(name='general_permissive_team',
-                                   owner=founder)
+        team = Team.objects.create(name='general_permissive_team')
+        team.add_member(founder, is_owner=True)
 
         doc = Document.objects.create(name='general_doc_1',
                                       creator=owner, team=team)
@@ -141,23 +143,26 @@ class TeamBackendTests(TestCaseBase):
         role = Role.objects.create(name='role1')
         role.add_permissions_by_name(('frob', 'hello', '-add_document'), doc)
 
+
         assert_perms((
             'add_document', # Note: Attached as a policy to current site in fixture data
         ), member1, doc)
         
-        team.add_member(member1, role)
+        team.add_member(member1, role=role)
 
         assert_perms(('frob', 'hello',), member1, doc)
 
     def test_owner_permissions(self):
         """Team owner should get special permissions to manage the team"""
-        owner_user = User.objects.create_user(
-            'owner0', 'owner0@example.com', 'owner0')
+        owner_user = User.objects.create_user('owner0', 'owner0@example.com', 'owner0')
         some_user = self.users['randomguy7']
-        team1 = Team.objects.create(name='owner_permissive',
-                                    owner=owner_user)
-        team2 = Team.objects.create(name='some_other_team',
-                                    owner=self.users['randomguy1'])
+        
+        team1 = Team.objects.create(name='owner_permissive')
+        team1.add_member(owner_user, is_owner=True)
+
+        team2 = Team.objects.create(name='some_other_team')
+        team1.add_member(self.users['randomguy1'], is_owner=True)
+
         cases = (
             # owner of team1 has authority over team1
             (team1, ((owner_user, True), (some_user, False))),
@@ -234,14 +239,15 @@ class TeamBackendTests(TestCaseBase):
         group_users = [self.users[u] for u in ('randomguy5', 'randomguy6')]
         owner_user = self.users['randomguy7']
 
-        team = Team.objects.create(name='general_permissive_team', owner=owner_user)
+        team = Team.objects.create(name='general_permissive_team')
+        team.add_member(owner_user, is_owner=True)
 
         doc = Document.objects.create(name='general_doc_1', creator=owner_user, team=team)
 
         role1 = Role.objects.create(name='role1')
         role1.add_permissions_by_name(('frob', 'hello'), doc)
 
-        team.add_member(role_user, role1)
+        team.add_member(role_user, role=role1)
 
         anon_policy = Policy.objects.create(content_object=doc, anonymous=True)
         anon_policy.add_permissions_by_name(('frob', 'xyzzy'), doc)
@@ -315,7 +321,7 @@ class TeamBackendTests(TestCaseBase):
         role1 = Role.objects.create(name='role1_for_7', team=team_for_7)
         role1.add_permissions_by_name(('add_document_child',), docs[7])
 
-        team_for_7.add_member(user, role1)
+        team_for_7.add_member(user, role=role1)
 
         # Check the team inheritance as a special case
         perms = user.get_all_permissions(docs[8])
@@ -341,5 +347,4 @@ class TeamBackendTests(TestCaseBase):
             doc = docs[idx]
             case = cases[idx]
             perms = user.get_all_permissions(doc)
-            logging.debug('%s: %s' % (doc, perms))
             eq_(set(case), perms)

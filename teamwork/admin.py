@@ -6,21 +6,21 @@ from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
-from .models import Team, Member, Role, Policy
+from .models import Team, Membership, Role, Policy
 
 
-def related_members_link(self):
-    """HTML link to related members for admin change list"""
+def related_memberships_link(self):
+    """HTML link to related Memberships for admin change list"""
     link = '%s?%s' % (
-        reverse('admin:teamwork_member_changelist', args=[]),
+        reverse('admin:teamwork_membership_changelist', args=[]),
         'team__exact=%s' % (self.id)
     )
-    count = self.member_set.count()
-    what = (count == 1) and 'member' or 'members'
+    count = self.members.count()
+    what = (count == 1) and 'Membership' or 'Memberships'
     return '<a href="%s">%s&nbsp;%s</a>' % (link, count, what)
 
-related_members_link.allow_tags = True
-related_members_link.short_description = "members"
+related_memberships_link.allow_tags = True
+related_memberships_link.short_description = "Memberships"
 
 
 def team_link(self):
@@ -92,17 +92,14 @@ class RoleInline(admin.TabularInline):
 
 
 class TeamAdmin(admin.ModelAdmin):
-    fields = (
-        'name', 'description', 'owner',
-    )
-    raw_id_fields = ('owner',)
+    fields = ( 'name', 'description' )
     list_select_related = True
-    list_display = ('name', related_members_link,)
+    list_display = ('name', related_memberships_link,)
     search_fields = ('name',)
     inlines = (RoleInline,)
 
 
-class MemberAdmin(admin.ModelAdmin):
+class MembershipAdmin(admin.ModelAdmin):
     fields = ('team', 'user', 'role')
     raw_id_fields = ('user',)
     list_select_related = True
@@ -112,5 +109,5 @@ class MemberAdmin(admin.ModelAdmin):
 
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Role, RoleAdmin)
-admin.site.register(Member, MemberAdmin)
+admin.site.register(Membership, MembershipAdmin)
 admin.site.register(Policy, PolicyAdmin)

@@ -34,8 +34,8 @@ class TeamTests(TestCaseBase):
         """Ensure that Teams claim owner as owner"""
         owner = self.users['randomguy1']
         team = Team.objects.create(name="ownerowned")
-        team.owner = owner
-        eq_(owner, team.get_owner_user())
+        team.add_member(owner, is_owner=True)
+        ok_(team.has_owner(owner))
 
     def test_has_member(self):
         """Users with roles on a team should be counted as members"""
@@ -56,7 +56,7 @@ class TeamTests(TestCaseBase):
         for expected, team_name, user_name in cases:
             team = self.teams[team_name]
             user = self.users[user_name]
-            eq_(expected, team.has_user(user))
+            eq_(expected, team.has_member(user))
 
     def test_teams_for_user(self):
         """List of teams for user should correspond to membership"""
@@ -71,8 +71,7 @@ class TeamTests(TestCaseBase):
             (u'randomguy8', (u'Section 1 Team', u'Section 2 Team', u'Section 3 Team')),
         )
         for username, expected_team_names in cases:
-            logging.debug(username)
-            expected_teams = [self.teams[name] for name in expected_team_names]
+            expected_teams = set(name for name in expected_team_names)
             user = User.objects.get(username=username)
-            result_teams = Team.objects.get_teams_for_user(user)
+            result_teams = set(team.name for team in Team.objects.get_teams_for_user(user))
             eq_(expected_teams, result_teams)

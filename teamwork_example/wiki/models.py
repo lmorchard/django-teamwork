@@ -37,8 +37,8 @@ class Document(models.Model):
         """Build the absolute URL to this document from its full path"""
         return reverse('wiki.views.view', args=[self.name])
 
-    def get_owner_user(self):
-        return self.creator
+    def has_owner(self, user):
+        return user == self.creator
 
     def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
