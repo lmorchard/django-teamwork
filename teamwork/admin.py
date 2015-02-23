@@ -12,7 +12,7 @@ from .models import Team, Member, Role, Policy
 def related_members_link(self):
     """HTML link to related Members for admin change list"""
     link = '%s?%s' % (
-        reverse('admin:teamwork_Member_changelist', args=[]),
+        reverse('admin:teamwork_member_changelist', args=[]),
         'team__exact=%s' % (self.id)
     )
     count = self.members.count()
@@ -32,13 +32,24 @@ team_link.allow_tags = True
 team_link.short_description = 'Team'
 
 
+def role_link(self):
+    """HTML link to a role"""
+    if not self.role:
+        return 'None'
+    url = reverse('admin:teamwork_role_change', args=[self.role.pk])
+    return '<a href="%s">Role: %s</a>' % (url, self.role)
+
+role_link.allow_tags = True
+role_link.short_description = 'role'
+
+
 class PolicyAdmin(admin.ModelAdmin):
     fields = (
         'content_type', 'object_id',
         'team', 'creator',
-        'permissions',
-        'apply_to_owners',
-        'anonymous', 'authenticated',
+        'permissions', 'permissions_denied',
+        'all', 'authenticated',
+        'owners',
         'users', 'groups',
     )
     raw_id_fields = ('users', 'creator',)
@@ -48,7 +59,7 @@ class PolicyAdmin(admin.ModelAdmin):
         'generic': [['content_type', 'object_id'], ]
     }
     list_select_related = True
-    filter_horizontal = ('permissions', 'groups', 'users',)
+    filter_horizontal = ('permissions', 'permissions_denied', 'groups', 'users',)
 
 
 class PolicyInline(generic.GenericTabularInline):
@@ -58,52 +69,41 @@ class PolicyInline(generic.GenericTabularInline):
     fields = (
         'team', 'creator',
         'permissions',
-        'apply_to_owners',
-        'anonymous', 'authenticated',
+        'all', 'authenticated',
+        'owners',
         'users', 'groups',
     )
-    filter_horizontal = ('permissions', 'groups', 'users',)
+    filter_horizontal = ('permissions', 'permissions_denied', 'groups', 'users',)
     raw_id_fields = ('users', 'creator',)
     extra = 0
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        if db_field.name in ("authenticated_permissions",
-                             "anonymous_permissions"):
-            ct = ContentType.objects.get_for_model(self.parent_model)
-            kwargs["queryset"] = (Permission.objects
-                                            .filter(content_type__pk=ct.id))
-        return super(PolicyInline, self).formfield_for_manytomany(
-            db_field, request, **kwargs)
-
 
 class RoleAdmin(admin.ModelAdmin):
-    raw_id_fields = ('team',)
     list_select_related = True
-    list_display = ('name', team_link,)
-    search_fields = ('name', 'team__name',)
-    filter_horizontal = ('permissions',)
+    list_display = ('name', 'created', 'modified',)
+    search_fields = ('name',)
+    filter_horizontal = ('permissions', 'permissions_denied')
 
 
 class RoleInline(admin.TabularInline):
     model = Role
-    fields = ('name', 'permissions',)
-    filter_horizontal = ('permissions',)
+    fields = ('name', 'permissions', 'permissions_denied')
+    filter_horizontal = ('permissions', 'permissions_denied')
     extra = 0
 
 
 class TeamAdmin(admin.ModelAdmin):
     fields = ( 'name', 'description' )
     list_select_related = True
-    list_display = ('name', related_members_link,)
+    list_display = ('name', related_members_link, 'created', 'modified',)
     search_fields = ('name',)
-    inlines = (RoleInline,)
 
 
 class MemberAdmin(admin.ModelAdmin):
-    fields = ('team', 'user', 'role')
+    fields = ('team', 'user', 'role', 'is_owner')
     raw_id_fields = ('user',)
     list_select_related = True
-    list_display = ('team', 'user', 'role')
+    list_display = ('id', 'user', team_link, role_link, 'is_owner', 'created', 'modified')
 
 
 

@@ -311,6 +311,8 @@
         "pk": 1, 
         "model": "teamwork.role", 
         "fields": {
+            "modified": "2013-06-18T15:37:01.096", 
+            "created": "2013-06-18T15:16:47.998", 
             "name": "leader",
             "description": "Section team leader", 
             "permissions": [
@@ -330,6 +332,8 @@
         "pk": 2, 
         "model": "teamwork.role", 
         "fields": {
+            "modified": "2013-06-18T15:37:01.096", 
+            "created": "2013-06-18T15:16:47.998", 
             "name": "editor", 
             "description": "Section editor", 
             "permissions": [
@@ -342,8 +346,9 @@
         "pk": 3, 
         "model": "teamwork.role", 
         "fields": {
+            "modified": "2013-06-18T15:37:01.096", 
+            "created": "2013-06-18T15:16:47.998", 
             "name": "section3frobber", 
-            "team": ["Section 3 Team"],
             "description": "Frobber for section 3", 
             "permissions": [
                 [ "frob", "wiki", "document" ]
@@ -370,8 +375,8 @@
             "created": "2013-06-18T15:23:43.406", 
             "modified": "2013-06-18T15:23:43.406", 
             "object_id": 4, 
-            "apply_to_owners": false, 
-            "anonymous": false, 
+            "owners": false, 
+            "all": false, 
             "team": null, 
             "permissions": [
                 [
@@ -432,8 +437,8 @@
             "created": "2013-06-18T15:33:33.317", 
             "modified": "2013-06-18T15:34:06.752", 
             "object_id": 2, 
-            "apply_to_owners": false, 
-            "anonymous": true, 
+            "owners": false, 
+            "all": true, 
             "team": null, 
             "permissions": [
                 [
@@ -459,8 +464,8 @@
             "created": "2013-06-19T14:08:11.376", 
             "modified": "2013-06-19T14:08:11.376", 
             "object_id": 4, 
-            "apply_to_owners": false, 
-            "anonymous": true, 
+            "owners": false, 
+            "all": true, 
             "team": null, 
             "permissions": [
                 [
@@ -486,8 +491,8 @@
             "created": "2013-06-19T14:09:29.218", 
             "modified": "2013-06-19T14:09:29.218", 
             "object_id": 10, 
-            "apply_to_owners": false, 
-            "anonymous": true, 
+            "owners": false, 
+            "all": true, 
             "team": null, 
             "permissions": [
                 [
@@ -513,8 +518,8 @@
             "created": "2013-06-20T15:28:19.338", 
             "modified": "2013-06-20T15:28:19.338", 
             "object_id": 1, 
-            "apply_to_owners": false, 
-            "anonymous": false, 
+            "owners": false, 
+            "all": false, 
             "team": null, 
             "permissions": [
                 [

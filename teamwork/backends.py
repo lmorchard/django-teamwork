@@ -10,6 +10,17 @@ from . import DEFAULT_ANONYMOUS_USER_PK
 from .models import Team, Role, Policy
 
 
+def merge_perms(sets):
+    out = set()
+    for perms in sets:
+        for perm in perms:
+            if perm.startswith('-'):
+                out.discard(perm[1:])
+            else:
+                out.add(perm)
+    return out
+
+
 class TeamworkBackend(object):
     supports_object_permissions = True
     supports_anonymous_user = True
@@ -22,21 +33,11 @@ class TeamworkBackend(object):
 
     def get_all_permissions(self, user, obj=None):
         # TODO: Cache this on the object? or in memcache?
-        return self._merge_perms([
+        return merge_perms([
             self._get_settings_permissions(user, obj),
             self._get_site_permissions(user, obj),
             self._get_obj_permissions(user, obj)
         ])
-
-    def _merge_perms(self, sets):
-        out = set()
-        for perms in sets:
-            for perm in perms:
-                if perm.startswith('-'):
-                    out.discard(perm[1:])
-                else:
-                    out.add(perm)
-        return out
 
     def _get_settings_permissions(self, user, obj=None):
         """
@@ -71,7 +72,7 @@ class TeamworkBackend(object):
         if user.username in users_perms:
             sets.append(users_perms[user.username])
 
-        return self._merge_perms(sets)
+        return merge_perms(sets)
 
     def _get_obj_permissions(self, user, obj, recurse=True):
         """Look up permissions for a single user / team / object"""
@@ -87,14 +88,17 @@ class TeamworkBackend(object):
         # TODO: Consider multiple-team ownership of a content object
         team = getattr(obj, 'team', None)
         if team and user.is_authenticated():
+            
             names.extend(self._perms_to_names(
                 team.get_all_permissions(user)))
+
             names.extend(self._perms_to_names(
                 team.get_all_permissions(user, denied=True),
                 denied=True))
 
         names.extend(self._perms_to_names(
             Policy.objects.get_all_permissions(user, obj)))
+
         names.extend(self._perms_to_names(
             Policy.objects.get_all_permissions(user, obj, denied=True),
             denied=True))

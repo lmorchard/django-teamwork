@@ -208,26 +208,6 @@ class TeamBackendTests(TestCaseBase):
         result_perms = user.get_all_permissions(doc2)
         eq_(set(('wiki.hello', 'wiki.quux')), result_perms)
 
-    def test_empty_obj_policy_overrides_base(self):
-        """Policy on an object with no permissions overrides base policy"""
-        Policy.objects.all().delete()
-        anon_user = AnonymousUser()
-        owner_user = self.users['randomguy7']
-        doc = Document.objects.create(name='general_doc_2',
-                                      creator=owner_user)
-        anon_perms = set((u'xyzzy', u'hello'))
-        base_policies = dict(anonymous=full_perms('wiki', anon_perms),)
-        doc_policy = Policy.objects.create(content_object=doc,
-                                           anonymous=True)
-
-        # Note: No permissions added to this doc_policy, which should *revoke*
-        # the base policies.
-        expected_perms = set()
-        #doc_policy.add_permissions_by_name(expected_perms, obj=doc)
-
-        with override_settings(TEAMWORK_BASE_POLICIES=base_policies):
-            assert_perms(expected_perms, anon_user, doc)
-
     def test_mixed_permissions(self):
         """Policies & teams grant permissions by object to users & groups"""
 
@@ -249,8 +229,8 @@ class TeamBackendTests(TestCaseBase):
 
         team.add_member(role_user, role=role1)
 
-        anon_policy = Policy.objects.create(content_object=doc, anonymous=True)
-        anon_policy.add_permissions_by_name(('frob', 'xyzzy'), doc)
+        all_policy = Policy.objects.create(content_object=doc, all=True)
+        all_policy.add_permissions_by_name(('frob', 'xyzzy'), doc)
 
         auth_policy = Policy.objects.create(content_object=doc, authenticated=True)
         auth_policy.add_permissions_by_name(('xyzzy', 'hello', '-add_document'), doc)
@@ -266,19 +246,19 @@ class TeamBackendTests(TestCaseBase):
         group_policy.groups.add(group)
         group_policy.add_permissions_by_name(('quux',), doc)
 
-        owner_policy = Policy.objects.create(content_object=doc, apply_to_owners=True)
+        owner_policy = Policy.objects.create(content_object=doc, owners=True)
         owner_policy.add_permissions_by_name(('change_document',), doc)
 
         assert_perms(('frob', 'xyzzy'), anon_user, doc)
-        assert_perms(('xyzzy', 'hello'), auth_user, doc)
+        assert_perms(('frob', 'xyzzy', 'hello'), auth_user, doc)
         assert_perms(('frob', 'xyzzy', 'hello'), role_user, doc)
-        assert_perms(('change_document', 'xyzzy', 'hello'), owner_user, doc)
+        assert_perms(('change_document', 'frob', 'xyzzy', 'hello'), owner_user, doc)
 
         for user in users_users:
             assert_perms(('hello', 'frob', 'xyzzy'), user, doc)
 
         for user in group_users:
-            assert_perms(('hello', 'quux', 'xyzzy'), user, doc)
+            assert_perms(('frob', 'hello', 'quux', 'xyzzy'), user, doc)
 
     def test_parent_permissions(self):
         """Content objects can supply a list of parents for inheritance"""
@@ -318,7 +298,7 @@ class TeamBackendTests(TestCaseBase):
         docs[7].team = team_for_7
         docs[7].save()
 
-        role1 = Role.objects.create(name='role1_for_7', team=team_for_7)
+        role1 = Role.objects.create(name='role1_for_7')
         role1.add_permissions_by_name(('add_document_child',), docs[7])
 
         team_for_7.add_member(user, role=role1)
