@@ -11,7 +11,7 @@ from nose.plugins.attrib import attr
 
 from teamwork_example.wiki.models import Document
 
-from ..models import Team, Role, Policy
+from ..models import Team, Role, Policy, Member
 
 from . import TestCaseBase
 
@@ -36,6 +36,14 @@ class TeamTests(TestCaseBase):
         team = Team.objects.create(name="ownerowned")
         team.add_member(owner, is_owner=True)
         ok_(team.has_owner(owner))
+
+    def test_double_add_member(self):
+        """Multiple calls to add_member should result in only one Member record"""
+        owner = self.users['randomguy1']
+        team = Team.objects.create(name="ownerowned")
+        team.add_member(owner)
+        team.add_member(owner, is_owner=True)
+        eq_(1, team.members.through.objects.filter(user=owner).count())
 
     def test_has_member(self):
         """Users with roles on a team should be counted as members"""

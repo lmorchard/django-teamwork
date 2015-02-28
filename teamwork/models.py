@@ -55,7 +55,9 @@ class Team(models.Model):
         return self
 
     def add_member(self, user, is_owner=False, role=None):
-        member = Member(team=self, user=user, role=role, is_owner=is_owner)
+        (member, created) = Member.objects.get_or_create(team=self, user=user)
+        member.role = role
+        member.is_owner = is_owner
         member.save()
         return member
 
@@ -174,6 +176,9 @@ class Member(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
+
+    class Meta:
+        unique_together = (('team', 'user'),)
 
     objects = MemberManager()
 
