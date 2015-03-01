@@ -66,6 +66,17 @@ class TeamTests(TestCaseBase):
             user = self.users[user_name]
             eq_(expected, team.has_member(user))
 
+    def test_remove_member(self):
+        """Team should support member removal"""
+        user = self.users['randomguy1']
+        team = Team.objects.create(name="ownerowned")
+
+        team.add_member(user)
+        eq_(1, team.members.through.objects.filter(user=user).count())
+
+        team.remove_member(user)
+        eq_(0, team.members.through.objects.filter(user=user).count())
+
     def test_teams_for_user(self):
         """List of teams for user should correspond to membership"""
         cases = (

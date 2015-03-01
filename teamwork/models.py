@@ -61,6 +61,9 @@ class Team(models.Model):
         member.save()
         return member
 
+    def remove_member(self, user):
+        Member.objects.filter(team=self, user=user).delete()
+
     def has_member(self, user):
         """Determine whether the given user is a member of this team"""
         return (self.members.through.objects
