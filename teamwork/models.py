@@ -2,7 +2,7 @@ import logging
 from itertools import chain
 
 from django.conf import settings
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import AnonymousUser, User, Group, Permission
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -71,6 +71,8 @@ class Team(models.Model):
 
     def has_owner(self, user):
         """Determine whether the given user is an owner of this team"""
+        if user.is_anonymous():
+            return False
         return (self.members.through.objects
                     .filter(team=self, user=user, is_owner=True).count() > 0)
 
@@ -141,9 +143,6 @@ class Role(models.Model):
     def filter_permissions(self, user, permissions):
         """Filter permissions with custom logic"""
         if self.team.has_owner(user):
-            # owner is admin-equivalent for the team
-            if permissions is None:
-                permissions = set()
             for perm, desc in self._meta.permissions:
                 permissions.add('teamwork.%s' % perm)
         return permissions
@@ -187,6 +186,17 @@ class Member(models.Model):
 
     def natural_key(self):
         return [self.team.name, self.user.username]
+
+    def get_permission_parents(self):
+        return [ self.team, ]
+
+    def has_owner(self, user):
+        return user == self.user
+
+    def filter_permissions(self, user, permissions):
+        if self.has_owner(user) or self.team.has_owner(user):
+            permissions.add('teamwork.delete_member')
+        return permissions
 
 
 class PolicyManager(models.Manager):
