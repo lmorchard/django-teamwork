@@ -1,4 +1,5 @@
 # Django settings for example project.
+import django
 
 DEBUG = True
 SERVE_MEDIA = TEMPLATE_DEBUG = DEBUG
@@ -131,12 +132,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django_nose',
-    'south',
     'teamwork',
     'teamwork_example.base',
     'teamwork_example.profiles',
     'teamwork_example.wiki',
 ]
+
+if django.VERSION[:2] < (1, 7):
+    INSTALLED_APPS.append('south')
+
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 

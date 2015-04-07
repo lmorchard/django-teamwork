@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import (HttpResponse, HttpResponseRedirect)
@@ -12,7 +13,7 @@ from .shortcuts import get_object_or_404_or_403
 
 
 def user_roles(request, username):
-    user = get_object_or_404(User, username=username)
+    user = get_object_or_404(get_user_model(), username=username)
 
     if 'POST' == request.method:
 

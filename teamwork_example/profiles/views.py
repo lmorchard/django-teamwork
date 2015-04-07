@@ -1,4 +1,5 @@
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -13,7 +14,7 @@ from teamwork.shortcuts import get_object_or_404_or_403
 def login(request):
     """A horrible, terrible way to log in"""
     username = request.REQUEST.get('username', None)
-    user = get_object_or_404(User, username=username)
+    user = get_object_or_404(get_user_model(), username=username)
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     django.contrib.auth.login(request, user)
     return redirect('/')
@@ -28,8 +29,8 @@ def logout(request):
 def user_detail(request, username):
     """View a user profile"""
     # user = get_object_or_404_or_403('view_user', request.user,
-    #                                 User, username=username)
-    user = get_object_or_404(User, username=username)
+    #                                 get_user_model(), username=username)
+    user = get_object_or_404(get_user_model(), username=username)
     base_perms = user.get_all_permissions()
     roles = Role.objects.filter(users=user)
 

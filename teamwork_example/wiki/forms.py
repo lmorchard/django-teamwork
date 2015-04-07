@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Document
+from teamwork_example.wiki.models import Document
 
 
 class DocumentCreateForm(forms.ModelForm):

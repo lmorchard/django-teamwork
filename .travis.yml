@@ -4,7 +4,8 @@ python:
     - "2.7"
 
 env:
-    - DB=mysql
+    - DB=mysql DJANGO=1.6.11
+    - DB=mysql DJANGO=1.7.7
 
 before_install:
     - sudo apt-get update -qq
@@ -13,7 +14,7 @@ before_install:
     - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so /usr/lib
 
 install:
-    - pip install -r requirements-test.txt --use-mirrors
+    - pip install -r requirements-test.txt Django==$DJANGO
 
 script: python ./teamwork_example/manage.py test -v2 teamwork
 

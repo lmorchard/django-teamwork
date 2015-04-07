@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from teamwork_example.wiki.models import Document
 from teamwork.models import Team
 
 
 def index(request):
-    users = User.objects.all()
+    users = get_user_model().objects.all()
     documents = Document.objects.filter(parent=None).all()
     teams = Team.objects.all()
     return render(request, 'base/index.html', dict(

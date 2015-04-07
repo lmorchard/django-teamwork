@@ -2,7 +2,7 @@ import logging
 import time
 
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser, User, Permission, Group
+from django.contrib.auth.models import AnonymousUser, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 
 from django.test import TestCase
@@ -65,7 +65,7 @@ class TeamBackendTests(TestCaseBase):
     def test_mixed_permissions(self):
         """Policies & teams grant permissions by object to users & groups"""
         anon_user = AnonymousUser()
-        founder_user = User.objects.create_user(
+        founder_user = self.user_model.objects.create_user(
             'founder0', 'founder0@example.com', 'founder0')
         auth_user = self.users['randomguy1']
         role_user = self.users['randomguy2']
@@ -130,9 +130,9 @@ class TeamBackendTests(TestCaseBase):
 
     def test_object_logic_permissions(self):
         """Objects can apply custom logic to permissions"""
-        u_quux1 = User.objects.create_user(
+        u_quux1 = self.user_model.objects.create_user(
             'quux1', 'quux1@example.com', 'quux1')
-        u_randomguy1 = User.objects.create_user(
+        u_randomguy1 = self.user_model.objects.create_user(
             'randomguy23', 'randomguy23@example.com', 'randomguy23')
         doc = Document.objects.create(name='Quuxy')
         ok_(u_quux1.has_perm('wiki.quux', doc))
@@ -140,7 +140,8 @@ class TeamBackendTests(TestCaseBase):
 
     def test_parent_permissions(self):
         """Content objects can supply a list of parents for inheritance"""
-        user = User.objects.create_user('noob1', 'noob1@example.com', 'noob1')
+        user = self.user_model.objects.create_user('noob1',
+            'noob1@example.com', 'noob1')
 
         # Set up document tree:
         #  /- 1 - 4
@@ -216,7 +217,7 @@ class TeamBackendTests(TestCaseBase):
         policy = Policy.objects.create(content_object=curr_site)
         policy2 = Policy.objects.create(content_object=new_site)
 
-        user = User.objects.create_user(
+        user = self.user_model.objects.create_user(
             'sitemember0', 'sitemember0@example.com', 'sitemember0')
         policy.users.add(user)
         policy2.users.add(user)
@@ -244,7 +245,7 @@ class TeamBackendTests(TestCaseBase):
         Policy.objects.all().delete()
 
         anon_user = AnonymousUser()
-        founder_user = User.objects.create_user(
+        founder_user = self.user_model.objects.create_user(
             'founder0', 'founder0@example.com', 'founder0')
         auth_user = self.users['randomguy1']
         role_user = self.users['randomguy2']
@@ -320,7 +321,7 @@ class TeamBackendTests(TestCaseBase):
 
     def test_founder_permissions(self):
         """Founder should get special permissions to manage the team"""
-        founder_user = User.objects.create_user(
+        founder_user = self.user_model.objects.create_user(
             'founder0', 'founder0@example.com', 'founder0')
         some_user = self.users['randomguy7']
         team1 = Team.objects.create(name='founder_permissive',
@@ -341,7 +342,7 @@ class TeamBackendTests(TestCaseBase):
 
     def test_team_permissions(self):
         """Role with manage_role_users applies only to its own team"""
-        founder_user = User.objects.create_user(
+        founder_user = self.user_model.objects.create_user(
             'founder0', 'founder0@example.com', 'founder0')
         user1 = self.users['randomguy1']
         user2 = self.users['randomguy2']

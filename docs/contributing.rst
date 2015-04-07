@@ -16,7 +16,7 @@ Hacking notes
 
     virtualenv ./test-venv
     . ./test-venv/bin/activate
-    pip install -r requirements-test.txt
+    pip install -r requirements-test.txt Django
 
 * Running tests::
 
@@ -31,6 +31,6 @@ Hacking notes
 
     ./teamwork_example/manage.py syncdb --noinput; ./teamwork_example/manage.py runserver
 
-* To regenerate ``initial_data.json`` from example site::
+* To regenerate ``test_data.json`` from example site::
 
-    ./teamwork_example/manage.py dumpdata -n --indent=4 sites auth.user teamwork wiki > teamwork_example/fixtures/initial_data.json
+    ./teamwork_example/manage.py dumpdata -n --indent=4 sites auth.user teamwork wiki > teamwork_example/fixtures/test_data.json
