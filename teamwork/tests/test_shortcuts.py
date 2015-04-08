@@ -6,7 +6,7 @@ from nose.tools import (assert_equal, with_setup, assert_false,
 from nose.plugins.attrib import attr
 
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser, User, Permission, Group
+from django.contrib.auth.models import AnonymousUser, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.http import Http404
 from django.test import TestCase
@@ -25,9 +25,10 @@ from . import TestCaseBase
 class GetObjectOr403Or404Tests(TestCaseBase):
 
     def setUp(self):
+        super(GetObjectOr403Or404Tests, self).setUp()
         self.obj = Document.objects.create(name='shortcut_test')
-        self.user = User.objects.create_user('noob2', 'noob2@example.com',
-                                             'noob2')
+        self.user = self.user_model.objects.create_user(
+            'noob2', 'noob2@example.com', 'noob2')
         self.policy = Policy.objects.create(content_object=self.obj)
         self.policy.users.add(self.user)
         self.policy.add_permissions_by_name(('hello',))

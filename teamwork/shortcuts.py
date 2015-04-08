@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import AnonymousUser, User, Permission, Group
+from django.contrib.auth.models import AnonymousUser, Permission, Group
 
 from .models import Team, Role, Policy
 

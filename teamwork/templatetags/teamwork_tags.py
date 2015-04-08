@@ -5,7 +5,8 @@
 """
 from __future__ import unicode_literals
 from django import template
-from django.contrib.auth.models import User, Group, AnonymousUser
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, AnonymousUser
 from django.template import get_library
 from django.template import InvalidTemplateLibrary
 from django.template.defaulttags import LoadNode
@@ -24,7 +25,7 @@ class ObjectPermissionsNode(template.Node):
 
     def render(self, context):
         user_var = self.user_var.resolve(context)
-        if isinstance(user_var, User):
+        if isinstance(user_var, get_user_model()):
             self.user = user_var
         elif isinstance(user_var, AnonymousUser):
             self.user = user_var
@@ -73,7 +74,7 @@ class PolicyAdminLinksNode(template.Node):
 
     def render(self, context):
         user_var = self.user_var.resolve(context)
-        if isinstance(user_var, User):
+        if isinstance(user_var, get_user_model()):
             self.user = user_var
         elif isinstance(user_var, AnonymousUser):
             self.user = user_var

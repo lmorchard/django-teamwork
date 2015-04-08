@@ -4,8 +4,8 @@ from django.core.exceptions import PermissionDenied
 
 from teamwork.shortcuts import get_object_or_404_or_403
 
-from .models import Document
-from .forms import DocumentCreateForm, DocumentEditForm
+from teamwork_example.wiki.models import Document
+from teamwork_example.wiki.forms import DocumentCreateForm, DocumentEditForm
 
 
 def view(request, name):

@@ -2,7 +2,7 @@ import logging
 from itertools import chain
 
 from django.conf import settings
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -62,7 +62,7 @@ class Team(models.Model):
     description = models.TextField(
         _("Description of intended use"), null=True, blank=True)
     founder = models.ForeignKey(
-        User, db_index=True, blank=True, null=True)
+        settings.AUTH_USER_MODEL, db_index=True, blank=True, null=True)
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, null=True, db_index=True)
@@ -133,7 +133,7 @@ class Role(models.Model):
         help_text='Specific permissions for this role.')
 
     users = models.ManyToManyField(
-        User, blank=True,
+        settings.AUTH_USER_MODEL, blank=True,
         help_text='Users granted this role')
 
     objects = RoleManager()
@@ -204,7 +204,8 @@ class Policy(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    creator = models.ForeignKey(User, null=True, blank=True, related_name='creator')
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, related_name='creator')
     team = models.ForeignKey(
         Team, db_index=True, blank=True, null=True,
         help_text='Team responsible for managing this policy')
@@ -216,7 +217,7 @@ class Policy(models.Model):
     apply_to_owners = models.BooleanField(default=False, help_text=(
         'Apply this policy to owners of content objects?'))
     users = models.ManyToManyField(
-        User, blank=True,
+        settings.AUTH_USER_MODEL, blank=True,
         help_text=('Apply this policy for these users.'))
     groups = models.ManyToManyField(Group, blank=True, help_text=(
         'Apply this policy for these user groups.'))

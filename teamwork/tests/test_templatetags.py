@@ -2,7 +2,7 @@ import logging
 import time
 
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser, User, Permission, Group
+from django.contrib.auth.models import AnonymousUser, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.template import Template, Context, TemplateSyntaxError
 
@@ -28,9 +28,10 @@ def render(template, context):
 class ObjPermissionsTagTests(TestCaseBase):
 
     def setUp(self):
+        super(ObjPermissionsTagTests, self).setUp()
         self.obj = Document.objects.create(name='templ_test')
-        self.user = User.objects.create_user('noob2', 'noob2@example.com',
-                                             'noob2')
+        self.user = self.user_model.objects.create_user(
+            'noob2', 'noob2@example.com', 'noob2')
         self.policy = Policy.objects.create(content_object=self.obj)
         self.policy.users.add(self.user)
         self.policy.add_permissions_by_name(('hello',))
@@ -94,7 +95,8 @@ class ObjPermissionsTagTests(TestCaseBase):
 class PolicyLinksTagTests(TestCaseBase):
 
     def setUp(self):
-        self.admin = User.objects.get(username='admin')
+        super(PolicyLinksTagTests, self).setUp()
+        self.admin = self.user_model.objects.get(username='admin')
 
         self.obj1 = Document.objects.create(name='templ_test1')
 
@@ -105,7 +107,7 @@ class PolicyLinksTagTests(TestCaseBase):
         self.policy3_1 = Policy.objects.create(content_object=self.obj3)
         self.policy3_2 = Policy.objects.create(content_object=self.obj3)
 
-        self.user = User.objects.create_user(
+        self.user = self.user_model.objects.create_user(
             'noob2', 'noob2@example.com', 'noob2')
 
     def test_simple_policy(self):

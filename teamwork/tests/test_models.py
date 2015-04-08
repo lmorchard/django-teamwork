@@ -2,7 +2,7 @@ import logging
 import time
 
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser, User, Permission, Group
+from django.contrib.auth.models import AnonymousUser, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 
 from nose.tools import (assert_equal, assert_items_equal, with_setup,

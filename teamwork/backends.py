@@ -2,7 +2,7 @@ import logging
 from itertools import chain
 
 from django.conf import settings
-from django.contrib.auth.models import User, Permission, Group
+from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site, get_current_site
 
