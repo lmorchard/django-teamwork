@@ -193,11 +193,6 @@ class Member(models.Model):
     def has_owner(self, user):
         return user == self.user
 
-    def filter_permissions(self, user, permissions):
-        if self.has_owner(user) or self.team.has_owner(user):
-            permissions.add('teamwork.delete_member')
-        return permissions
-
 
 class PolicyManager(models.Manager):
     """
